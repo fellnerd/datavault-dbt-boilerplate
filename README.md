@@ -12,6 +12,13 @@ asked when generating a new project.
 
 ## Create a new project from this template
 
+There are two ways to start a new project from this template. **Option A is
+recommended** — it generates the rendered project and lets you push it to a
+new repo in one go. Option B is for when a repo already exists (e.g. you
+clicked GitHub's "Use this template" button) and now needs to be rendered.
+
+### Option A: Generate locally, then push to a new repo
+
 Install Copier once:
 
 ```bash
@@ -30,6 +37,43 @@ GitHub org, example warehouse server / database name, schema names, hash
 algorithm, and whether to include the AdventureWorks demo. Answers are
 written to `.copier-answers.yml` in the new project — **do not delete this
 file**, it is required for `copier update` later.
+
+Then push it to a new (empty) GitHub repo:
+
+```bash
+cd my-customer-dbt-project
+git init -b main
+git add -A
+git commit -m "Initial project from datavault-dbt-boilerplate"
+git remote add origin git@github.com:<your-org>/<your-repo>.git
+git push -u origin main
+```
+
+### Option B: You already created a repo via "Use this template"
+
+GitHub's green **"Use this template"** button only copies the files
+as-is — it does **not** run Copier and does not ask any questions. If you
+used it, your new repo still contains the raw, unrendered scaffold
+(`copier.yml`, the `template/` folder, `.jinja` files, `{% if %}` in some
+file names) instead of a working dbt project. To actually render it:
+
+```bash
+git clone git@github.com:<your-org>/<your-repo>.git
+cd <your-repo>
+
+pipx install copier   # if not already installed
+copier copy gh:fellnerd/datavault-dbt-boilerplate . --overwrite
+```
+
+Answer the prompts (for `github_org`, use the org/user your new repo lives
+under). This overwrites the raw scaffold in place with the rendered project
+and writes `.copier-answers.yml`. Then commit and push:
+
+```bash
+git add -A
+git commit -m "Render project from datavault-dbt-boilerplate"
+git push
+```
 
 ## Pull in later template improvements
 
