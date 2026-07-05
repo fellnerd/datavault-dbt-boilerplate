@@ -1,0 +1,100 @@
+# copier.yml — Copier template configuration for datavault-dbt-boilerplate
+# Docs: https://copier.readthedocs.io/en/stable/configuring/
+
+_min_copier_version: "9.0.0"
+_subdirectory: "template"
+_envops:
+  trim_blocks: true
+  lstrip_blocks: true
+  keep_trailing_newline: true
+_answers_file: .copier-answers.yml
+
+# ------------------------------------------------------------------
+# Project identity
+# ------------------------------------------------------------------
+project_name:
+  type: str
+  help: "Name of the dbt project (used as dbt_project.yml `name:`, lowercase, no spaces)"
+  default: "datavault"
+  validator: >-
+    {% if not (project_name | regex_search('^[a-z][a-z0-9_]*$')) %}
+    project_name must be lowercase snake_case (letters, digits, underscore, starting with a letter)
+    {% endif %}
+
+profile_name:
+  type: str
+  help: "dbt profile name (matches an entry in ~/.dbt/profiles.yml)"
+  default: "{{ project_name }}"
+
+company_name:
+  type: str
+  help: "Company / customer name (used in doc headers, e.g. README, CLAUDE.md)"
+  default: "Your Company"
+
+author_name:
+  type: str
+  help: "Primary maintainer name (used in doc headers / CLAUDE.md 'Me' section)"
+  default: "Your Name"
+
+github_org:
+  type: str
+  help: "GitHub org or user the generated project will live under (used in README links)"
+  default: "your-org"
+
+# ------------------------------------------------------------------
+# Warehouse / connection (SQL Server / Azure SQL only in v1)
+# ------------------------------------------------------------------
+warehouse_server_example:
+  type: str
+  help: "Example server hostname for profiles.yml.example / docs (not a real credential, purely illustrative)"
+  default: "your-sql-server.database.windows.net"
+
+database_name:
+  type: str
+  help: >-
+    Base database name. Generates three example targets in profiles.yml.example:
+    prod -> {{ database_name }}, dev -> {{ database_name }}-dev, test -> {{ database_name }}-test
+  default: "{{ project_name }}"
+
+# ------------------------------------------------------------------
+# Data Vault conventions
+# ------------------------------------------------------------------
+hash_algorithm:
+  type: str
+  help: "Hash algorithm for hub/sat/link hash keys"
+  choices:
+    SHA-256 (32 byte, recommended): SHA
+    MD5 (16 byte, legacy compatibility): MD5
+  default: SHA
+
+schema_prefix:
+  type: str
+  help: "Prefix for Data Vault schemas (raw_vault -> {{ schema_prefix }}, {{ schema_prefix }}_<source>)"
+  default: "vault"
+
+staging_schema:
+  type: str
+  help: "Schema name for staging views"
+  default: "stg"
+
+mart_schema:
+  type: str
+  help: "Schema name for common mart objects"
+  default: "mart"
+
+# ------------------------------------------------------------------
+# Example / demo content
+# ------------------------------------------------------------------
+include_example:
+  type: bool
+  help: "Include the AdventureWorks demo (staging -> hub/sat/link reference implementation)?"
+  default: true
+
+# ------------------------------------------------------------------
+# Housekeeping
+# ------------------------------------------------------------------
+_exclude:
+  - "*.pyc"
+  - "__pycache__"
+  - ".DS_Store"
+  - "copier.yml"
