@@ -1,0 +1,191 @@
+name: Deploy Azure Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      resource_group:
+        description: 'Target Azure resource group (must already exist)'
+        required: true
+        type: string
+      location:
+        description: 'Azure region'
+        required: true
+        default: '{{ infra_location }}'
+        type: string
+      sql_server_name:
+        description: 'SQL logical server name'
+        required: true
+        default: '{{ infra_sql_server_name }}'
+        type: string
+      aad_admin_group_name:
+        description: 'AAD group display name for the SQL Server admin'
+        required: true
+        type: string
+      aad_admin_group_object_id:
+        description: 'AAD group object ID (SID) for the SQL Server admin'
+        required: true
+        type: string
+      sql_admin_login:
+        description: 'Secondary SQL admin login (password comes from the SQL_ADMIN_PASSWORD secret, not this input)'
+        required: true
+        default: 'sqladmin'
+        type: string
+      deploy_datavault:
+        description: 'Deploy prod database ({{ database_name }})'
+        required: true
+        default: true
+        type: boolean
+      deploy_datavault_dev:
+        description: 'Deploy dev database ({{ database_name }}-dev)'
+        required: true
+        default: true
+        type: boolean
+      deploy_datavault_test:
+        description: 'Deploy test database ({{ database_name }}-test)'
+        required: true
+        default: true
+        type: boolean
+      create_storage_account:
+        description: 'Create a new storage account (uncheck to use an existing one)'
+        required: true
+        default: true
+        type: boolean
+      storage_account_name:
+        description: 'Storage account name (created if new, referenced if existing)'
+        required: true
+        default: '{{ infra_storage_account_name }}'
+        type: string
+      storage_container_name:
+        description: 'ADLS Gen2 container name for staged source files'
+        required: true
+        default: '{{ infra_storage_container_name }}'
+        type: string
+      existing_storage_account_resource_group:
+        description: 'Resource group of an EXISTING storage account (ignored if creating new; blank = same as resource_group)'
+        required: false
+        type: string
+      allow_all_ips_firewall:
+        description: 'DANGER: also open the firewall to 0.0.0.0-255.255.255.255 (default off, opt-in only)'
+        required: true
+        default: false
+        type: boolean
+      what_if_only:
+        description: 'Preview only: run az deployment ... --what-if, make no actual changes'
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  deploy-infra:
+    name: Deploy Azure Infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: |
+            {
+              "clientId": "{% raw %}${{ secrets.AZURE_CLIENT_ID }}{% endraw %}",
+              "clientSecret": "{% raw %}${{ secrets.AZURE_CLIENT_SECRET }}{% endraw %}",
+              "tenantId": "{% raw %}${{ secrets.AZURE_TENANT_ID }}{% endraw %}",
+              "subscriptionId": "{% raw %}${{ secrets.AZURE_SUBSCRIPTION_ID }}{% endraw %}"
+            }
+
+      - name: Resolve existing storage account resource group
+        id: rg
+        run: |
+          RG="{% raw %}${{ inputs.existing_storage_account_resource_group }}{% endraw %}"
+          if [ -z "$RG" ]; then
+            RG="{% raw %}${{ inputs.resource_group }}{% endraw %}"
+          fi
+          echo "existing_storage_rg=$RG" >> "$GITHUB_OUTPUT"
+
+      - name: What-if preview
+        if: {% raw %}${{ inputs.what_if_only == true }}{% endraw %}
+        run: |
+          az deployment group what-if \
+            --resource-group "{% raw %}${{ inputs.resource_group }}{% endraw %}" \
+            --template-file infra/main.bicep \
+            --parameters \
+              location="{% raw %}${{ inputs.location }}{% endraw %}" \
+              sqlServerName="{% raw %}${{ inputs.sql_server_name }}{% endraw %}" \
+              aadAdminGroupName="{% raw %}${{ inputs.aad_admin_group_name }}{% endraw %}" \
+              aadAdminGroupObjectId="{% raw %}${{ inputs.aad_admin_group_object_id }}{% endraw %}" \
+              aadTenantId="{% raw %}${{ secrets.AZURE_TENANT_ID }}{% endraw %}" \
+              sqlAdminLogin="{% raw %}${{ inputs.sql_admin_login }}{% endraw %}" \
+              sqlAdminPassword="{% raw %}${{ secrets.SQL_ADMIN_PASSWORD }}{% endraw %}" \
+              allowAllIps={% raw %}${{ inputs.allow_all_ips_firewall }}{% endraw %} \
+              deploySqlDatavault={% raw %}${{ inputs.deploy_datavault }}{% endraw %} \
+              deploySqlDatavaultDev={% raw %}${{ inputs.deploy_datavault_dev }}{% endraw %} \
+              deploySqlDatavaultTest={% raw %}${{ inputs.deploy_datavault_test }}{% endraw %} \
+              databaseBaseName="{{ database_name }}" \
+              createStorageAccount={% raw %}${{ inputs.create_storage_account }}{% endraw %} \
+              storageAccountName="{% raw %}${{ inputs.storage_account_name }}{% endraw %}" \
+              storageContainerName="{% raw %}${{ inputs.storage_container_name }}{% endraw %}" \
+              existingStorageAccountResourceGroup="{% raw %}${{ steps.rg.outputs.existing_storage_rg }}{% endraw %}"
+
+      - name: Deploy Bicep
+        if: {% raw %}${{ inputs.what_if_only == false }}{% endraw %}
+        id: deploy
+        run: |
+          az deployment group create \
+            --resource-group "{% raw %}${{ inputs.resource_group }}{% endraw %}" \
+            --template-file infra/main.bicep \
+            --parameters \
+              location="{% raw %}${{ inputs.location }}{% endraw %}" \
+              sqlServerName="{% raw %}${{ inputs.sql_server_name }}{% endraw %}" \
+              aadAdminGroupName="{% raw %}${{ inputs.aad_admin_group_name }}{% endraw %}" \
+              aadAdminGroupObjectId="{% raw %}${{ inputs.aad_admin_group_object_id }}{% endraw %}" \
+              aadTenantId="{% raw %}${{ secrets.AZURE_TENANT_ID }}{% endraw %}" \
+              sqlAdminLogin="{% raw %}${{ inputs.sql_admin_login }}{% endraw %}" \
+              sqlAdminPassword="{% raw %}${{ secrets.SQL_ADMIN_PASSWORD }}{% endraw %}" \
+              allowAllIps={% raw %}${{ inputs.allow_all_ips_firewall }}{% endraw %} \
+              deploySqlDatavault={% raw %}${{ inputs.deploy_datavault }}{% endraw %} \
+              deploySqlDatavaultDev={% raw %}${{ inputs.deploy_datavault_dev }}{% endraw %} \
+              deploySqlDatavaultTest={% raw %}${{ inputs.deploy_datavault_test }}{% endraw %} \
+              databaseBaseName="{{ database_name }}" \
+              createStorageAccount={% raw %}${{ inputs.create_storage_account }}{% endraw %} \
+              storageAccountName="{% raw %}${{ inputs.storage_account_name }}{% endraw %}" \
+              storageContainerName="{% raw %}${{ inputs.storage_container_name }}{% endraw %}" \
+              existingStorageAccountResourceGroup="{% raw %}${{ steps.rg.outputs.existing_storage_rg }}{% endraw %}" \
+            --query "properties.outputs" -o json > deploy_outputs.json
+          echo "sql_server_fqdn=$(jq -r '.sqlServerFqdn.value' deploy_outputs.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Install sqlcmd (mssql-tools18)
+        if: {% raw %}${{ inputs.what_if_only == false }}{% endraw %}
+        run: |
+          curl -sSL -O https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 unixodbc-dev
+          echo "/opt/mssql-tools18/bin" >> "$GITHUB_PATH"
+
+      - name: Get AAD access token for SQL
+        if: {% raw %}${{ inputs.what_if_only == false }}{% endraw %}
+        id: token
+        run: |
+          TOKEN=$(az account get-access-token --resource https://database.windows.net --query accessToken -o tsv)
+          echo "::add-mask::$TOKEN"
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Configure external data source (per deployed database)
+        if: {% raw %}${{ inputs.what_if_only == false }}{% endraw %}
+        run: |
+          DBS=()
+          [ "{% raw %}${{ inputs.deploy_datavault }}{% endraw %}" = "true" ] && DBS+=("{{ database_name }}")
+          [ "{% raw %}${{ inputs.deploy_datavault_dev }}{% endraw %}" = "true" ] && DBS+=("{{ database_name }}-dev")
+          [ "{% raw %}${{ inputs.deploy_datavault_test }}{% endraw %}" = "true" ] && DBS+=("{{ database_name }}-test")
+
+          for DB in "${DBS[@]}"; do
+            echo "Configuring external data source on $DB"
+            sqlcmd -S "{% raw %}${{ steps.deploy.outputs.sql_server_fqdn }}{% endraw %}" -d "$DB" \
+              --authentication-method=ActiveDirectoryAccessToken \
+              --accesstoken "{% raw %}${{ steps.token.outputs.token }}{% endraw %}" \
+              -i scripts/setup_external_source.sql \
+              -v StorageAccountName="{% raw %}${{ inputs.storage_account_name }}{% endraw %}" \
+                 ContainerName="{% raw %}${{ inputs.storage_container_name }}{% endraw %}"
+          done

@@ -31,7 +31,7 @@ Source System -> External Table -> Staging View -> Hub/Sat/Link
 
 - **Python 3.10+**
 - **ODBC Driver 18 for SQL Server**
-- **Azure CLI** (optional, for CLI authentication)
+- **Azure CLI**{% if include_infra %} (required for infra deployment, and for CLI authentication){% else %} (optional, for CLI authentication){% endif %}
 - **Git**
 
 ### 1. Clone the repository
@@ -171,8 +171,9 @@ dbt run-operation stage_external_sources --vars '{"ext_full_refresh": true}'
 │   └── mart/
 ├── macros/                   # Custom macros
 ├── seeds/                    # Reference data (CSV)
-├── scripts/                  # Utility SQL scripts (e.g. setup_schemas.sql)
-├── design/                   # Design templates (hub/link/PIT/bridge)
+├── scripts/                  # Utility SQL scripts (e.g. setup_schemas.sql{% if include_infra %}, setup_external_source.sql{% endif %})
+{% if include_infra %}├── infra/                     # Bicep templates + deploy workflow (see infra/README.md)
+{% endif %}├── design/                   # Design templates (hub/link/PIT/bridge)
 └── docs/                     # Documentation
 ```
 
@@ -214,7 +215,20 @@ CONVERT(CHAR(64), HASHBYTES('SHA2_256',
 | Cross-database error | use {% raw %}`{{ target.database }}`{% endraw %} instead of a hardcoded database name |
 
 ---
+{% if include_infra %}
+## Deploying infrastructure
 
+Azure infrastructure (SQL Server, the `{{ database_name }}`/`{{ database_name }}-dev`/`{{ database_name }}-test`
+databases, storage account, and the RBAC needed for managed-identity-based
+external data sources) is provisioned via Bicep, triggered through the
+**Deploy Azure Infrastructure** GitHub Actions workflow. Prerequisites:
+an existing Azure AD admin group, an existing resource group, and 5 GitHub
+secrets (`AZURE_CLIENT_ID`/`AZURE_CLIENT_SECRET`/`AZURE_TENANT_ID`/
+`AZURE_SUBSCRIPTION_ID`/`SQL_ADMIN_PASSWORD`). See [`infra/README.md`](infra/README.md)
+for full details and how to trigger it.
+
+---
+{% endif %}
 ## Updating from the template
 
 This project was scaffolded with [Copier](https://copier.readthedocs.io/).

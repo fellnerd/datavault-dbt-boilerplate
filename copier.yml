@@ -91,6 +91,44 @@ include_example:
   default: true
 
 # ------------------------------------------------------------------
+# Azure infrastructure automation
+# ------------------------------------------------------------------
+include_infra:
+  type: bool
+  help: "Include Azure infrastructure-as-code (Bicep + GitHub Actions deploy workflow)?"
+  default: true
+
+infra_location:
+  type: str
+  help: "Default Azure region for infra deployment (used as a workflow input default, overridable per-run)"
+  default: "switzerlandnorth"
+  when: "{{ include_infra }}"
+
+infra_sql_server_name:
+  type: str
+  help: "Default SQL Server name baked into the deploy workflow's input default (still overridable per-run)"
+  default: "sql-{{ project_name }}-001"
+  when: "{{ include_infra }}"
+
+infra_storage_account_name:
+  type: str
+  help: >-
+    Default storage account name baked into the deploy workflow's input default.
+    Must be globally unique, lowercase, no hyphens, <=24 chars if used verbatim.
+  default: "st{{ project_name }}001"
+  when: "{{ include_infra }}"
+  validator: >-
+    {% if include_infra and not (infra_storage_account_name | regex_search('^[a-z0-9]{3,24}$')) %}
+    Storage account name must be 3-24 lowercase letters/digits only (Azure naming rule)
+    {% endif %}
+
+infra_storage_container_name:
+  type: str
+  help: "ADLS Gen2 container name for staged source files (matches sources.yml `data_source` location path)"
+  default: "stage-fs"
+  when: "{{ include_infra }}"
+
+# ------------------------------------------------------------------
 # Housekeeping
 # ------------------------------------------------------------------
 _exclude:
