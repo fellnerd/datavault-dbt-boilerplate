@@ -106,16 +106,25 @@ infra_location:
 
 infra_sql_server_name:
   type: str
-  help: "Default SQL Server name baked into the deploy workflow's input default (still overridable per-run)"
-  default: "sql-{{ project_name }}-001"
+  help: >-
+    Default SQL Server name baked into the deploy workflow's input default
+    (still overridable per-run). SQL Server names are globally unique across
+    ALL of Azure (the FQDN is <name>.database.windows.net) — a generic name
+    like "sql-datavault-001" is very likely already taken by someone else.
+    Include something distinctive (your org/company name) to reduce collision risk.
+  default: "sql-{{ github_org }}-{{ project_name }}-001"
   when: "{{ include_infra }}"
 
 infra_storage_account_name:
   type: str
   help: >-
     Default storage account name baked into the deploy workflow's input default.
-    Must be globally unique, lowercase, no hyphens, <=24 chars if used verbatim.
-  default: "st{{ project_name }}001"
+    Must be globally unique across ALL of Azure (not just your subscription),
+    lowercase letters/digits only, no hyphens, 3-24 chars. A generic name like
+    "stdatavault001" is very likely already taken — include something
+    distinctive (your org/company name). Check availability before deploying:
+    az storage account check-name --name <name>
+  default: "st{{ github_org | replace('-', '') }}{{ project_name }}001"
   when: "{{ include_infra }}"
   validator: >-
     {% if include_infra and not (infra_storage_account_name | regex_search('^[a-z0-9]{3,24}$')) %}
