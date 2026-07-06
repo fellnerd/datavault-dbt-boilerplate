@@ -4,8 +4,8 @@ sources:
     description: External Tables via PolyBase (Parquet from ADLS)
     database: "{% raw %}{{ target.database }}{% endraw %}"
     schema: {{ staging_schema }}
-    tables:
 {% if include_example %}
+    tables:
       - name: ext_adventureworks_saleslt_address
         description: Auto-generated from SalesLT.Address.parquet
         external:
@@ -402,4 +402,6 @@ sources:
             data_type: NVARCHAR(4000)
           - name: dss_source_file_name
             data_type: NVARCHAR(4000)
+{% else %}
+    tables: []
 {% endif %}

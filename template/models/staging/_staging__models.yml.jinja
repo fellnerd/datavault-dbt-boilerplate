@@ -1,6 +1,6 @@
 version: 2
-models:
 {% if include_example %}
+models:
   - name: adworks_adresse
     description: Staging view for adresse from adworks
     config:
@@ -478,4 +478,6 @@ models:
       - name: dss_source_file_name
         description: dss_source_file_name
         data_type: nvarchar(4000)
+{% else %}
+models: []
 {% endif %}
