@@ -80,6 +80,27 @@ jobs:
     name: Deploy Azure Infrastructure
     runs-on: ubuntu-latest
 
+    # Inputs are passed through env instead of being interpolated directly into `run:`
+    # scripts — this avoids shell injection via free-text inputs and keeps quoting sane.
+    env:
+      RESOURCE_GROUP: '{% raw %}${{ inputs.resource_group }}{% endraw %}'
+      LOCATION: '{% raw %}${{ inputs.location }}{% endraw %}'
+      SQL_SERVER_NAME: '{% raw %}${{ inputs.sql_server_name }}{% endraw %}'
+      AAD_ADMIN_GROUP_NAME: '{% raw %}${{ inputs.aad_admin_group_name }}{% endraw %}'
+      AAD_ADMIN_GROUP_OBJECT_ID: '{% raw %}${{ inputs.aad_admin_group_object_id }}{% endraw %}'
+      AAD_TENANT_ID: '{% raw %}${{ secrets.AZURE_TENANT_ID }}{% endraw %}'
+      SQL_ADMIN_LOGIN: '{% raw %}${{ inputs.sql_admin_login }}{% endraw %}'
+      STORAGE_ACCOUNT_NAME: '{% raw %}${{ inputs.storage_account_name }}{% endraw %}'
+      STORAGE_CONTAINER_NAME: '{% raw %}${{ inputs.storage_container_name }}{% endraw %}'
+      EXISTING_STORAGE_RG_INPUT: '{% raw %}${{ inputs.existing_storage_account_resource_group }}{% endraw %}'
+      DATABASE_BASE_NAME: '{{ database_name }}'
+      DEPLOY_PROD: '{% raw %}${{ inputs.deploy_datavault }}{% endraw %}'
+      DEPLOY_DEV: '{% raw %}${{ inputs.deploy_datavault_dev }}{% endraw %}'
+      DEPLOY_TEST: '{% raw %}${{ inputs.deploy_datavault_test }}{% endraw %}'
+      CREATE_STORAGE: '{% raw %}${{ inputs.create_storage_account }}{% endraw %}'
+      ALLOW_ALL_IPS: '{% raw %}${{ inputs.allow_all_ips_firewall }}{% endraw %}'
+      WHAT_IF_ONLY: '{% raw %}${{ inputs.what_if_only }}{% endraw %}'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -95,68 +116,45 @@ jobs:
               "subscriptionId": "{% raw %}${{ secrets.AZURE_SUBSCRIPTION_ID }}{% endraw %}"
             }
 
-      - name: Resolve existing storage account resource group
-        id: rg
-        run: |
-          RG="{% raw %}${{ inputs.existing_storage_account_resource_group }}{% endraw %}"
-          if [ -z "$RG" ]; then
-            RG="{% raw %}${{ inputs.resource_group }}{% endraw %}"
-          fi
-          echo "existing_storage_rg=$RG" >> "$GITHUB_OUTPUT"
-
-      - name: What-if preview
-        if: {% raw %}${{ inputs.what_if_only == true }}{% endraw %}
-        run: |
-          az deployment group what-if \
-            --resource-group "{% raw %}${{ inputs.resource_group }}{% endraw %}" \
-            --template-file infra/main.bicep \
-            --parameters \
-              location="{% raw %}${{ inputs.location }}{% endraw %}" \
-              sqlServerName="{% raw %}${{ inputs.sql_server_name }}{% endraw %}" \
-              aadAdminGroupName="{% raw %}${{ inputs.aad_admin_group_name }}{% endraw %}" \
-              aadAdminGroupObjectId="{% raw %}${{ inputs.aad_admin_group_object_id }}{% endraw %}" \
-              aadTenantId="{% raw %}${{ secrets.AZURE_TENANT_ID }}{% endraw %}" \
-              sqlAdminLogin="{% raw %}${{ inputs.sql_admin_login }}{% endraw %}" \
-              sqlAdminPassword="{% raw %}${{ secrets.SQL_ADMIN_PASSWORD }}{% endraw %}" \
-              allowAllIps={% raw %}${{ inputs.allow_all_ips_firewall }}{% endraw %} \
-              deploySqlDatavault={% raw %}${{ inputs.deploy_datavault }}{% endraw %} \
-              deploySqlDatavaultDev={% raw %}${{ inputs.deploy_datavault_dev }}{% endraw %} \
-              deploySqlDatavaultTest={% raw %}${{ inputs.deploy_datavault_test }}{% endraw %} \
-              databaseBaseName="{{ database_name }}" \
-              createStorageAccount={% raw %}${{ inputs.create_storage_account }}{% endraw %} \
-              storageAccountName="{% raw %}${{ inputs.storage_account_name }}{% endraw %}" \
-              storageContainerName="{% raw %}${{ inputs.storage_container_name }}{% endraw %}" \
-              existingStorageAccountResourceGroup="{% raw %}${{ steps.rg.outputs.existing_storage_rg }}{% endraw %}"
-
-      - name: Deploy Bicep
-        if: {% raw %}${{ inputs.what_if_only == false }}{% endraw %}
+      - name: Deploy Bicep (what-if or create)
         id: deploy
+        env:
+          SQL_ADMIN_PASSWORD: '{% raw %}${{ secrets.SQL_ADMIN_PASSWORD }}{% endraw %}'
         run: |
-          az deployment group create \
-            --resource-group "{% raw %}${{ inputs.resource_group }}{% endraw %}" \
-            --template-file infra/main.bicep \
-            --parameters \
-              location="{% raw %}${{ inputs.location }}{% endraw %}" \
-              sqlServerName="{% raw %}${{ inputs.sql_server_name }}{% endraw %}" \
-              aadAdminGroupName="{% raw %}${{ inputs.aad_admin_group_name }}{% endraw %}" \
-              aadAdminGroupObjectId="{% raw %}${{ inputs.aad_admin_group_object_id }}{% endraw %}" \
-              aadTenantId="{% raw %}${{ secrets.AZURE_TENANT_ID }}{% endraw %}" \
-              sqlAdminLogin="{% raw %}${{ inputs.sql_admin_login }}{% endraw %}" \
-              sqlAdminPassword="{% raw %}${{ secrets.SQL_ADMIN_PASSWORD }}{% endraw %}" \
-              allowAllIps={% raw %}${{ inputs.allow_all_ips_firewall }}{% endraw %} \
-              deploySqlDatavault={% raw %}${{ inputs.deploy_datavault }}{% endraw %} \
-              deploySqlDatavaultDev={% raw %}${{ inputs.deploy_datavault_dev }}{% endraw %} \
-              deploySqlDatavaultTest={% raw %}${{ inputs.deploy_datavault_test }}{% endraw %} \
-              databaseBaseName="{{ database_name }}" \
-              createStorageAccount={% raw %}${{ inputs.create_storage_account }}{% endraw %} \
-              storageAccountName="{% raw %}${{ inputs.storage_account_name }}{% endraw %}" \
-              storageContainerName="{% raw %}${{ inputs.storage_container_name }}{% endraw %}" \
-              existingStorageAccountResourceGroup="{% raw %}${{ steps.rg.outputs.existing_storage_rg }}{% endraw %}" \
-            --query "properties.outputs" -o json > deploy_outputs.json
-          echo "sql_server_fqdn=$(jq -r '.sqlServerFqdn.value' deploy_outputs.json)" >> "$GITHUB_OUTPUT"
+          EXISTING_STORAGE_RG="${EXISTING_STORAGE_RG_INPUT:-$RESOURCE_GROUP}"
+
+          ARGS=(
+            --resource-group "$RESOURCE_GROUP"
+            --template-file infra/main.bicep
+            --parameters
+              location="$LOCATION"
+              sqlServerName="$SQL_SERVER_NAME"
+              aadAdminGroupName="$AAD_ADMIN_GROUP_NAME"
+              aadAdminGroupObjectId="$AAD_ADMIN_GROUP_OBJECT_ID"
+              aadTenantId="$AAD_TENANT_ID"
+              sqlAdminLogin="$SQL_ADMIN_LOGIN"
+              sqlAdminPassword="$SQL_ADMIN_PASSWORD"
+              allowAllIps="$ALLOW_ALL_IPS"
+              deploySqlDatavault="$DEPLOY_PROD"
+              deploySqlDatavaultDev="$DEPLOY_DEV"
+              deploySqlDatavaultTest="$DEPLOY_TEST"
+              databaseBaseName="$DATABASE_BASE_NAME"
+              createStorageAccount="$CREATE_STORAGE"
+              storageAccountName="$STORAGE_ACCOUNT_NAME"
+              storageContainerName="$STORAGE_CONTAINER_NAME"
+              existingStorageAccountResourceGroup="$EXISTING_STORAGE_RG"
+          )
+
+          if [ "$WHAT_IF_ONLY" = "true" ]; then
+            az deployment group what-if "${ARGS[@]}"
+          else
+            az deployment group create "${ARGS[@]}" \
+              --query "properties.outputs" -o json > deploy_outputs.json
+            echo "sql_server_fqdn=$(jq -r '.sqlServerFqdn.value' deploy_outputs.json)" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Install sqlcmd (mssql-tools18)
-        if: {% raw %}${{ inputs.what_if_only == false }}{% endraw %}
+        if: '{% raw %}${{ inputs.what_if_only == false }}{% endraw %}'
         run: |
           curl -sSL -O https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
@@ -164,28 +162,26 @@ jobs:
           sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 unixodbc-dev
           echo "/opt/mssql-tools18/bin" >> "$GITHUB_PATH"
 
-      - name: Get AAD access token for SQL
-        if: {% raw %}${{ inputs.what_if_only == false }}{% endraw %}
-        id: token
-        run: |
-          TOKEN=$(az account get-access-token --resource https://database.windows.net --query accessToken -o tsv)
-          echo "::add-mask::$TOKEN"
-          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
-
+      # Runs as the SQL admin login created by the Bicep deployment — the deploying
+      # service principal does NOT need to be a member of the AAD admin group for this.
+      # Requires the "Allow Azure Services" firewall rule (default on) so the GitHub-hosted
+      # runner can reach the server. -b makes sqlcmd fail the step on SQL errors; -l 60
+      # allows a serverless database time to resume from auto-pause.
       - name: Configure external data source (per deployed database)
-        if: {% raw %}${{ inputs.what_if_only == false }}{% endraw %}
+        if: '{% raw %}${{ inputs.what_if_only == false }}{% endraw %}'
+        env:
+          SQLCMDPASSWORD: '{% raw %}${{ secrets.SQL_ADMIN_PASSWORD }}{% endraw %}'
         run: |
           DBS=()
-          [ "{% raw %}${{ inputs.deploy_datavault }}{% endraw %}" = "true" ] && DBS+=("{{ database_name }}")
-          [ "{% raw %}${{ inputs.deploy_datavault_dev }}{% endraw %}" = "true" ] && DBS+=("{{ database_name }}-dev")
-          [ "{% raw %}${{ inputs.deploy_datavault_test }}{% endraw %}" = "true" ] && DBS+=("{{ database_name }}-test")
+          [ "$DEPLOY_PROD" = "true" ] && DBS+=("$DATABASE_BASE_NAME")
+          [ "$DEPLOY_DEV" = "true" ] && DBS+=("$DATABASE_BASE_NAME-dev")
+          [ "$DEPLOY_TEST" = "true" ] && DBS+=("$DATABASE_BASE_NAME-test")
 
           for DB in "${DBS[@]}"; do
             echo "Configuring external data source on $DB"
             sqlcmd -S "{% raw %}${{ steps.deploy.outputs.sql_server_fqdn }}{% endraw %}" -d "$DB" \
-              --authentication-method=ActiveDirectoryAccessToken \
-              --accesstoken "{% raw %}${{ steps.token.outputs.token }}{% endraw %}" \
+              -U "$SQL_ADMIN_LOGIN" \
+              -l 60 -b \
               -i scripts/setup_external_source.sql \
-              -v StorageAccountName="{% raw %}${{ inputs.storage_account_name }}{% endraw %}" \
-                 ContainerName="{% raw %}${{ inputs.storage_container_name }}{% endraw %}"
+              -v StorageAccountName="$STORAGE_ACCOUNT_NAME" ContainerName="$STORAGE_CONTAINER_NAME"
           done

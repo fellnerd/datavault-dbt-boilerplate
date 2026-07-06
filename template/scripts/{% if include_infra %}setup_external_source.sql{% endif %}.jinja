@@ -6,8 +6,13 @@
 -- appropriate storage role (Contributor/Reader) on the target storage account
 -- (done by infra/modules/rbac.bicep).
 --
---   sqlcmd -S <server>.database.windows.net -d <database> \
---     --authentication-method=ActiveDirectoryAccessToken --accesstoken <token> \
+--   # SQL auth (matches the infra-deploy workflow; password via SQLCMDPASSWORD env var):
+--   sqlcmd -S <server>.database.windows.net -d <database> -U <sql-admin-login> -l 60 -b \
+--     -i scripts/setup_external_source.sql \
+--     -v StorageAccountName=<account> ContainerName={{ infra_storage_container_name }}
+--
+--   # Alternative for local use, AAD via Azure CLI login (az login first):
+--   sqlcmd -S <server>.database.windows.net -d <database> -G -l 60 -b \
 --     -i scripts/setup_external_source.sql \
 --     -v StorageAccountName=<account> ContainerName={{ infra_storage_container_name }}
 

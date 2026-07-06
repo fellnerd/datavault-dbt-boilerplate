@@ -27,6 +27,12 @@ against each deployed database — this creates the master key, the
 file format, and the `StageFileSystem` external data source (matching the
 names expected by `models/staging/sources.yml`).
 
+This post-deploy step authenticates with the **SQL admin login** created by
+the Bicep deployment (`sql_admin_login` + the `SQL_ADMIN_PASSWORD` secret) —
+the deploying service principal does **not** need to be a member of the AAD
+admin group. It reaches the server through the "Allow Azure Services"
+firewall rule, which GitHub-hosted runners (running in Azure) pass through.
+
 ## Prerequisites
 
 1. **An Azure AD group already exists** to use as the SQL Server's AAD admin
@@ -77,6 +83,24 @@ not the tables themselves.
   (usually seconds) to actually take effect. If the external-data-source
   setup step fails immediately after a fresh deployment with a permissions
   error, wait a bit and re-run the workflow — the script is idempotent.
+- **Don't disable the "Allow Azure Services" firewall rule** if you use
+  GitHub-hosted runners — the post-deploy SQL step (and dbt CI runs) reach
+  the server through it. With a self-hosted runner you can replace it with
+  a firewall rule for that runner's IP instead.
+- **Don't enable Azure-AD-only authentication** on the server
+  (`azureADOnlyAuthentication`) unless you also rework the post-deploy SQL
+  step — it authenticates with the SQL admin login, which AAD-only mode
+  disables.
+- **Serverless auto-pause:** a paused database takes a moment to resume on
+  first connection. The workflow uses a 60s login timeout to absorb this;
+  ad-hoc local connections right after a long idle period may still need a
+  retry.
 - **Local validation:** `az bicep build --file main.bicep` for a syntax
   check, `az deployment group validate` / `az deployment group what-if`
   against a real (test) resource group before a real deploy.
+- **MFA policy vs. local CLI:** Azure now enforces MFA for *user accounts*
+  on resource writes — a plain `az login` session may get
+  `RequestDisallowedByAzure ... MFA` errors when creating resource groups
+  or deploying locally. Re-login interactively with MFA if that happens.
+  The GitHub Actions workflow is unaffected: it authenticates as a service
+  principal, and the MFA requirement does not apply to workload identities.
