@@ -1,11 +1,22 @@
 ---
 name: dv-staging
-description: Erstellt Data-Vault-Staging-Views mit dem automate_dv.stage()-Macro auf SQL Server/Azure SQL — von der External Table über sources.yml bis zur fertigen Hash-berechnenden View. Immer verwenden bei "Staging erstellen", "Quelle anbinden", "External Table einbinden", "stage() View", neuen Parquet-Dateien oder wenn eine Quelltabelle für Hub/Satellite/Link vorbereitet werden muss.
+description: Erstellt Data-Vault-Staging-Views auf SQL Server/Azure SQL — von der External Table über sources.yml bis zur fertigen Hash-berechnenden View (manuelles HASHBYTES-Pattern oder automate_dv.stage()), inkl. optionaler PSA. Immer verwenden bei "Staging erstellen", "Quelle anbinden", "External Table einbinden", "stage() View", "PSA", neuen Parquet-Dateien oder wenn eine Quelltabelle für Hub/Satellite/Link vorbereitet werden muss.
 ---
 
-# DV Staging mit automate_dv.stage()
+# DV Staging (Hash-Berechnung für den Raw Vault)
 
-Staging-Views sind die einzige Stelle, an der Hash Keys und Hash Diffs berechnet werden — Fehler hier (falscher Typ-Cast, vergessene Spalte im Hashdiff) pflanzen sich in den gesamten Vault fort und sind nachträglich teuer zu korrigieren. Deshalb: Pattern exakt einhalten, keine Custom-SQL-Staging-Views.
+Staging-Views sind die einzige Stelle, an der Hash Keys und Hash Diffs berechnet werden — Fehler hier (falscher Typ-Cast, vergessene Spalte im Hashdiff, inkonsistenter Separator) pflanzen sich in den gesamten Vault fort und sind nachträglich teuer zu korrigieren.
+
+## Zuerst: Projektmuster identifizieren
+
+Es gibt zwei etablierte Staging-Patterns — **das bestehende Projektmuster gewinnt immer** (vorhandene Views in `models/staging/` ansehen!):
+
+| Pattern | Erkennungszeichen | Hash-Separator |
+|---------|-------------------|----------------|
+| **A: Manuelles Hashing** (Boilerplate-Standard) | `CONVERT(CHAR(64), HASHBYTES('SHA2_256', …), 2)` direkt im SQL | typ. `'^^'` (im Projekt prüfen) |
+| **B: automate_dv.stage()** | `yaml_metadata`-Block mit `derived_columns`/`hashed_columns` | `hash_override.sql` / `concat_string`-Var (typ. `'||'`) |
+
+⚠️ Die beiden Wege erzeugen für dieselben Spalten **unterschiedliche Hashes**. Innerhalb einer Entity (und bei Multi-Source-Hubs über alle Quellen!) strikt einen Weg verwenden. Vollständige Templates für beide: [references/stage-template.md](references/stage-template.md)
 
 ## Workflow
 
@@ -13,9 +24,9 @@ Staging-Views sind die einzige Stelle, an der Hash Keys und Hash Diffs berechnet
 
 ```bash
 # Parquet-Schema aus der Landing Zone (Macro im Projekt):
-dbt run-operation get_parquet_schema --args '{"file_path": "<pfad/datei.parquet>"}' --target dev
+dbt run-operation get_parquet_schema --args '{"folder_path": "<ordner>", "file_name": "<datei>.parquet"}'
 # Oder vorhandene External Table auf der DB prüfen:
-dbt run-operation run_sql --args '{"sql": "SELECT c.name, t.name AS type_name, c.precision, c.scale FROM sys.columns c JOIN sys.types t ON c.user_type_id = t.user_type_id WHERE c.object_id = OBJECT_ID('"'"'[stg].[ext_<tabelle>]'"'"') ORDER BY c.column_id"}' --target dev
+dbt run-operation run_sql --args '{"sql": "SELECT c.name, t.name AS type_name, c.precision, c.scale FROM sys.columns c JOIN sys.types t ON c.user_type_id = t.user_type_id WHERE c.object_id = OBJECT_ID('"'"'[stg].[ext_<tabelle>]'"'"') ORDER BY c.column_id"}'
 ```
 
 ### 2. Typen prüfen (bekannte Fallen)
@@ -26,66 +37,41 @@ dbt run-operation run_sql --args '{"sql": "SELECT c.name, t.name AS type_name, c
 
 ### 3. sources.yml ergänzen
 
-External Table unter dem `staging`-Source eintragen (Muster vorhandener Einträge übernehmen; `external.location`, `file_format`, `data_source` für `dbt run-operation stage_external_sources`).
+External Table unter dem `staging`-Source eintragen (Muster vorhandener Einträge übernehmen; `external.location`, `file_format`, `data_source` für `dbt run-operation stage_external_sources` bzw. einzeln via `create_external_table`).
 
-### 4. Staging View schreiben
+### 4. Optional: PSA dazwischenschalten
 
-Aufbau (vollständiges kommentiertes Beispiel: [references/stage-template.md](references/stage-template.md)):
+Bei großen Datenmengen/häufigen Runs die External Table in eine **Persistent Staging Area** cachen (`psa_<quelle>_<entity>`, incremental `merge`/`append`, HWM auf `dss_load_date`) und die Staging View auf `ref('psa_…')` statt `source(…)` stellen. Details: [references/stage-template.md](references/stage-template.md) unten.
 
-```sql
-{%- set yaml_metadata -%}
-source_model:
-  staging: "ext_<quelle>_<tabelle>"
+### 5. Staging View schreiben
 
-derived_columns:
-  dss_record_source: "!<quellsystem>"
-  dss_load_date: "COALESCE(TRY_CAST(dss_load_date AS DATETIME2), GETDATE())"
-  dss_create_datetime: "GETDATE()"
-  <bk_normalisiert>: "CAST(CAST(<BK> AS BIGINT) AS NVARCHAR(MAX))"
-  _escape:
-    source_column:
-      - "PLAN"
-      - "LEVEL"
-    escape: true
+Pflicht in beiden Patterns:
 
-hashed_columns:
-  hk_<entity>: "<bk>"
-  hk_link_<e1>_<e2>:
-    - "<bk_e1>"
-    - "<bk_e2>"
-  hd_<entity>:
-    is_hashdiff: true
-    columns:
-      - "SPALTE_1"
-      - "SPALTE_2"
-{%- endset -%}
+- Metadaten: `dss_record_source`, `dss_load_date` (`COALESCE(TRY_CAST(… AS DATETIME2), GETDATE())`), ggf. `dss_create_datetime`
+- Hash Keys `hk_*` für jedes Zielobjekt (Hub, Link — Link-Hash enthält alle beteiligten BKs, bei DC-Pattern auch die DCKs)
+- Hash Diffs `hd_*` je Satellite: exakt die Payload-Spalten, nicht mehr, nicht weniger; bei Splits mehrere `hd_*`
+- Header-Kommentar: Quelle, BK (+Normalisierung), Hash-Spalten mit Zielobjekten
 
-{% set metadata = fromyaml(yaml_metadata) %}
-
-{{ automate_dv.stage(include_source_columns=true,
-                     source_model=metadata['source_model'],
-                     derived_columns=metadata['derived_columns'],
-                     hashed_columns=metadata['hashed_columns']) }}
-```
-
-### 5. Dokumentieren & validieren
+### 6. Dokumentieren & validieren
 
 1. Eintrag in `_staging__models.yml`: Beschreibung, Business Key, Tests (`hk_*` not_null/unique, BK not_null)
-2. `dbt parse` → `dbt run --select <staging_model> --target dev` → Stichprobe via `run_sql`
+2. `dbt parse` → `dbt run --select <staging_model>` → Stichprobe via `run_sql` (Zeilen zählen, Hash-Spalten nicht NULL)
 
 ## SQL-Server-Regeln
 
-- **Reserved Keywords escapen** (`[PLAN]`, `[LEVEL]`, `[KEY]`, `[STATUS]`, `[TYPE]`, `[ORDER]`, `[GROUP]`, `[INDEX]`, …) — im stage()-Block über `_escape`-derived-column, nie über manuelle Aliase
-- Hash-Format: `CONVERT(CHAR(64), HASHBYTES('SHA2_256', …), 2)` — kommt aus `hash_override.sql` (NVARCHAR-Variante, Unicode-safe); nie manuell hashen
+- **Reserved Keywords escapen** (`[PLAN]`, `[LEVEL]`, `[KEY]`, `[STATUS]`, `[TYPE]`, `[ORDER]`, `[GROUP]`, `[INDEX]`, …) — bei stage() über die `_escape`-derived-column, bei manuellem SQL direkt mit `[ ]`
+- Hash-Format: `CONVERT(CHAR(64), HASHBYTES('SHA2_256', …), 2)` — hex-encoded, NVARCHAR-Casts (Unicode-safe)
 - `TRY_CAST` statt `CAST` für fehlertolerante Konvertierung
-- Hash-Vars (`concat_string`, `null_placeholder_string`, `hash_content_casing`) stehen in `dbt_project.yml` — nicht im Modell überschreiben
+- Reference-Table-Quellen: schlanke View ohne Hashing reicht
 
 ## Entscheidungshilfe: Welche Hashes braucht die View?
 
-| Ziel-Objekt | hashed_columns |
-|-------------|----------------|
+| Ziel-Objekt | Hash-Spalten |
+|-------------|--------------|
 | Hub | `hk_<entity>` aus BK |
-| Satellite | zusätzlich `hd_<entity>` (is_hashdiff, Payload-Spalten) |
+| Satellite | zusätzlich `hd_<entity>` (Payload-Spalten) |
 | Link | `hk_link_…` aus allen beteiligten BKs + je Hub ein `hk_<entity>` |
+| DC Satellite | Link-Hash **inkl. DCKs** + `hd_<entity>_dc` (Payload inkl. DCKs) |
+| MA Satellite | `hd_<entity>_ma` (Payload inkl. CDK) |
 | Multi-Satellite-Split | mehrere `hd_*` (z. B. `hd_person_stamm`, `hd_person_kontakt`) |
-| Reference Table | keine — schlanke View ohne stage() reicht |
+| Reference Table | keine |

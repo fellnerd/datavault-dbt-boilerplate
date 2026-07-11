@@ -2,6 +2,10 @@
 
 Platzhalter: `<entity>`, `<source>`, `<staging_model>`, `<business_key>` ersetzen. Header-Kommentar mit Zweck, Quelle, BK und Versionshistorie ist Pflicht — er ist die einzige Doku direkt am Modell.
 
+> **Hash-Separator — vor dem ersten Objekt klären:** automate_dv-Hashing läuft über das projekteigene `hash_override.sql` (`sqlserver__hash`, im Boilerplate `CONCAT_WS('||', …)`), manuell berechnete Staging-Hashes nutzen dort dagegen `'^^'`. Beide erzeugen für dieselben Spalten **unterschiedliche Hashes** — innerhalb einer Entity (Staging ↔ Vault ↔ Multi-Source) immer denselben Berechnungsweg verwenden; maßgeblich ist das bestehende Projektmuster.
+
+Weiterführende Objekt-Leitlinien (Wann/Warum je Objekttyp, DC/MA/Eff-Sat/PSA/PIT im Detail, Checklisten): [developer-guide.md](developer-guide.md)
+
 ## Hub
 
 ```sql
@@ -59,7 +63,7 @@ source_model:
     as_columnstore=false,
     post_hook=[
         "{{ create_hash_index('hk_<entity>') }}",
-        "{{ update_satellite_current_flag('hk_<entity>', 'dss_load_date') }}"
+        "{{ update_satellite_current_flag(this, 'hk_<entity>') }}"
     ]
 ) }}
 
@@ -88,7 +92,7 @@ src_source: "dss_record_source"
                    source_model=metadata_dict["source_model"]) }}
 ```
 
-Stolperfallen: `alias: "hashdiff"` ist Pflicht (nicht der `hd_*`-Name); beide post_hooks nötig; Payload-Spalten müssen exakt den `hashdiff_columns` der Staging-View entsprechen (sonst Dauer-Delta bei jedem Load).
+Stolperfallen: `alias: "hashdiff"` ist Pflicht (nicht der `hd_*`-Name); beide post_hooks nötig; Payload-Spalten müssen exakt den Hashdiff-Spalten der Staging-View entsprechen (sonst Dauer-Delta bei jedem Load). Die Signatur des Current-Flag-Macros im Zielprojekt prüfen — im Boilerplate: `update_satellite_current_flag(satellite_table, hash_key_column)`, also `(this, 'hk_<entity>')`.
 
 ## Multi-Active Satellite
 
@@ -166,7 +170,7 @@ Für unveränderliche Events (Transaktionen, Messwerte, Logs). Unterschiede zum 
 
 ## Dependent Child Satellite
 
-Entity ohne eigenen BK (z. B. Belegpositionen): Satellite am Link, Link hat nur einen FK (Parent-Hub), Hash Key = `Hash(FK ^^ DCK1 ^^ DCK2)` — die Dependent Child Keys gehören in den Staging-`hashed_columns`-Block.
+Entity ohne eigenen BK (z. B. Belegpositionen): Satellite am Link, Link hat nur einen FK (Parent-Hub), Hash Key = `Hash(FK, DCK1, DCK2)` (Separator gem. Projektmuster) — die Dependent Child Keys gehören in den Staging-`hashed_columns`-Block.
 
 ## Reference Table
 

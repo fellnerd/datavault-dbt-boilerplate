@@ -49,7 +49,7 @@ Der `__source`-Suffix gilt **nur für Satellites** — jede Quelle bekommt ihren
 
 ## Templates
 
-Alle Vault-Modelle folgen demselben Aufbau: Header-Kommentar → `config()` → `yaml_metadata`-Block → `fromyaml()` → automate_dv-Macro-Aufruf. Vollständige Templates: [references/templates.md](references/templates.md)
+Alle Vault-Modelle folgen demselben Aufbau: Header-Kommentar → `config()` → `yaml_metadata`-Block → `fromyaml()` → automate_dv-Macro-Aufruf. Vollständige Templates: [references/templates.md](references/templates.md) · Objekt-Leitlinien (Wann/Warum je Typ, DC/MA/Eff-Sat/PSA/PIT im Detail, Fehlannahmen, Checklisten): [references/developer-guide.md](references/developer-guide.md)
 
 ### Hub (Kurzform)
 

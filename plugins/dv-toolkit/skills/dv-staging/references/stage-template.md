@@ -1,4 +1,6 @@
-# Staging-View Voll-Template (automate_dv.stage)
+# Staging-View Voll-Templates
+
+## Pattern B: automate_dv.stage()
 
 Vollständig kommentiertes Muster. Header-Kommentar dokumentiert Quelle, BK, Hash Keys und Satellite-Splits — das ist die Referenz für den Vault-Architekten.
 
@@ -104,3 +106,79 @@ WHERE j.FELD_1 IS NOT NULL
 ```
 
 Anlegen/Aktualisieren: `dbt run-operation stage_external_sources` (selektiv: `--args '{"select": "ext_<name>"}'` via `stage_external_sources_selective`).
+
+## Pattern A: Manuelles Hashing (Boilerplate-Standard)
+
+Erkennbar an direktem `HASHBYTES` im SQL. Separator im Projekt prüfen (Boilerplate: `'^^'`) und konsequent beibehalten.
+
+```sql
+/*
+ * Staging Model: <quelle>_<entity>
+ * Source: ext_<quelle>_<entity> | Business Key: <bk> | Hash Diff: hd_<entity>
+ */
+
+{%- set hashdiff_columns = ['SPALTE_1', 'SPALTE_2'] -%}
+
+WITH source AS (
+    SELECT * FROM {{ source('staging', 'ext_<quelle>_<entity>') }}
+),
+
+staged AS (
+    SELECT
+        -- HASH KEY
+        CONVERT(CHAR(64), HASHBYTES('SHA2_256',
+            ISNULL(CAST(<bk> AS NVARCHAR(MAX)), '')
+        ), 2) AS hk_<entity>,
+
+        -- LINK HASH KEY (alle BKs, Separator konsistent!)
+        CONVERT(CHAR(64), HASHBYTES('SHA2_256',
+            ISNULL(CAST(<bk_e1> AS NVARCHAR(MAX)), '') + '^^' +
+            ISNULL(CAST(<bk_e2> AS NVARCHAR(MAX)), '')
+        ), 2) AS hk_link_<e1>_<e2>,
+
+        -- HASH DIFF (Change Detection)
+        CONVERT(CHAR(64), HASHBYTES('SHA2_256',
+            CONCAT(
+                {%- for col in hashdiff_columns %}
+                ISNULL(CAST({{ col }} AS NVARCHAR(MAX)), ''){{ ",'^^'," if not loop.last }}
+                {%- endfor %}
+            )
+        ), 2) AS hd_<entity>,
+
+        <bk>,
+        SPALTE_1,
+        SPALTE_2,
+
+        COALESCE(dss_record_source, '<quellsystem>')                AS dss_record_source,
+        COALESCE(TRY_CAST(dss_load_date AS DATETIME2), GETDATE())   AS dss_load_date
+
+    FROM source
+)
+
+SELECT * FROM staged
+```
+
+## PSA-Template (optionaler Cache-Layer)
+
+```sql
+/*
+ * Persistent Staging Area: psa_<quelle>_<entity>
+ * Source: ext_<quelle>_<entity> | Strategy: merge | Unique Key: <bk>
+ * Zweck: cached External-Table-Daten, vermeidet wiederholte OPENROWSET/PolyBase-Zugriffe.
+ */
+
+{{ config(
+    materialized='incremental',
+    incremental_strategy='merge',
+    unique_key='<bk>',
+    as_columnstore=false
+) }}
+
+SELECT *
+FROM {{ source('staging', 'ext_<quelle>_<entity>') }}
+{% if is_incremental() %}
+WHERE dss_load_date > (SELECT COALESCE(MAX(dss_load_date), '1900-01-01') FROM {{ this }})
+{% endif %}
+```
+
+Danach die Staging View auf `{{ ref('psa_<quelle>_<entity>') }}` umstellen — die Hash-Berechnung bleibt in der View. `merge` braucht einen unique_key; reine Append-Quellen können `append` nutzen.
