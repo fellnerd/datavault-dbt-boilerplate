@@ -1,0 +1,17 @@
+{
+  "name": "datavault-dbt",
+  "owner": {
+    "name": "Daniel Fellner",
+    "email": "daniel.fellner@ppmcag.com"
+  },
+  "plugins": [
+    {
+      "name": "dv-toolkit",
+      "source": "./plugins/dv-toolkit",
+      "description": "dbt + Data Vault 2.1 Entwicklung: Pattern-Bibliothek, Staging- und Mart-Skills, Architektur-Agents, Lint- und Full-Refresh-Guard-Hooks (automate_dv auf SQL Server/Azure SQL)"
+    }
+  ],
+  "metadata": {
+    "description": "Claude-Code-Plugins für dbt/Data-Vault-2.1-Projekte aus dem datavault-dbt-boilerplate-Ökosystem"
+  }
+}

@@ -95,6 +95,31 @@ To change an answer after the fact (e.g. drop the AdventureWorks demo):
 copier update --data include_example=false
 ```
 
+## Claude Code plugin marketplace
+
+This repo doubles as a **Claude Code plugin marketplace** (catalog at
+[`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json)). It ships
+the [`dv-toolkit`](plugins/dv-toolkit/) plugin: generic dbt / Data Vault 2.1
+skills (`dv-patterns`, `dv-staging`, `dv-marts`, `dv-design-sync`), four
+specialized agents (vault-architect, staging-engineer, mart-architect,
+db-monitor), and two deterministic hooks (DV lint on every model edit, a
+`--full-refresh` confirmation guard protecting satellite history).
+
+Projects generated from this template are wired up automatically — their
+`.claude/settings.json` registers this marketplace via `extraKnownMarketplaces`
+and enables `dv-toolkit@datavault-dbt`, so Claude Code offers to install it on
+first start. Manual installation in any other project:
+
+```shell
+/plugin marketplace add fellnerd/datavault-dbt-boilerplate
+/plugin install dv-toolkit@datavault-dbt
+```
+
+The marketplace and the copier template are versioned together (git tags), so
+the conventions the template generates and the conventions the plugin's lint
+hook enforces always match. Update installed plugins with
+`/plugin marketplace update datavault-dbt`.
+
 ## What's included
 
 - `macros/` — 10 generic Data Vault 2.1 macros (hash keys, ghost records,

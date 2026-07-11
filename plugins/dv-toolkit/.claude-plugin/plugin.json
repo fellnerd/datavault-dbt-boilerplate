@@ -1,0 +1,20 @@
+{
+  "name": "dv-toolkit",
+  "version": "1.0.0",
+  "description": "Generische dbt/Data-Vault-2.1-Entwicklung: DV-Pattern-Bibliothek (Hub/Sat/Link/TL/MA/DC/Ref), automate_dv-Staging, Star-Schema-Marts, Design-Doku-Sync, spezialisierte Agents und deterministische Lint-/Guard-Hooks für SQL Server/Azure SQL.",
+  "author": {
+    "name": "Daniel Fellner",
+    "email": "daniel.fellner@ppmcag.com",
+    "url": "https://github.com/fellnerd"
+  },
+  "repository": "https://github.com/fellnerd/datavault-dbt-boilerplate",
+  "license": "MIT",
+  "keywords": [
+    "dbt",
+    "data-vault",
+    "datavault2.1",
+    "automate_dv",
+    "sql-server",
+    "azure-sql"
+  ]
+}
