@@ -2,7 +2,7 @@
  * Staging Model: adworks_verkauf_detail
  *
  * Source: ext_adventureworks_saleslt_salesorderdetail
- * Hash Key Separator: '^^' (DV 2.1 Standard)
+ * Hash Key Separator: '^^' (manuelles Hashing-Muster dieses Beispiels — Neuentwicklungen nutzen automate_dv.stage(), siehe docs/DEVELOPER.md)
  *
  * Links (Foreign Keys):
  *   - adworks.hub_verkauf via salesorderid

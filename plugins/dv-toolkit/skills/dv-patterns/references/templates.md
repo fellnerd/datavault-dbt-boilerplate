@@ -2,7 +2,7 @@
 
 Platzhalter: `<entity>`, `<source>`, `<staging_model>`, `<business_key>` ersetzen. Header-Kommentar mit Zweck, Quelle, BK und Versionshistorie ist Pflicht — er ist die einzige Doku direkt am Modell.
 
-> **Hash-Separator — vor dem ersten Objekt klären:** automate_dv-Hashing läuft über das projekteigene `hash_override.sql` (`sqlserver__hash`, im Boilerplate `CONCAT_WS('||', …)`), manuell berechnete Staging-Hashes nutzen dort dagegen `'^^'`. Beide erzeugen für dieselben Spalten **unterschiedliche Hashes** — innerhalb einer Entity (Staging ↔ Vault ↔ Multi-Source) immer denselben Berechnungsweg verwenden; maßgeblich ist das bestehende Projektmuster.
+> **Hash-Separator — vor dem ersten Objekt klären:** Kanonisch (Boilerplate ≥ v1.2 / EWB) läuft alles Hashing über automate_dv mit den Projekt-Overrides in `hash_override.sql` (`sqlserver__cast_binary` → `CHAR(64)` hex, `sqlserver__type_string` → `NVARCHAR`) und den Vars `concat_string: '||'`, `null_placeholder_string: '-1'`. Ältere Projekte/Beispiele berechnen Hashes manuell mit `'^^'` — beide Wege erzeugen für dieselben Spalten **unterschiedliche Hashes**. Innerhalb einer Entity (Staging ↔ Vault ↔ Multi-Source) nie mischen; maßgeblich ist das bestehende Projektmuster.
 
 Weiterführende Objekt-Leitlinien (Wann/Warum je Objekttyp, DC/MA/Eff-Sat/PSA/PIT im Detail, Checklisten): [developer-guide.md](developer-guide.md)
 

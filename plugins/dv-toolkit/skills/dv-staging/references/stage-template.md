@@ -1,6 +1,6 @@
 # Staging-View Voll-Templates
 
-## Pattern B: automate_dv.stage()
+## Pattern A: automate_dv.stage() (Standard)
 
 Vollständig kommentiertes Muster. Header-Kommentar dokumentiert Quelle, BK, Hash Keys und Satellite-Splits — das ist die Referenz für den Vault-Architekten.
 
@@ -107,9 +107,9 @@ WHERE j.FELD_1 IS NOT NULL
 
 Anlegen/Aktualisieren: `dbt run-operation stage_external_sources` (selektiv: `--args '{"select": "ext_<name>"}'` via `stage_external_sources_selective`).
 
-## Pattern A: Manuelles Hashing (Boilerplate-Standard)
+## Pattern B: Manuelles Hashing (Legacy/Altbestand)
 
-Erkennbar an direktem `HASHBYTES` im SQL. Separator im Projekt prüfen (Boilerplate: `'^^'`) und konsequent beibehalten.
+Erkennbar an direktem `HASHBYTES` im SQL — in Bestandsprojekten und älteren Beispielen (Separator dort typ. `'^^'`, im Projekt prüfen und konsequent beibehalten). Neuentwicklungen nutzen Pattern A.
 
 ```sql
 /*

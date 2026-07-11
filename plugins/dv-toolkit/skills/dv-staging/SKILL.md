@@ -13,8 +13,8 @@ Es gibt zwei etablierte Staging-Patterns — **das bestehende Projektmuster gewi
 
 | Pattern | Erkennungszeichen | Hash-Separator |
 |---------|-------------------|----------------|
-| **A: Manuelles Hashing** (Boilerplate-Standard) | `CONVERT(CHAR(64), HASHBYTES('SHA2_256', …), 2)` direkt im SQL | typ. `'^^'` (im Projekt prüfen) |
-| **B: automate_dv.stage()** | `yaml_metadata`-Block mit `derived_columns`/`hashed_columns` | `hash_override.sql` / `concat_string`-Var (typ. `'||'`) |
+| **A: automate_dv.stage()** (Standard, Boilerplate ≥ v1.2 & EWB) | `yaml_metadata`-Block mit `derived_columns`/`hashed_columns` | `concat_string`-Var (`'||'`), Overrides in `hash_override.sql` |
+| **B: Manuelles Hashing** (Legacy/Altbestand) | `CONVERT(CHAR(64), HASHBYTES('SHA2_256', …), 2)` direkt im SQL | typ. `'^^'` (im Projekt prüfen) |
 
 ⚠️ Die beiden Wege erzeugen für dieselben Spalten **unterschiedliche Hashes**. Innerhalb einer Entity (und bei Multi-Source-Hubs über alle Quellen!) strikt einen Weg verwenden. Vollständige Templates für beide: [references/stage-template.md](references/stage-template.md)
 
