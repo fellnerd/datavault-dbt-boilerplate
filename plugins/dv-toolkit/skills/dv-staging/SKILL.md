@@ -63,6 +63,7 @@ Pflicht in beiden Patterns:
 - Hash-Format: `CONVERT(CHAR(64), HASHBYTES('SHA2_256', …), 2)` — hex-encoded, NVARCHAR-Casts (Unicode-safe)
 - `TRY_CAST` statt `CAST` für fehlertolerante Konvertierung
 - Reference-Table-Quellen: schlanke View ohne Hashing reicht
+- **Ad-hoc-Abfragen testen:** `dbt run-operation run_sql --args '{"sql": "SELECT TOP 10 * FROM stg.ext_<tabelle>"}' --target dev` (Macro `run_sql.sql`, führt beliebiges SQL aus). Alternative `dbt show --inline "..." --limit N` **nie mit `TOP` kombinieren** — beide erzeugen intern `OFFSET`, das kollidiert auf SQL Server. Vor der ersten Abfrage den exakten Tabellennamen aus `sources.yml` nehmen, nicht raten (Source-Block heißt meist `staging`, Tabellen tragen den vollen `ext_*`-Präfix).
 
 ## Entscheidungshilfe: Welche Hashes braucht die View?
 

@@ -1,6 +1,6 @@
 {
   "name": "dv-toolkit",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Generische dbt/Data-Vault-2.1-Entwicklung: DV-Pattern-Bibliothek (Hub/Sat/Link/TL/MA/DC/Ref), automate_dv-Staging, Star-Schema-Marts, Design-Doku-Sync, spezialisierte Agents und deterministische Lint-/Guard-Hooks für SQL Server/Azure SQL.",
   "author": {
     "name": "Daniel Fellner",
