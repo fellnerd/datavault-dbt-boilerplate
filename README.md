@@ -100,10 +100,10 @@ copier update --data include_example=false
 This repo doubles as a **Claude Code plugin marketplace** (catalog at
 [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json)). It ships
 the [`dv-toolkit`](plugins/dv-toolkit/) plugin: generic dbt / Data Vault 2.1
-skills (`dv-patterns`, `dv-staging`, `dv-marts`, `dv-design-sync`), four
-specialized agents (vault-architect, staging-engineer, mart-architect,
-db-monitor), and two deterministic hooks (DV lint on every model edit, a
-`--full-refresh` confirmation guard protecting satellite history).
+skills (`dv-patterns`, `dv-staging`, `dv-marts`, `dv-design-sync`,
+`dv-performance`), five specialized agents (vault-architect,
+staging-engineer, mart-architect, db-monitor, performance-optimizer), and a
+deterministic DV lint hook running on every model edit.
 
 Projects generated from this template are wired up automatically — their
 `.claude/settings.json` registers this marketplace via `extraKnownMarketplaces`
