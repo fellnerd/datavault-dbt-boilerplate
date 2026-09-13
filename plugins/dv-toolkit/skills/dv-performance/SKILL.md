@@ -36,10 +36,34 @@ Heuristik (dbt Labs): **View → Table → Incremental**, jede Stufe nur bei tat
 
 ## 3. Row-Level Security Overhead
 
+**Der mit Abstand grösste Hebel ist nicht das Prädikat, sondern die Kardinalität der Menge,
+auf der es läuft.** Die Prüffunktion wird pro Zeile ausgewertet — liegt der Filter auf einem
+Fakt mit Millionen Zeilen, dominiert er alles; liegt er auf der zugehörigen Dimension mit
+ein paar hundert Zeilen, ist er praktisch gratis. Die Fakten erben den Filter über den
+`INNER JOIN` auf den Dimensionsschlüssel.
+
+Gemessen (915.841 Faktzeilen, Aggregation `COUNT + SUM`):
+
+| Variante | ms | logische Reads |
+|---|---|---|
+| Policy auf der Fakttabelle + Filter in der View | 2.201 | 3.697.737 |
+| Filter nur auf der Dimension, Fakt erbt per Join | 273 | 31.069 |
+| Referenz: derselbe Scan ohne Security | 221 | 30.744 |
+
+Vor der Umstellung prüfen, ob die Dimension **jede** im Fakt vorkommende Ausprägung enthält —
+sonst unterschlägt der `INNER JOIN` Zeilen, still und auch für Vollzugriffs-User. Details
+und Umsetzung: Skill `dv-security`.
+
+Liegt die absichernde Dimension danach auf dem kritischen Pfad jeder Fakt-Abfrage, gehört
+sie materialisiert (Tabelle + gefilterter Wrapper-View) — als View kann sie pro Abfrage
+teure Quellen erneut lesen.
+
+Die weiteren Punkte betreffen das Prädikat selbst:
+
 - RLS-Prädikate sind Inline-TVFs, die vor der Optimierung vollständig in die äußere Query eingebettet ("entfaltet") werden — **eine CTE innerhalb der Prädikatsfunktion ändert daran nichts** (in diesem Projekt bereits empirisch bestätigt: identisches Read-Verhältnis vor/nach CTE-Isolation, siehe `docs/LESSONS_LEARNED.md` Abschnitt RLS).
 - Häufigster stiller Kostentreiber: **`OR`-Disjunktionen** im Prädikat (z. B. Admin-Bypass) — kippen Index Seeks in Full Scans, ohne dass es im Plan sofort auffällt. Fix: Disjunktion in einen seekbaren Bereich umformulieren (`BETWEEN`) statt `x = @v OR bypass = 1`.
 - Skalare Rollen-Checks (`IS_ROLEMEMBER()`, `IS_SRVROLEMEMBER()`) im Prädikat erzwingen einen seriellen Plan (kein Parallelismus) — bei Bedarf durch eine indizierte Session-/Lookup-Tabelle (`SESSION_CONTEXT()`, keyed on `@@SPID`) ersetzen.
-- Messmethode: `ALTER SECURITY POLICY ... WITH (STATE = OFF/ON)` als A/B-Hebel, logische Reads (nicht nur Dauer) vergleichen, gezielt auf Seek→Scan-Wechsel und `NonParallelPlanReason` im Plan achten.
+- Messmethode: `ALTER SECURITY POLICY ... WITH (STATE = OFF/ON)` als A/B-Hebel, logische Reads (nicht nur Dauer) vergleichen, gezielt auf Seek→Scan-Wechsel und `NonParallelPlanReason` im Plan achten. Für View-Filter statt Policies: `measure_rls_overhead` (Skill `dv-security`, `references/macros.md`) misst sitzungsisoliert über `sys.dm_exec_sessions.logical_reads` — `sys.dm_exec_query_stats` ist durch dbt-Wrapping und Fremdtraffic verrauscht.
 - Security-DDL wird in diesem Projekt bewusst nicht über dbt deployed (`security/DEPLOYMENT.md`) — Änderungen an `fn_check_rls`/Policies immer nur vorschlagen, der User deployed manuell dev→test→prod.
 
 ## 4. Statistiken & Fragmentierung
