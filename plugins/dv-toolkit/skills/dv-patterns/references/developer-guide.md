@@ -1,6 +1,6 @@
 # DV 2.1 Objekt-Leitlinien (kuratiert aus dem Developer Guide)
 
-Wann, warum und wie die einzelnen Data-Vault-Objekte eingesetzt werden. Kuratierte, geprüfte Fassung — bei Widerspruch zu einer projektlokalen `docs/DEVELOPER.md` gilt: erst prüfen, welche Generation aktueller ist (ältere Guides enthalten teils handgeschriebene Incremental-Templates aus der Zeit vor automate_dv).
+Wann, warum und wie die einzelnen Data-Vault-Objekte eingesetzt werden. Kuratierte, geprüfte Fassung — bei Widerspruch zu einer projektlokalen `docs/entwickler/` gilt: erst prüfen, welche Generation aktueller ist (ältere Guides enthalten teils handgeschriebene Incremental-Templates aus der Zeit vor automate_dv).
 
 ## Grundprinzip
 

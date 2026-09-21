@@ -26,6 +26,9 @@ Weiterführende Objekt-Leitlinien (Wann/Warum je Objekttyp, DC/MA/Eff-Sat/PSA/PI
 source_model: "<staging_model>"
 src_pk: "hk_<entity>"
 src_nk: "<business_key>"
+src_extra_columns:
+    - "dss_business_key"          # genau EINE Spalte je Hub, nie mit Suffix
+    - "dss_create_datetime"
 src_ldts: "dss_load_date"
 src_source: "dss_record_source"
 {%- endset -%}
@@ -34,9 +37,51 @@ src_source: "dss_record_source"
 
 {{ automate_dv.hub(src_pk=metadata_dict["src_pk"],
                    src_nk=metadata_dict["src_nk"],
+                   src_extra_columns=metadata_dict["src_extra_columns"],
                    src_ldts=metadata_dict["src_ldts"],
                    src_source=metadata_dict["src_source"],
                    source_model=metadata_dict["source_model"]) }}
+```
+
+**Pflichtspalten jedes Hubs:** `dss_business_key` und `dss_create_datetime` in
+`src_extra_columns` — und `src_extra_columns` auch an `automate_dv.hub()` übergeben,
+sonst landen sie nicht in der Tabelle. **Genau eine** Spalte `dss_business_key` je Hub,
+immer unter diesem Namen, **ohne Suffix**.
+
+**Primär-Hub vs. FK-Hub:** Ein Staging hat eine Haupt-Entität, speist aber oft zusätzlich
+Hubs für seine Fremdschlüssel (z.B. Hauptbuch-Staging → `hub_konto`). Sein
+`dss_business_key` gehört der Haupt-Entität und darf **nie** in einen FK-Hub — dort stünde
+sonst die Hauptbuch-Zeilennummer.
+
+Umbenennen im Hub geht nicht: `automate_dv.hub()` übernimmt Zusatzspalten nur unter ihrem
+Namen. Deshalb bekommt jeder FK-Hub eine eigene, schlanke **FK-Staging-View**, die den
+Schlüssel seiner Entität als `dss_business_key` bildet:
+
+```sql
+-- models/staging/<staging>__<entity>.sql   (View, reine Projektion)
+SELECT
+    hk_<entity>,
+    <FK_BK>,
+    CONCAT_WS('||', 'default', 'default',
+              ISNULL(LTRIM(RTRIM(CAST(<FK_BK> AS NVARCHAR(MAX)))), '-1')) AS dss_business_key,
+    dss_create_datetime,
+    dss_load_date,
+    dss_record_source
+FROM {{ ref('<staging>') }}
+```
+
+Der FK-Hub nutzt dann `source_model: "<staging>__<entity>"`. Die Deduplizierung je
+Hash-Key übernimmt `automate_dv.hub()`.
+
+**Nachträglich ergänzen** bei bestehenden Hubs: die Spalte kommt per
+`on_schema_change: append_new_columns` leer an. Bestehende Zeilen einmalig aus der
+`src_nk`-Spalte befüllen — der Schlüssel ist daraus deterministisch ableitbar:
+
+```sql
+UPDATE vault.hub_<entity>
+SET dss_business_key = CONCAT_WS('||', 'default', 'default',
+        ISNULL(LTRIM(RTRIM(CAST(<business_key> AS NVARCHAR(MAX)))), '-1'))
+WHERE dss_business_key IS NULL;
 ```
 
 **Multi-Source-Hub:** `source_model` als Liste; der Business Key muss in allen Staging-Views gleich heißen und gleich normalisiert sein (Typ-Cast! `DECIMAL → BIGINT → NVARCHAR` vor dem Hashen, sonst `HASH("44402.00") ≠ HASH("44402")`).
@@ -77,6 +122,8 @@ src_payload:
   - SPALTE_1
   - SPALTE_2
 src_eff: "dss_start_date"
+src_extra_columns:
+  - "dss_create_datetime"
 src_ldts: "dss_load_date"
 src_source: "dss_record_source"
 {%- endset -%}
@@ -87,12 +134,13 @@ src_source: "dss_record_source"
                    src_hashdiff=metadata_dict["src_hashdiff"],
                    src_payload=metadata_dict["src_payload"],
                    src_eff=metadata_dict["src_eff"],
+                   src_extra_columns=metadata_dict["src_extra_columns"],
                    src_ldts=metadata_dict["src_ldts"],
                    src_source=metadata_dict["src_source"],
                    source_model=metadata_dict["source_model"]) }}
 ```
 
-Stolperfallen: `alias: "hashdiff"` ist Pflicht (nicht der `hd_*`-Name); beide post_hooks nötig; Payload-Spalten müssen exakt den Hashdiff-Spalten der Staging-View entsprechen (sonst Dauer-Delta bei jedem Load). Die Signatur des Current-Flag-Macros im Zielprojekt prüfen — im Boilerplate: `update_satellite_current_flag(satellite_table, hash_key_column)`, also `(this, 'hk_<entity>')`.
+Stolperfallen: `dss_create_datetime` in `src_extra_columns` — **nicht** in `src_payload` (sonst Teil des Hashdiff und damit jede Zeile eine neue Version); `alias: "hashdiff"` ist Pflicht (nicht der `hd_*`-Name); beide post_hooks nötig; Payload-Spalten müssen exakt den Hashdiff-Spalten der Staging-View entsprechen (sonst Dauer-Delta bei jedem Load). Die Signatur des Current-Flag-Macros im Zielprojekt prüfen — im Boilerplate: `update_satellite_current_flag(satellite_table, hash_key_column)`, also `(this, 'hk_<entity>')`.
 
 ## Multi-Active Satellite
 

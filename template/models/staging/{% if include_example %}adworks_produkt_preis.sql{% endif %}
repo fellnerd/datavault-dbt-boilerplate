@@ -4,7 +4,7 @@
  * Source: ext_adventureworks_saleslt_product
  * Business Key: PRODUCTID
  * Split-Satellite Target: adworks.hub_produkt
- * Hash Key Separator: '^^' (manuelles Hashing-Muster dieses Beispiels — Neuentwicklungen nutzen automate_dv.stage(), siehe docs/DEVELOPER.md)
+ * Hash Key Separator: '^^' (manuelles Hashing-Muster dieses Beispiels — Neuentwicklungen nutzen automate_dv.stage(), siehe docs/entwickler/)
  *
  * Hash Keys calculated here (automate_dv pattern):
  *   - hk_produkt (Split-Satellite Hash Key - points to adworks.hub_produkt)
@@ -55,6 +55,7 @@ staged AS (
         -- ===========================================
         -- METADATA
         -- ===========================================
+        GETDATE() AS dss_create_datetime,
         COALESCE(dss_record_source, 'adworks') AS dss_record_source,
         COALESCE(TRY_CAST(dss_load_date AS DATETIME2), GETDATE()) AS dss_load_date,
         dss_run_id

@@ -25,7 +25,8 @@ Die Pattern-Bibliothek (Entscheidungslogik, Naming, Templates) ist als Skill `dv
 
 - Nie `--full-refresh` ausführen oder empfehlen (vernichtet Historie).
 - Multi-Source-Hub: BK-Normalisierung in allen Quellen prüfen (Typ-Cast identisch?), je Quelle ein eigener Satellite `sat_<entity>__<quelle>`.
-- Wenn die Staging-View die benötigten Hash-Spalten (hk_/hd_) nicht liefert: nicht selbst nachrüsten, sondern als Ergebnis zurückmelden, dass zuerst die Staging-View erweitert werden muss (Zuständigkeit: staging-engineer).
+- **Jeder Hub** führt in `src_extra_columns` genau eine Spalte `dss_business_key` (ohne Suffix) und `dss_create_datetime` — und übergibt `src_extra_columns` auch an `automate_dv.hub()`. **FK-Hubs** (Fremdschlüssel im Staging, z.B. `hub_konto` aus dem Hauptbuch-Staging) lesen aus einer eigenen FK-Staging-View `<staging>__<entity>`, die `dss_business_key` für ihre Entität bildet — **nie** den `dss_business_key` des Haupt-Stagings übernehmen. Standard-Satellites führen `dss_create_datetime` in `src_extra_columns` (nicht im Payload). Details: `dv-patterns` → `references/templates.md`.
+- Wenn die Staging-View die benötigten Hash-Spalten (hk_/hd_) oder die FK-Staging-View eines FK-Hubs fehlt: nicht selbst nachrüsten, sondern als Ergebnis zurückmelden, dass zuerst die Staging-View erweitert werden muss (Zuständigkeit: staging-engineer).
 
 ## Ergebnisformat
 

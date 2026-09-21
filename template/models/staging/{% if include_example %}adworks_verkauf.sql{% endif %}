@@ -3,7 +3,7 @@
  *
  * Source: ext_adventureworks_saleslt_salesorderheader
  * Business Key: SALESORDERID
- * Hash Key Separator: '^^' (manuelles Hashing-Muster dieses Beispiels — Neuentwicklungen nutzen automate_dv.stage(), siehe docs/DEVELOPER.md)
+ * Hash Key Separator: '^^' (manuelles Hashing-Muster dieses Beispiels — Neuentwicklungen nutzen automate_dv.stage(), siehe docs/entwickler/)
  *
  * Links (Foreign Keys):
  *   - adworks.hub_kunde via customerid
@@ -134,6 +134,10 @@ staged AS (
         -- ===========================================
         -- METADATA
         -- ===========================================
+        -- Klartext-Business-Key des Primaer-Hubs (hub_verkauf): '<mandant>||<collision>||<BK>'.
+        -- Dieselbe BK-Spalte wie im Hash-Key hk_verkauf.
+        CONCAT_WS('||', 'default', 'default', ISNULL(LTRIM(RTRIM(CAST(SALESORDERID AS NVARCHAR(MAX)))), '-1')) AS dss_business_key,
+        GETDATE() AS dss_create_datetime,
         COALESCE(dss_record_source, 'adworks') AS dss_record_source,
         COALESCE(TRY_CAST(dss_load_date AS DATETIME2), GETDATE()) AS dss_load_date,
         dss_run_id

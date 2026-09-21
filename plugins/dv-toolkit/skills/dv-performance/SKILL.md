@@ -60,7 +60,7 @@ teure Quellen erneut lesen.
 
 Die weiteren Punkte betreffen das Prädikat selbst:
 
-- RLS-Prädikate sind Inline-TVFs, die vor der Optimierung vollständig in die äußere Query eingebettet ("entfaltet") werden — **eine CTE innerhalb der Prädikatsfunktion ändert daran nichts** (in diesem Projekt bereits empirisch bestätigt: identisches Read-Verhältnis vor/nach CTE-Isolation, siehe `docs/LESSONS_LEARNED.md` Abschnitt RLS).
+- RLS-Prädikate sind Inline-TVFs, die vor der Optimierung vollständig in die äußere Query eingebettet ("entfaltet") werden — **eine CTE innerhalb der Prädikatsfunktion ändert daran nichts** (in diesem Projekt bereits empirisch bestätigt: identisches Read-Verhältnis vor/nach CTE-Isolation, siehe `docs/lessons-learned/03-row-level-security-native-security-policy.md`).
 - Häufigster stiller Kostentreiber: **`OR`-Disjunktionen** im Prädikat (z. B. Admin-Bypass) — kippen Index Seeks in Full Scans, ohne dass es im Plan sofort auffällt. Fix: Disjunktion in einen seekbaren Bereich umformulieren (`BETWEEN`) statt `x = @v OR bypass = 1`.
 - Skalare Rollen-Checks (`IS_ROLEMEMBER()`, `IS_SRVROLEMEMBER()`) im Prädikat erzwingen einen seriellen Plan (kein Parallelismus) — bei Bedarf durch eine indizierte Session-/Lookup-Tabelle (`SESSION_CONTEXT()`, keyed on `@@SPID`) ersetzen.
 - Messmethode: `ALTER SECURITY POLICY ... WITH (STATE = OFF/ON)` als A/B-Hebel, logische Reads (nicht nur Dauer) vergleichen, gezielt auf Seek→Scan-Wechsel und `NonParallelPlanReason` im Plan achten. Für View-Filter statt Policies: `measure_rls_overhead` (Skill `dv-security`, `references/macros.md`) misst sitzungsisoliert über `sys.dm_exec_sessions.logical_reads` — `sys.dm_exec_query_stats` ist durch dbt-Wrapping und Fremdtraffic verrauscht.
@@ -77,7 +77,7 @@ Die weiteren Punkte betreffen das Prädikat selbst:
 - Clustered Columnstore lohnt ab Faktentabellen mit **Millionen Zeilen** und lesend/aggregierend abgefragten (nicht Punkt-Lookup-) Workloads; Dimensionstabellen bleiben Rowstore.
 - Azure-SQL-DTU-Tier: Columnstore braucht **mind. Standard S3** (darunter wird ein vorhandener Columnstore-Index vom Optimizer ignoriert, aber weiter gepflegt — kein Datenverlust, nur kein Nutzen). vCore-Tiers (inkl. Serverless): keine Mindeststufe, aber kleine vCore-Zahlen limitieren den Rowgroup-Aufbau.
 - Partitionierung erst ab ca. 50–100 GB/mehreren Mio. Zeilen sinnvoll — **nur wenn jede relevante Abfrage tatsächlich auf die Partitionsspalte filtert** (gegen echtes DirectQuery-generiertes SQL prüfen, nicht nur Hand-Queries), sonst kein Elimination-Gewinn.
-- Serverless-Tier: Cold-Start nach Auto-Pause (~Sekunden bis ~1 Minute, SQL-Fehler 40613 bis bereit), Cache nach Resume kalt — erste Abfragen nach Pause sind langsamer, unabhängig vom Columnstore-Zustand. Vor "Serverless Cold-Start ist Schuld" immer `sys.dm_db_resource_stats`/`sys.dm_os_sys_info.sqlserver_start_time` gegenchecken (siehe `docs/LESSONS_LEARNED.md` — CPU lag in diesem Projekt durchgehend unter 27 %, Cold-Start war nicht die Ursache).
+- Serverless-Tier: Cold-Start nach Auto-Pause (~Sekunden bis ~1 Minute, SQL-Fehler 40613 bis bereit), Cache nach Resume kalt — erste Abfragen nach Pause sind langsamer, unabhängig vom Columnstore-Zustand. Vor "Serverless Cold-Start ist Schuld" immer `sys.dm_db_resource_stats`/`sys.dm_os_sys_info.sqlserver_start_time` gegenchecken (siehe `docs/lessons-learned/` — CPU lag in diesem Projekt durchgehend unter 27 %, Cold-Start war nicht die Ursache).
 
 ## 6. Data-Vault-spezifische Muster
 
@@ -90,12 +90,12 @@ Die weiteren Punkte betreffen das Prädikat selbst:
 ## 7. Power-BI-DirectQuery-Seite (Empfehlung, nicht selbst umsetzen)
 
 - mart-Objekte, die von DirectQuery wiederholt abgefragt werden, als Tabelle materialisieren (Abschnitt 2) — das ist der größte dbt-seitig kontrollierbare Hebel.
-- Bekannte DAX-Fallstricke, die zu teurem generiertem SQL führen (siehe `docs/LESSONS_LEARNED.md`): bare Column-Prädikate in `CALCULATE()` verhalten sich anders als `FILTER()`; sobald eine Calculation Group im Modell existiert, werden implizite Measures modellweit deaktiviert.
+- Bekannte DAX-Fallstricke, die zu teurem generiertem SQL führen (siehe `docs/lessons-learned/`): bare Column-Prädikate in `CALCULATE()` verhalten sich anders als `FILTER()`; sobald eine Calculation Group im Modell existiert, werden implizite Measures modellweit deaktiviert.
 - Aggregations-Tabellen (Import-Mode, Faustregel ≥10x kleiner als die Detailtabelle) und Zeitintelligenz über materialisierte Ganzzahl-Offsets in `dim_date` statt `SAMEPERIODLASTYEAR()`/`DATESYTD()` sind Empfehlungen an den Report-Ersteller, nicht dbt-seitig umsetzbar — als Empfehlung zurückmelden, nicht selbst im Power-BI-Modell ändern.
 
 ## Vorgehens-Prinzip
 
-Gemessene Zahl schlägt Spekulation — jede Kategorie oben braucht eine eigene Vorher/Nachher-Messung (logische Reads, ms, `STATISTICS IO`). Bringt eine Änderung keinen Unterschied: zurückbauen und den negativen Befund dokumentieren (siehe `docs/LESSONS_LEARNED.md`, Abschnitt RLS für ein reales Beispiel), damit dieselbe Hypothese nicht erneut verfolgt wird.
+Gemessene Zahl schlägt Spekulation — jede Kategorie oben braucht eine eigene Vorher/Nachher-Messung (logische Reads, ms, `STATISTICS IO`). Bringt eine Änderung keinen Unterschied: zurückbauen und den negativen Befund dokumentieren (siehe `docs/lessons-learned/`, Abschnitt RLS für ein reales Beispiel), damit dieselbe Hypothese nicht erneut verfolgt wird.
 
 ## Referenzen
 

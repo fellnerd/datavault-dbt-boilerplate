@@ -68,7 +68,15 @@ def lint_model_sql(path: Path, text: str) -> list[str]:
                 f"Satellites, nicht für Hubs/Links"
             )
 
+    if in_vault and name.startswith("hub_"):
+        issues += lint_hub_business_key(path, text)
+
     if in_vault and name.startswith("sat_"):
+        if ("src_hashdiff" in text and "dss_create_datetime" not in text
+                and not any(t in name for t in ("_eff", "_ma", "_tl"))):
+            issues.append(
+                "Satellite ohne dss_create_datetime in src_extra_columns (Hinweis)"
+            )
         if "src_hashdiff" in text:
             if not re.search(r'alias:\s*"?hashdiff"?', text):
                 issues.append(
@@ -85,6 +93,63 @@ def lint_model_sql(path: Path, text: str) -> list[str]:
                 f"Naming: '{name}' ohne __source-Suffix (Konvention: sat_<entity>__<quelle>) (Hinweis)"
             )
 
+    return issues
+
+
+def _find_project_root(path: Path):
+    for parent in path.resolve().parents:
+        if (parent / "dbt_project.yml").is_file():
+            return parent
+    return None
+
+
+def lint_hub_business_key(path: Path, text: str) -> list[str]:
+    """Hub-Pflichtspalten + FK-Hub-Falle.
+
+    Jeder Hub fuehrt dss_create_datetime und genau eine Spalte dss_business_key
+    (ohne Suffix). Die Falle: ein FK-Hub uebernimmt den dss_business_key seines
+    Stagings — der gehoert aber der Haupt-Entitaet des Stagings (z. B. Hauptbuch
+    statt Konto). FK-Hubs lesen deshalb aus einer eigenen FK-Staging-View.
+    """
+    issues = []
+    if "dss_create_datetime" not in text:
+        issues.append(
+            "Hub ohne dss_create_datetime in src_extra_columns — Pflichtspalte jedes Hubs"
+        )
+    suffixed = re.findall(r'"(dss_business_key_[a-z0-9_]+)"', text)
+    if suffixed:
+        issues.append(
+            f"Suffix-Spalte {suffixed[0]} — jeder Hub hat genau EINE Spalte "
+            f"dss_business_key ohne Suffix. FK-Hub: eigene FK-Staging-View "
+            f"<staging>__<entity> anlegen, die dss_business_key bildet"
+        )
+    elif not re.search(r'"dss_business_key"', text):
+        issues.append(
+            "Hub ohne dss_business_key in src_extra_columns — Pflichtspalte jedes Hubs. "
+            "FK-Hub: eigene FK-Staging-View <staging>__<entity> anlegen"
+        )
+    if "src_extra_columns:" in text and "src_extra_columns=" not in text:
+        issues.append(
+            "src_extra_columns im YAML definiert, aber nicht an automate_dv.hub() "
+            "uebergeben — die Spalten landen nicht in der Tabelle"
+        )
+
+    # FK-Hub-Falle: plain dss_business_key, dessen Staging-Ausdruck den src_nk nicht enthaelt
+    uses_plain = re.search(r'-\s*"dss_business_key"\s*$', text, re.M)
+    m_src = re.search(r'source_model:\s*"([^"]+)"', text)
+    m_nk = re.search(r'src_nk:\s*"([^"]+)"', text)
+    root = _find_project_root(path)
+    if uses_plain and m_src and m_nk and root:
+        stg = next((root / "models").rglob(f"{m_src.group(1)}.sql"), None)
+        if stg and stg.is_file():
+            expr = re.search(r'dss_business_key:\s*"([^"]+)"', stg.read_text(errors="ignore"))
+            if expr and m_nk.group(1).lower() not in expr.group(1).lower():
+                issues.append(
+                    f"FK-Hub-Falle: dss_business_key aus '{m_src.group(1)}' enthaelt den "
+                    f"Schluessel '{m_nk.group(1)}' nicht — er gehoert der Haupt-Entitaet "
+                    f"des Stagings. Eigene FK-Staging-View <staging>__<entity> anlegen, "
+                    f"die dss_business_key fuer diese Entitaet bildet"
+                )
     return issues
 
 

@@ -25,6 +25,7 @@ Das Staging-Pattern (Workflow, Typ-Fallen, Reserved Keywords, stage()-Metadata) 
 - Hashdiff-Spaltenliste = exakte Payload des späteren Satellites; Binärspalten (VARBINARY) nie in den Hashdiff.
 - Keine Custom-SQL-Staging-Views, wenn stage() reicht; Reference-Table-Quellen dagegen als schlanke View ohne Hashing.
 - External Tables anlegen nur nach Rückfrage (`dbt run-operation stage_external_sources` ändert DB-Objekte).
+- **Business Keys:** `dss_business_key` ist der Klartext-Schlüssel der Haupt-Entität (`CONCAT_WS('||', 'default', 'default', <BK…>)`, dieselben Spalten wie in `hashed_columns`). Genau eine solche Spalte, ohne Suffix. Für jeden **FK-Hub**, den dieses Staging speist, eine eigene schlanke View `<staging>__<entity>` anlegen, die `dss_business_key` für dessen Entität bildet — Vorlage in `dv-patterns` → `references/templates.md`.
 
 ## Ergebnisformat
 

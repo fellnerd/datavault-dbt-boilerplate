@@ -135,7 +135,7 @@ ALTER SECURITY POLICY <schema>.<policy_name> WITH (STATE = ON);
 ```
 Kennzahl: **logische Reads pro Zeile** (Total Logical Reads ÷ Zeilenanzahl) — cache-unabhängig, verlässlicher als Dauer. Zusätzlich im Plan prüfen: Seek→Scan-Wechsel am RLS-geschützten Objekt, `NonParallelPlanReason`.
 
-Bereits in diesem Projekt widerlegt: CTE-Isolation von Bypass-Branches innerhalb der Prädikatsfunktion (`fn_check_rls`) — identisches Read-Verhältnis vor/nach, weil Inline-TVFs vor der Optimierung vollständig in die äußere Query eingebettet werden (eine CTE ist keine Materialisierungs-/Optimierungsgrenze). Nicht wiederholen; siehe `docs/LESSONS_LEARNED.md`.
+Bereits in diesem Projekt widerlegt: CTE-Isolation von Bypass-Branches innerhalb der Prädikatsfunktion (`fn_check_rls`) — identisches Read-Verhältnis vor/nach, weil Inline-TVFs vor der Optimierung vollständig in die äußere Query eingebettet werden (eine CTE ist keine Materialisierungs-/Optimierungsgrenze). Nicht wiederholen; siehe `docs/lessons-learned/`.
 
 ## Quellen
 

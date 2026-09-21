@@ -14,7 +14,7 @@
 
 **Pattern:** `_common` → Basis-Schema, `<concept>` → `<basis>_<concept>`
 
-> **PSA (Persistent Staging Area):** Optionaler Cache-Layer für große External Tables. Reduziert OPENROWSET-Aufrufe durch inkrementelle Materialisierung. Staging Views referenzieren dann die PSA statt der External Table. Siehe [DEVELOPER.md](DEVELOPER.md#65-psa-persistent-staging-area-erstellen) für Details.
+> **PSA (Persistent Staging Area):** Optionaler Cache-Layer für große External Tables. Reduziert OPENROWSET-Aufrufe durch inkrementelle Materialisierung. Staging Views referenzieren dann die PSA statt der External Table. Siehe [entwickler/README.md](entwickler/README.md#65-psa-persistent-staging-area-erstellen) für Details.
 
 ## Übersicht
 

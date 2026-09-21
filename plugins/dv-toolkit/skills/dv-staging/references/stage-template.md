@@ -31,8 +31,17 @@ derived_columns:
   # HASH("44402") muss quellenübergreifend gleich sein — Typ vereinheitlichen!
   <bk_lower>: "CAST(CAST(<BK> AS BIGINT) AS NVARCHAR(MAX))"
 
-  # Menschenlesbarer Business Key (Debugging/Audit)
-  dss_business_key: "CONCAT_WS('||', ISNULL(LTRIM(RTRIM(CAST(<BK> AS NVARCHAR(MAX)))), '-1'))"
+  # Menschenlesbarer Business Key (Debugging/Audit) — fuer den PRIMAER-Hub, also die
+  # Haupt-Entitaet dieses Stagings. Aufbau: '<mandant>||<collision>||<BK1>||<BK2>…'.
+  # Die beiden 'default'-Segmente sind fuer Mandant und Collision-Code reserviert.
+  # Mehrere BK-Spalten: je eine ISNULL(LTRIM(RTRIM(CAST(…))), '-1') mehr.
+  # Dieselben BK-Spalten in derselben Reihenfolge wie in hashed_columns!
+  dss_business_key: "CONCAT_WS('||', 'default', 'default', ISNULL(LTRIM(RTRIM(CAST(<BK> AS NVARCHAR(MAX)))), '-1'))"
+
+  # FK-Hubs, die aus DIESEM Staging geladen werden (Fremdschluessel-Spalten): KEINE
+  # zweite Business-Key-Spalte hier. Jeder Hub hat genau eine Spalte dss_business_key
+  # ohne Suffix — FK-Hubs bekommen dafuer eine eigene FK-Staging-View
+  # <staging>__<entity> (siehe dv-patterns -> templates.md, Abschnitt Hub).
 
   # Reserved Keywords / Sonderzeichen-Spalten escapen (KEINE manuellen Aliase)
   _escape:
