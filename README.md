@@ -99,11 +99,20 @@ copier update --data include_example=false
 
 This repo doubles as a **Claude Code plugin marketplace** (catalog at
 [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json)). It ships
-the [`dv-toolkit`](plugins/dv-toolkit/) plugin: generic dbt / Data Vault 2.1
-skills (`dv-patterns`, `dv-staging`, `dv-marts`, `dv-design-sync`,
-`dv-performance`), five specialized agents (vault-architect,
-staging-engineer, mart-architect, db-monitor, performance-optimizer), and a
-deterministic DV lint hook running on every model edit.
+two plugins:
+
+- [`dv-toolkit`](plugins/dv-toolkit/) — generic dbt / Data Vault 2.1 skills
+  (`dv-patterns`, `dv-staging`, `dv-marts`, `dv-design-sync`, `dv-performance`,
+  `dv-security`), five specialized agents (vault-architect, staging-engineer,
+  mart-architect, db-monitor, performance-optimizer), and a deterministic DV
+  lint hook running on every model edit.
+- [`masterdata-api`](plugins/masterdata-api/) — a single skill for talking to
+  any deployed Master Data Services (MDS) instance over its token-authenticated
+  REST API (`/api/v1/*`): manage models/entities/attributes, stage records
+  with attribute-value filters, and read deployed master data/views with
+  field selection and unique-value (`distinct`) lookups for cascading
+  dropdown filters. Not tied to Data Vault or this template - works against
+  any MDS deployment.
 
 Projects generated from this template are wired up automatically — their
 `.claude/settings.json` registers this marketplace via `extraKnownMarketplaces`
@@ -113,6 +122,7 @@ first start. Manual installation in any other project:
 ```shell
 /plugin marketplace add fellnerd/datavault-dbt-boilerplate
 /plugin install dv-toolkit@datavault-dbt
+/plugin install masterdata-api@datavault-dbt
 ```
 
 The marketplace and the copier template are versioned together (git tags), so

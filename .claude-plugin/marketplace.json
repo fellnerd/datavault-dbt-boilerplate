@@ -9,6 +9,11 @@
       "name": "dv-toolkit",
       "source": "./plugins/dv-toolkit",
       "description": "dbt + Data Vault 2.1 Entwicklung: Pattern-Bibliothek, Staging- und Mart-Skills, Architektur-Agents, deterministischer Lint-Hook (automate_dv auf SQL Server/Azure SQL)"
+    },
+    {
+      "name": "masterdata-api",
+      "source": "./plugins/masterdata-api",
+      "description": "Token-authenticated REST-API-Skill für jede laufende Master Data Services (MDS) Instanz - Models/Entities/Attributes verwalten, Staging-Records mit Attribut-Filtern, Feldauswahl und Unique-Value-Lookups (Cascading-Dropdown-Filter) auf deployte Master-Daten/Views"
     }
   ],
   "metadata": {
