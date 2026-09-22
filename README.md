@@ -102,8 +102,8 @@ This repo doubles as a **Claude Code plugin marketplace** (catalog at
 two plugins:
 
 - [`dv-toolkit`](plugins/dv-toolkit/) — generic dbt / Data Vault 2.1 skills
-  (`dv-patterns`, `dv-staging`, `dv-marts`, `dv-design-sync`, `dv-performance`,
-  `dv-security`), five specialized agents (vault-architect, staging-engineer,
+  (`dv-patterns`, `dv-staging`, `dv-marts`, `dv-design-sync`, `dv-er-diagram`,
+  `dv-performance`, `dv-security`), five specialized agents (vault-architect, staging-engineer,
   mart-architect, db-monitor, performance-optimizer), and a deterministic DV
   lint hook running on every model edit.
 - [`masterdata-api`](plugins/masterdata-api/) — a single skill for talking to

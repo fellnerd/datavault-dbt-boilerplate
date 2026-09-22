@@ -1,7 +1,7 @@
 {
   "name": "dv-toolkit",
-  "version": "1.3.0",
-  "description": "Generische dbt/Data-Vault-2.1-Entwicklung: DV-Pattern-Bibliothek (Hub/Sat/Link/TL/MA/DC/Ref), automate_dv-Staging, Star-Schema-Marts, Design-Doku-Sync, Berechtigungsvergabe (OLS/RLS/CLS), spezialisierte Agents und deterministische Lint-/Guard-Hooks für SQL Server/Azure SQL.",
+  "version": "1.4.0",
+  "description": "Generische dbt/Data-Vault-2.1-Entwicklung: DV-Pattern-Bibliothek (Hub/Sat/Link/TL/MA/DC/Ref), automate_dv-Staging, Star-Schema-Marts, Design-Doku-Sync, standardisierte ER-Diagramme, Berechtigungsvergabe (OLS/RLS/CLS), spezialisierte Agents und deterministische Lint-/Guard-Hooks für SQL Server/Azure SQL.",
   "author": {
     "name": "Daniel Fellner",
     "email": "daniel.fellner@ppmcag.com",
