@@ -82,7 +82,7 @@ Für Projekte, deren Doku ein Obsidian-Vault ist. Ergebnis: `<concept>/er-<conce
   color: var(--text-muted);
   text-align: left;
 }
-.canvas-node-content .markdown-rendered td { padding: 0.2em 0.4em; vertical-align: top; }
+.canvas-node-content .markdown-rendered td { padding: 0.2em 0.4em; vertical-align: top; font-size: 1em; }  /* feste Größe: sonst greift Obsidians --table-text-size (absolut) und Spalte 3 wird grösser */
 .canvas-node-content .markdown-rendered td:first-child { width: 3.2em; white-space: nowrap; }
 .canvas-node-content .markdown-rendered td:first-child code {
   font-size: 0.85em;
