@@ -1,3 +1,8 @@
+---
+title: "Transaction Satellite für Messdaten: Anti-Join über den Zeitraum begrenzen (2026-08-17)"
+tags:
+  - lessons-learned
+---
 [Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
 
 # Transaction Satellite für Messdaten: Anti-Join über den Zeitraum begrenzen (2026-08-17)
@@ -55,7 +60,7 @@ hier weiter optimieren will, braucht eine **PSA** (Staging einmal materialisiere
 Indizes.
 
 Betroffene Objekte: `models/staging/ise_lastgang_dedup.sql`,
-`models/raw_vault/ise/satellites/sat_lastgang_tl__ise.sql`.
+`models/raw_vault/<concept>/satellites/sat_lastgang_tl__<quelle>.sql`.
 
 ---
 

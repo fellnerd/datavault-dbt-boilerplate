@@ -1,3 +1,8 @@
+---
+title: "dbt-Modellierung / Materialisierung"
+tags:
+  - lessons-learned
+---
 [Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
 
 # 1. dbt-Modellierung / Materialisierung
@@ -14,7 +19,7 @@ Joins/Berechnungen enthält und von Power BI DirectQuery konsumiert wird.**
 
 ### Noch fragiler: View-Ketten, die bis zu einer External Table (Parquet) reichen
 
-`dim_person_v` → `ewb_publ_adr_main` (Staging-VIEW) → `stg.ext_ewb_publ_adr_main`
+`dim_person_v` → `<mandant>_publ_adr_main` (Staging-VIEW) → `stg.ext_<mandant>_publ_adr_main`
 (External Table auf rohe ADLS-Parquet-Datei) — alle drei Ebenen nicht materialisiert.
 Jede Power-BI-Abfrage liest dadurch live die Parquet-Datei, was bei gleichzeitigem
 Synapse-Ladejob transient fehlschlagen kann ("location does not exist or is used by

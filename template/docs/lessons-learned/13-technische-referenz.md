@@ -1,3 +1,8 @@
+---
+title: "Technische Referenz"
+tags:
+  - lessons-learned
+---
 [Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
 
 # Technische Referenz

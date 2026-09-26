@@ -1,3 +1,8 @@
+---
+title: "Business-Vault-Architektur (kurz)"
+tags:
+  - lessons-learned
+---
 [Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
 
 # 6. Business-Vault-Architektur (kurz)

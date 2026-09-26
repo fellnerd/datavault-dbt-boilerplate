@@ -1,0 +1,121 @@
+{
+  "items": [
+    {
+      "type": "file",
+      "ctime": 1790428241017,
+      "path": "README.md",
+      "title": "Start"
+    },
+    {
+      "type": "group",
+      "ctime": 1790434837942,
+      "title": "Übersichten",
+      "items": [
+        {
+          "type": "file",
+          "ctime": 1790434837942,
+          "path": "uebersichten/dokumentation.base",
+          "title": "Dokumentation (Base)"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "ctime": 1790428241017,
+      "title": "Handbücher",
+      "items": [
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "01-benutzer/README.md",
+          "title": "Benutzerhandbuch"
+        },
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "02-entwickler/README.md",
+          "title": "Entwicklerhandbuch"
+        },
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "02-entwickler/objekte/README.md",
+          "title": "Vault-Objekte erstellen"
+        },
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "03-system/README.md",
+          "title": "Systemdokumentation"
+        },
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "03-system/security/README.md",
+          "title": "Security"
+        },
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "lessons-learned/README.md",
+          "title": "Lessons Learned"
+        },
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "projekt/README.md",
+          "title": "Projektspezifische Dokumentation"
+        },
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "schulung/README.md",
+          "title": "Schulung"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "ctime": 1790428241017,
+      "title": "Nachschlagen",
+      "items": [
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "02-entwickler/02-quick-reference.md",
+          "title": "Quick Reference"
+        },
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "01-benutzer/16-glossar.md",
+          "title": "Glossar"
+        },
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "01-benutzer/15-haeufige-fragen-faq.md",
+          "title": "FAQ"
+        },
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "02-entwickler/13-troubleshooting.md",
+          "title": "Troubleshooting (Entwicklung)"
+        },
+        {
+          "type": "file",
+          "ctime": 1790428241017,
+          "path": "02-entwickler/14-checklisten.md",
+          "title": "Checklisten"
+        },
+        {
+          "type": "search",
+          "ctime": 1790428241017,
+          "query": "tag:#typ/troubleshooting",
+          "title": "Alle Troubleshooting-Seiten"
+        }
+      ]
+    }
+  ]
+}

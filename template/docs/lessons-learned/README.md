@@ -1,3 +1,12 @@
+---
+title: "Lessons Learned"
+aliases:
+  - "Lessons Learned"
+  - "Lessons Learned - Data Vault 2.1 mit dbt auf Azure"
+tags:
+  - lessons-learned
+  - typ/inhaltsverzeichnis
+---
 [Dokumentation](../README.md)
 
 # Lessons Learned - Data Vault 2.1 mit dbt auf Azure

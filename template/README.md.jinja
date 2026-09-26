@@ -181,7 +181,7 @@ dbt run-operation stage_external_sources --vars '{"ext_full_refresh": true}'
 ├── scripts/                  # Utility SQL scripts (e.g. setup_schemas.sql{% if include_infra %}, setup_external_source.sql{% endif %})
 {% if include_infra %}├── infra/                     # Bicep templates + deploy workflow (see infra/README.md)
 {% endif %}├── design/                   # Design templates (hub/link/PIT/bridge)
-└── docs/                     # Documentation
+└── docs/                     # Documentation (Obsidian vault, start: docs/README.md)
 ```
 
 ---
@@ -190,9 +190,13 @@ dbt run-operation stage_external_sources --vars '{"ext_full_refresh": true}'
 
 | Document | Description |
 |----------|--------------|
-| [docs/entwickler/](docs/entwickler/) | Detailed developer guide |
+| [docs/README.md](docs/README.md) | Start page — open `docs/` as an Obsidian vault |
+| [docs/01-benutzer/](docs/01-benutzer/README.md) | User guide |
+| [docs/02-entwickler/](docs/02-entwickler/README.md) | Detailed developer guide |
+| [docs/03-system/](docs/03-system/README.md) | System documentation incl. security |
+| [docs/lessons-learned/](docs/lessons-learned/README.md) | Troubleshooting & decisions |
+| [docs/projekt/](docs/projekt/README.md) | Project-specific: environments, sources, status |
 | [docs/CLAUDE.md](docs/CLAUDE.md) | AI assistant context |
-| [docs/lessons-learned/](docs/lessons-learned/) | Troubleshooting & decisions |
 
 ---
 

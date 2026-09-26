@@ -1,3 +1,8 @@
+---
+title: "Diagnose-Werkzeuge / Vorgehen"
+tags:
+  - lessons-learned
+---
 [Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
 
 # 5. Diagnose-Werkzeuge / Vorgehen

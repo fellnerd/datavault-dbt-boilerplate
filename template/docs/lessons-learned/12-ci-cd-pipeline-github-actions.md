@@ -1,3 +1,8 @@
+---
+title: "CI/CD Pipeline (GitHub Actions)"
+tags:
+  - lessons-learned
+---
 [Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
 
 # CI/CD Pipeline (GitHub Actions)

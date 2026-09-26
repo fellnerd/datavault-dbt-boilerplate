@@ -1,3 +1,10 @@
+---
+title: "Model Architecture"
+tags:
+  - system
+---
+[Dokumentation](README.md)
+
 # Data Vault 2.1 - Model Architecture
 
 ## Schema-Naming-Konvention
@@ -14,7 +21,8 @@
 
 **Pattern:** `_common` → Basis-Schema, `<concept>` → `<basis>_<concept>`
 
-> **PSA (Persistent Staging Area):** Optionaler Cache-Layer für große External Tables. Reduziert OPENROWSET-Aufrufe durch inkrementelle Materialisierung. Staging Views referenzieren dann die PSA statt der External Table. Siehe [entwickler/README.md](entwickler/README.md#65-psa-persistent-staging-area-erstellen) für Details.
+> [!NOTE]
+> **PSA (Persistent Staging Area):** Optionaler Cache-Layer für große External Tables. Reduziert OPENROWSET-Aufrufe durch inkrementelle Materialisierung. Staging Views referenzieren dann die PSA statt der External Table. Siehe [PSA erstellen](02-entwickler/objekte/05-psa-persistent-staging-area-erstellen.md) für Details.
 
 ## Übersicht
 

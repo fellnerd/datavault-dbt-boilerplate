@@ -1,3 +1,8 @@
+---
+title: "Multi-Active Satellite: Load Date muss ein BATCH-Wert sein (2026-08-17)"
+tags:
+  - lessons-learned
+---
 [Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
 
 # Multi-Active Satellite: Load Date muss ein BATCH-Wert sein (2026-08-17)
