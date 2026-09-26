@@ -60,6 +60,11 @@ flowchart LR
 3. **Zähler/Übersicht** in `overview.md` aktualisieren (Objektlisten, offene Fragen abhaken)
 4. **`source_mapping.md`**: neue Quelltabelle → Staging-View → Vault-Objekt Zeile eintragen
 5. Konsistenz prüfen: Objekte in `models/raw_vault/**` ⇔ Einträge im Diagramm (beide Richtungen — der PostToolUse-Hook meldet Drift automatisch)
+6. **Obsidian-Vault spiegeln** (nur wenn `design/vault-sync.json` existiert): `python3 scripts/sync_design_to_vault.py` ausführen — erzeugt je Diagramm eine `.md` mit Mermaid-Block im Vault (Obsidian rendert keine `.mmd`). Die Vault-Dateien nie von Hand ändern. Neues Diagramm → Eintrag in `design/vault-sync.json` ergänzen. `--check` meldet veraltete Kopien (für CI).
+
+## Obsidian-Vault einrichten (einmalig)
+
+Liegt die Projektdoku als Obsidian-Vault vor, [`scripts/sync_design_to_vault.py`](scripts/sync_design_to_vault.py) nach `scripts/` im Projekt kopieren und `design/vault-sync.json` anlegen (Format im Kopf des Skripts: Vault-Pfad, Breadcrumb, Tags, Gruppen, Liste `source → target`). `design/` bleibt die einzige Quelle; die Vault-Notizen tragen einen „generiert“-Kommentar und verweisen auf ihre Quelle.
 
 ## Diagramm-Validierung
 
