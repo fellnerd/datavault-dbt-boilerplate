@@ -1,6 +1,6 @@
 ---
 name: dv-er-diagram
-description: Erstellt ein standardisiertes Raw-Vault-ER-Diagramm (Hubs, Links, Satellites) als visuelle Darstellung aus dbt-Modellen oder Mermaid-Entwürfen — immer gleiches Layout, gleiche Farben, gleiche Key-Notation. Verwenden bei "ER-Diagramm darstellen", "Vault-Diagramm", "Raw Vault visualisieren", "Modell für Review/Schulung aufbereiten" oder wenn aus einem Concept ein präsentierbares Diagramm entstehen soll.
+description: Erstellt ein standardisiertes Raw-Vault-ER-Diagramm (Hubs, Links, Satellites) als visuelle Darstellung aus dbt-Modellen oder Mermaid-Entwürfen — immer gleiches Layout, gleiche Farben, gleiche Key-Notation. Verwenden bei "ER-Diagramm darstellen", "Vault-Diagramm", "Raw Vault visualisieren", "Modell für Review/Schulung aufbereiten" oder wenn aus einem Concept ein präsentierbares Diagramm entstehen soll. Auch als Obsidian-Canvas (.canvas) bei "Canvas", "Obsidian", "im Vault darstellen".
 ---
 
 # Raw-Vault-ER-Diagramm (Standarddarstellung)
@@ -118,6 +118,7 @@ Box-Aufbau: Farbbalken → Titel (Objektname) → Quellzeile → Key-Zeilen → 
 
 - **Mit Design-Canvas (Claude.ai / Cowork, Artifact-Tool vorhanden):** Artifact `quickstart` mit `intent: "design"`, ohne Design System (ausser gewünscht), Canvas-Titel `Raw Vault ER-Diagramm — <Concept>`, ein Artboard `Main.dc.html` im `.dc.html`-Format des Design-Typs (Gerüst aus der Referenz in `<x-dc>` einbetten), `launch: {view: "canvas"}`.
 - **Ohne Artifact-Tool (Claude Code):** das Gerüst als eigenständige HTML-Datei `design/raw-vault/<concept>/er-diagram.html` schreiben (die `<x-dc>`/`<helmet>`-Hüllen weglassen, Style in `<head>`).
+- **Obsidian-Canvas (Doku als Obsidian-Vault, oder auf Wunsch „Canvas"/„Obsidian"):** Modell als JSON beschreiben und mit `scripts/build_obsidian_canvas.py` eine `.canvas`-Datei erzeugen — Kartenaufbau (Tabelle Key | Spalte | Quelle / Rolle), Farben, Rahmenstile und Pfeilrichtung (Hub → Link, Hub → Satellite, Satellite → Reference Table) setzt das Skript. Voraussetzungen im Vault (Plugin Advanced Canvas, CSS-Snippet, `data.json`-Einstellungen), Modell-Format und Update-Regeln: [`references/obsidian-canvas.md`](references/obsidian-canvas.md).
 - **Bestehendes Diagramm aktualisieren:** zuerst den aktuellen Stand lesen (wird ggf. live editiert), nur geänderte Boxen/Linien anpassen, Layout beibehalten.
 
 ## 8. Abschluss-Check
