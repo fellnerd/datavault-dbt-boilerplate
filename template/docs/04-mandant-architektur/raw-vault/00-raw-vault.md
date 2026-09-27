@@ -10,9 +10,7 @@ tags:
 
 # Raw Vault
 
-ER-Diagramme des Raw Vault je Quelle/Domäne — Kopien aus `design/raw-vault/`, erzeugt mit
-`python3 scripts/sync_design_to_vault.py`. Vorlagen je Objekttyp:
-[Objekte anlegen → Raw Vault](../../02-entwickler/04-objekte-anlegen/raw-vault/00-raw-vault.md).
+ER-Diagramme des Raw Vault je Quelle/Domäne — Kopien aus `design/raw-vault/`, erzeugt mit `python3 scripts/sync_design_to_vault.py`. Vorlagen je Objekttyp: [Objekte anlegen → Raw Vault](../../02-entwickler/04-objekte-anlegen/raw-vault/00-raw-vault.md).
 
 ## Inhalt
 

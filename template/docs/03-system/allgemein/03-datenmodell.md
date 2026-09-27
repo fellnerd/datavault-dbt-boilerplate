@@ -9,8 +9,7 @@ tags:
 
 ### 3.1 Data Vault Objekte
 
-Der Raw Vault kennt die folgenden Objekttypen; welche Objekte in einem Mandanten konkret
-existieren, zeigt `dbt docs` bzw. die Mandanten-Dokumentation.
+Der Raw Vault kennt die folgenden Objekttypen; welche Objekte in einem Mandanten konkret existieren, zeigt `dbt docs` bzw. die Mandanten-Dokumentation.
 
 | Objekttyp | Namensmuster | Materialisierung | Zweck |
 |-----------|--------------|------------------|-------|
@@ -25,8 +24,7 @@ existieren, zeigt `dbt docs` bzw. die Mandanten-Dokumentation.
 | Current View | `sat_<entity>_current_v` | view | Aktueller Stand eines Satellites |
 | PIT Table | `pit_<entity>` | table | Point-in-Time für performante Abfragen |
 
-Konfiguration je Objektgruppe (Schema, Materialisierung, `on_schema_change: append_new_columns`)
-steht in `dbt_project.yml`, siehe [Konfiguration](06-konfiguration.md).
+Konfiguration je Objektgruppe (Schema, Materialisierung, `on_schema_change: append_new_columns`) steht in `dbt_project.yml`, siehe [Konfiguration](06-konfiguration.md).
 
 ### 3.2 Hash-Berechnung
 
@@ -43,8 +41,7 @@ Konfiguriert über `vars` in `dbt_project.yml`:
 Zwei eigene Overrides in `macros/hash_override.sql` passen automate_dv an SQL Server an:
 
 - `sqlserver__cast_binary` → `CHAR(64)` statt `BINARY(32)`, damit Hash Keys lesbar sind
-- `sqlserver__type_string` → `NVARCHAR` statt `VARCHAR` (Unicode-sicher; `HASHBYTES` über
-  NVARCHAR liefert andere Werte als über VARCHAR — nach einer Umstellung ist ein Full Refresh nötig)
+- `sqlserver__type_string` → `NVARCHAR` statt `VARCHAR` (Unicode-sicher; `HASHBYTES` über NVARCHAR liefert andere Werte als über VARCHAR — nach einer Umstellung ist ein Full Refresh nötig)
 
 - **Hash Key:** `hk_<entity>` — Hash des Business Key
 - **Hash Diff:** `hd_<entity>__<quelle>` — Attribut-Hash für die Change Detection
@@ -58,8 +55,7 @@ CONVERT(CHAR(64), HASHBYTES('SHA2_256',
 
 ### 3.3 Metadata-Spalten (`dss_*`)
 
-Alle technischen Spalten tragen das Präfix `dss_` (Data Store Service). Sie sind nach
-Zweck gruppiert — nicht jedes Objekt hat jede Spalte.
+Alle technischen Spalten tragen das Präfix `dss_` (Data Store Service). Sie sind nach Zweck gruppiert — nicht jedes Objekt hat jede Spalte.
 
 #### Pflicht in jedem Vault-Objekt
 
@@ -97,8 +93,7 @@ Zweck gruppiert — nicht jedes Objekt hat jede Spalte.
 | `dss_source_feed` | NVARCHAR | Rohwert der Quelle (z.B. Ordnerpfad), bevor `dss_record_source` normiert wurde |
 | `dss_export_datum` | DATETIME2 | Exportzeitpunkt, aus dem Dateinamen abgeleitet — für „letzter Export gewinnt"-Deduplizierung |
 
-> **Lineage-Spalten gehören nie in den Hashdiff.** Sonst erzeugt jeder Export eine neue
-> Satellite-Version, obwohl sich fachlich nichts geändert hat.
+> **Lineage-Spalten gehören nie in den Hashdiff.** Sonst erzeugt jeder Export eine neue Satellite-Version, obwohl sich fachlich nichts geändert hat.
 
 #### Security
 
@@ -126,13 +121,11 @@ ISNULL(LTRIM(RTRIM(CAST(<spalte> AS NVARCHAR(MAX)))), '-1')
 | 2 | `'default'` — reserviert für einen Collision-Code (Quellsystem-Kontext) |
 | 3 … n | die Business-Key-Spalten |
 
-Beispiele: `default||default||4711` (ein Schlüssel),
-`default||default||4711||1||2||99` (zusammengesetzter Schlüssel).
+Beispiele: `default||default||4711` (ein Schlüssel), `default||default||4711||1||2||99` (zusammengesetzter Schlüssel).
 
 #### Beziehung zum Hash-Key
 
-Der Hash-Key wird **nicht** aus `dss_business_key` gebildet, sondern direkt aus den
-Business-Key-Spalten in `hashed_columns`:
+Der Hash-Key wird **nicht** aus `dss_business_key` gebildet, sondern direkt aus den Business-Key-Spalten in `hashed_columns`:
 
 ```yaml
 derived_columns:
@@ -141,33 +134,24 @@ hashed_columns:
   hk_kreditorenbeleg: "BELNR"
 ```
 
-`dss_business_key` ist die **lesbare Form** des Schlüssels — für Prüfungen und Fehlersuche.
-Die beiden `'default'`-Segmente fließen nicht in den Hash ein.
+`dss_business_key` ist die **lesbare Form** des Schlüssels — für Prüfungen und Fehlersuche. Die beiden `'default'`-Segmente fließen nicht in den Hash ein.
 
-> Die Business-Key-Spalten in `dss_business_key` und in `hashed_columns` müssen dieselben
-> sein, in derselben Reihenfolge. Sonst beschreibt die Klartext-Spalte einen anderen
-> Schlüssel als der Hash.
+> Die Business-Key-Spalten in `dss_business_key` und in `hashed_columns` müssen dieselben sein, in derselben Reihenfolge. Sonst beschreibt die Klartext-Spalte einen anderen Schlüssel als der Hash.
 
 #### Primär-Hub vs. FK-Hub
 
-**Jeder Hub hat genau eine Spalte `dss_business_key` — immer unter diesem Namen,
-ohne Suffix.**
+**Jeder Hub hat genau eine Spalte `dss_business_key` — immer unter diesem Namen, ohne Suffix.**
 
-Ein Staging-Model hat eine Haupt-Entität, speist aber oft mehrere Hubs — etwa das
-Hauptbuch-Staging den Hub des Hauptbuchs *und* die Hubs von Konto und Kostenstelle
-(Fremdschlüssel). Sein `dss_business_key` gehört der Haupt-Entität.
+Ein Staging-Model hat eine Haupt-Entität, speist aber oft mehrere Hubs — etwa das Hauptbuch-Staging den Hub des Hauptbuchs *und* die Hubs von Konto und Kostenstelle (Fremdschlüssel). Sein `dss_business_key` gehört der Haupt-Entität.
 
 | Hub-Typ | Beispiel | Quelle des `dss_business_key` |
 |---|---|---|
 | **Primär-Hub** — Haupt-Entität des Stagings | `hub_hauptbuch` | direkt aus dem Staging |
 | **FK-Hub** — Fremdschlüssel im Staging | `hub_konto` aus dem Hauptbuch-Staging | aus einer **eigenen FK-Staging-View** |
 
-**Der `dss_business_key` des Stagings darf nie in einen FK-Hub.** In `hub_konto` stünde
-sonst die Hauptbuch-Zeilennummer.
+**Der `dss_business_key` des Stagings darf nie in einen FK-Hub.** In `hub_konto` stünde sonst die Hauptbuch-Zeilennummer.
 
-Umbenennen im Hub geht nicht — `automate_dv.hub()` übernimmt Zusatzspalten nur unter
-ihrem Namen. Deshalb bekommt jeder FK-Hub eine schlanke Staging-View, die den Schlüssel
-*seiner* Entität unter dem Namen `dss_business_key` bildet:
+Umbenennen im Hub geht nicht — `automate_dv.hub()` übernimmt Zusatzspalten nur unter ihrem Namen. Deshalb bekommt jeder FK-Hub eine schlanke Staging-View, die den Schlüssel *seiner* Entität unter dem Namen `dss_business_key` bildet:
 
 ```sql
 -- models/staging/<staging>__<entity>.sql   (View, reine Projektion)
@@ -182,8 +166,7 @@ SELECT
 FROM {{ ref('<staging>') }}
 ```
 
-Der FK-Hub liest dann aus dieser View (`source_model: "<staging>__<entity>"`). Die
-Deduplizierung je Hash-Key übernimmt `automate_dv.hub()` selbst.
+Der FK-Hub liest dann aus dieser View (`source_model: "<staging>__<entity>"`). Die Deduplizierung je Hash-Key übernimmt `automate_dv.hub()` selbst.
 
 > **Stand im Projekt — acht FK-Hubs weichen ab:**
 >
@@ -192,6 +175,4 @@ Deduplizierung je Hash-Key übernimmt `automate_dv.hub()` selbst.
 > | `hub_konto`, `hub_kostenstelle`, `hub_kreditor`, `hub_zeitreihegruppe` | kein `dss_business_key` |
 > | `hub_sim`, `hub_msisdn`, `hub_vertrag`, `hub_kunde` | Spalte heißt `dss_business_key_<entität>` |
 >
-> Keine Datenfehler — der Klartext-Schlüssel steht jeweils in der `src_nk`-Spalte bzw.
-> der Suffix-Spalte. Die Angleichung ist eine Modelländerung am Vault (Spalte ergänzen
-> bzw. umbenennen, bestehende Zeilen nachbefüllen) und bewusst noch nicht erfolgt.
+> Keine Datenfehler — der Klartext-Schlüssel steht jeweils in der `src_nk`-Spalte bzw. der Suffix-Spalte. Die Angleichung ist eine Modelländerung am Vault (Spalte ergänzen bzw. umbenennen, bestehende Zeilen nachbefüllen) und bewusst noch nicht erfolgt.

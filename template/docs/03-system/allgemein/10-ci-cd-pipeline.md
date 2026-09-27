@@ -14,8 +14,7 @@ Das Projekt wird über zwei parallel gepflegte Pipelines deployed:
 | **GitLab CI** | `.gitlab-ci.yml` | Primäre Pipeline in der Mandanten-Umgebung (Merge-Request-Validierung, Deployments dev/test/prod, geplante Läufe) |
 | **GitHub Actions** | `.github/workflows/` | Parallel gepflegte Workflows für die Entwicklung im Herstellerrepository |
 
-Beide führen dieselben dbt-Kommandos gegen dieselben Targets aus; unterscheidet sich nur die
-Trigger-Mechanik. Wird ein Deployment-Schritt geändert, ist er in **beiden** Dateien nachzuziehen.
+Beide führen dieselben dbt-Kommandos gegen dieselben Targets aus; unterscheidet sich nur die Trigger-Mechanik. Wird ein Deployment-Schritt geändert, ist er in **beiden** Dateien nachzuziehen.
 
 ### 10.1 Stages und Jobs (GitLab CI)
 
@@ -32,15 +31,12 @@ Trigger-Mechanik. Wird ein Deployment-Schritt geändert, ist er in **beiden** Da
 | deploy | `deploy:prod:full-refresh` | manuell | Full Refresh gegen Produktion |
 | deploy | Domänen-Jobs (`*:<domäne>-load`, `*-fastload`, `*-full-refresh`) | manuell | Laden getaggter Domänen (Massendaten) in definierter Reihenfolge Staging → PSA → Vault → Mart |
 
-Jobs mit langen Laufzeiten haben eigene `timeout`-Werte (bis 3 Stunden); der ADF-getriggerte
-Job läuft mit `resource_group`, damit sich zwei Läufe nicht überholen.
+Jobs mit langen Laufzeiten haben eigene `timeout`-Werte (bis 3 Stunden); der ADF-getriggerte Job läuft mit `resource_group`, damit sich zwei Läufe nicht überholen.
 
 ### 10.2 Ausführungsumgebung
 
-- **GitLab:** Shell-Executor auf einem dedizierten Runner (Tag `<mandant>-dbt`); dbt, Python
-  und der ODBC-Treiber sind auf dem Runner-Host installiert. `before_script` führt `dbt deps` aus.
-- **GitHub:** Self-hosted Runner (Labels `self-hosted, linux, dbt, aca`), betrieben als
-  Container-App bzw. VM.
+- **GitLab:** Shell-Executor auf einem dedizierten Runner (Tag `<mandant>-dbt`); dbt, Python und der ODBC-Treiber sind auf dem Runner-Host installiert. `before_script` führt `dbt deps` aus.
+- **GitHub:** Self-hosted Runner (Labels `self-hosted, linux, dbt, aca`), betrieben als Container-App bzw. VM.
 - `profiles.yml` wird im Job aus CI-Variablen erzeugt (`DBT_PROFILES_DIR` = Projektverzeichnis).
 
 ### 10.3 Variablen und Umgebungen

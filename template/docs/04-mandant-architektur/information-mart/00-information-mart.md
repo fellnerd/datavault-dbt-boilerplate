@@ -10,8 +10,7 @@ tags:
 
 # Information Mart
 
-Star Schemas je Domäne — Kopien aus `design/mart/er-mart-<domain>.mmd`. Muster:
-[Objekte anlegen → Mart](../../02-entwickler/04-objekte-anlegen/mart/00-mart.md).
+Star Schemas je Domäne — Kopien aus `design/mart/er-mart-<domain>.mmd`. Muster: [Objekte anlegen → Mart](../../02-entwickler/04-objekte-anlegen/mart/00-mart.md).
 
 ## Inhalt
 

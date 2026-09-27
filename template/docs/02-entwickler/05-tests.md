@@ -7,9 +7,7 @@ tags:
 
 # Tests
 
-Tests stehen als **Generic Tests** in den `_…__models.yml` (Schlüsselwort `data_tests`) oder
-als **Singular Tests** (`tests/assert_<prüfung>.sql`, liefert die fehlerhaften Zeilen —
-0 Zeilen = bestanden).
+Tests stehen als **Generic Tests** in den `_…__models.yml` (Schlüsselwort `data_tests`) oder als **Singular Tests** (`tests/assert_<prüfung>.sql`, liefert die fehlerhaften Zeilen — 0 Zeilen = bestanden).
 
 ## Pflichttests je Objekttyp
 
@@ -43,8 +41,7 @@ models:
 
 ## Singular Tests
 
-Für Regeln, die ein Generic Test nicht abdeckt — z. B. Grain eines Satellites, fachliche
-Abstimmungen, Security:
+Für Regeln, die ein Generic Test nicht abdeckt — z. B. Grain eines Satellites, fachliche Abstimmungen, Security:
 
 ```sql
 -- tests/assert_sat_<entity>__<quelle>_eine_aktuelle_version.sql
@@ -75,8 +72,7 @@ Weitere fachliche Prüfabfragen: [Daten prüfen](../01-benutzer/08-daten-pruefen
                 tags: ['nightly']       # läuft nur im nächtlichen Testlauf
 ```
 
-- `tag:nightly` für Tests mit vollen Scans großer Tabellen und für alle Tests auf Staging
-  Views (sie lesen live Parquet-Dateien). Die Merge-Request-Validierung schließt sie aus.
+- `tag:nightly` für Tests mit vollen Scans großer Tabellen und für alle Tests auf Staging Views (sie lesen live Parquet-Dateien). Die Merge-Request-Validierung schließt sie aus.
 - `severity: warn` nur für bekannte, dokumentierte Datenqualitätsprobleme der Quelle.
 
 ## Ausführen
@@ -90,8 +86,7 @@ dbt test --select tag:nightly path:models/staging     # wie der Nightly-Lauf
 dbt test --select test_type:singular                  # nur Singular Tests
 ```
 
-Fehlgeschlagene Zeilen ansehen: `dbt test --select <test> --store-failures` schreibt sie in
-ein Audit-Schema; alternativ das kompilierte Test-SQL aus `target/compiled/…/tests/` ausführen.
+Fehlgeschlagene Zeilen ansehen: `dbt test --select <test> --store-failures` schreibt sie in ein Audit-Schema; alternativ das kompilierte Test-SQL aus `target/compiled/…/tests/` ausführen.
 
 ---
 

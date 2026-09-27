@@ -11,8 +11,7 @@ tags:
 
 # Objekte anlegen
 
-Vorlagen und Regeln für jedes Objekt vom Quelldatei-Anschluss bis zur publizierten
-Mart-View. Welches Objekt wann passt: [Data Vault 2.1 Leitfaden](../01-data-vault-leitfaden.md).
+Vorlagen und Regeln für jedes Objekt vom Quelldatei-Anschluss bis zur publizierten Mart-View. Welches Objekt wann passt: [Data Vault 2.1 Leitfaden](../01-data-vault-leitfaden.md).
 
 ## Ablauf für eine neue Entität
 
@@ -31,10 +30,7 @@ Mart-View. Welches Objekt wann passt: [Data Vault 2.1 Leitfaden](../01-data-vaul
 | 9 | Doku + Tests in `_…__models.yml` | im jeweiligen Ordner | [Tests](../05-tests.md) |
 | 10 | Bauen, prüfen, Merge Request | — | [Deployment Workflow](../06-deployment-workflow.md), [Checklisten](../08-checklisten.md) |
 
-`_common` (Schema `vault`) für Entitäten, die aus mehreren Quellen gespeist werden oder
-quellübergreifend genutzt werden; `<concept>` (Schema `vault_<concept>`) für Domänen mit
-eigenem Ladefenster. Kurzfassung mit durchgehendem Beispiel:
-[Neue Entity hinzufügen](../../01-benutzer/07-neue-entity-hinzufuegen.md).
+`_common` (Schema `vault`) für Entitäten, die aus mehreren Quellen gespeist werden oder quellübergreifend genutzt werden; `<concept>` (Schema `vault_<concept>`) für Domänen mit eigenem Ladefenster. Kurzfassung mit durchgehendem Beispiel: [Neue Entity hinzufügen](../../01-benutzer/07-neue-entity-hinzufuegen.md).
 
 ## Objekttypen
 
@@ -62,14 +58,11 @@ eigenem Ladefenster. Kurzfassung mit durchgehendem Beispiel:
 
 - **Dateiname = Objektname**, Namen nach [Namenskonventionen](../../01-benutzer/04-namenskonventionen.md).
 - **Kopfkommentar** in jedem Modell: Objekt, Quelle, Business Key/FKs, Version mit Datum.
-- **automate_dv-Makros** statt handgeschriebenem SQL für Hub, Satellite, Link, Stage;
-  Konfiguration im `yaml_metadata`-Block, der an das Makro übergeben wird.
-- **`as_columnstore=false`** und **`create_hash_index`** als Post-Hook auf jedem
-  inkrementellen Vault-Objekt.
+- **automate_dv-Makros** statt handgeschriebenem SQL für Hub, Satellite, Link, Stage; Konfiguration im `yaml_metadata`-Block, der an das Makro übergeben wird.
+- **`as_columnstore=false`** und **`create_hash_index`** als Post-Hook auf jedem inkrementellen Vault-Objekt.
 - **Jedes Modell in `_…__models.yml`** mit Beschreibung, Spalten, Datentyp und Tests.
 - **Kein `--full-refresh`** auf Vault-Tabellen ohne Absprache — Historienverlust.
-- Der Lint-Hook des Plugins `dv-toolkit` prüft Pflichtspalten und Namensregeln nach jedem
-  Speichern.
+- Der Lint-Hook des Plugins `dv-toolkit` prüft Pflichtspalten und Namensregeln nach jedem Speichern.
 
 ## Schema-YAML (Vorlage)
 

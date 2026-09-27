@@ -26,8 +26,7 @@ Quellsysteme ─► Landing Zone ─► Staging (stg) ─► Raw Vault (vault*) 
 
 ### Hub — „die Visitenkarte“
 
-Ein Hub hält jeden fachlichen Schlüssel (Business Key) **genau einmal** — z. B. jede
-Kundennummer. Er sagt: *dieses Objekt existiert*, seit wann und aus welcher Quelle.
+Ein Hub hält jeden fachlichen Schlüssel (Business Key) **genau einmal** — z. B. jede Kundennummer. Er sagt: *dieses Objekt existiert*, seit wann und aus welcher Quelle.
 
 ```
 hub_kunde
@@ -40,9 +39,7 @@ hub_kunde
 
 ### Satellite — „der Aktenordner“
 
-Ein Satellite hält die beschreibenden Attribute und **jede Änderung als eigene Zeile**.
-Je Quellsystem gibt es einen eigenen Satellite am selben Hub (`sat_kunde__crm`,
-`sat_kunde__erp`).
+Ein Satellite hält die beschreibenden Attribute und **jede Änderung als eigene Zeile**. Je Quellsystem gibt es einen eigenen Satellite am selben Hub (`sat_kunde__crm`, `sat_kunde__erp`).
 
 ```
 sat_kunde__crm  (Kunde 4711)
@@ -52,8 +49,7 @@ sat_kunde__crm  (Kunde 4711)
 
 ### Link — „die Verbindung“
 
-Ein Link verbindet Hubs, z. B. welcher Auftrag zu welchem Kunden gehört. Er kennt keine
-Attribute; beschreibt eine Beziehung selbst etwas, bekommt sie einen eigenen Satellite.
+Ein Link verbindet Hubs, z. B. welcher Auftrag zu welchem Kunden gehört. Er kennt keine Attribute; beschreibt eine Beziehung selbst etwas, bekommt sie einen eigenen Satellite.
 
 ```
 hub_auftrag ──── link_auftrag_kunde ──── hub_kunde
@@ -75,8 +71,7 @@ hub_auftrag ──── link_auftrag_kunde ──── hub_kunde
 
 ## Information Mart — der Stern
 
-Für Berichte wird der Vault in **Dimensionen** (wer, was, wo, wann) und **Fakten**
-(Beträge, Mengen) übersetzt. Power BI verbindet sie über die Schlüssel `<dim>_key`.
+Für Berichte wird der Vault in **Dimensionen** (wer, was, wo, wann) und **Fakten** (Beträge, Mengen) übersetzt. Power BI verbindet sie über die Schlüssel `<dim>_key`.
 
 ```
               dim_kunde_v
@@ -84,9 +79,7 @@ Für Berichte wird der Vault in **Dimensionen** (wer, was, wo, wann) und **Fakte
 dim_date_v ── fakt_umsatz_v ── dim_produkt_v
 ```
 
-Wie Spalten heißen und was sie bedeuten: [Wichtige Spalten verstehen](03-wichtige-spalten-verstehen.md).
-Welche Objekte es konkret gibt: `dbt docs serve` bzw. die
-[projektspezifische Dokumentation](../04-mandant-architektur/00-mandant-architektur.md).
+Wie Spalten heißen und was sie bedeuten: [Wichtige Spalten verstehen](03-wichtige-spalten-verstehen.md). Welche Objekte es konkret gibt: `dbt docs serve` bzw. die [projektspezifische Dokumentation](../04-mandant-architektur/00-mandant-architektur.md).
 
 ---
 

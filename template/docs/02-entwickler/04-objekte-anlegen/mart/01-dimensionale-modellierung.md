@@ -7,8 +7,7 @@ tags:
 
 # Dimensionale Modellierung
 
-Der Mart bildet Kimball-Star-Schemas auf dem Vault: Dimensionen (beschreibend) und Fakten
-(Messwerte), verbunden über deterministische BIGINT-Surrogate-Keys.
+Der Mart bildet Kimball-Star-Schemas auf dem Vault: Dimensionen (beschreibend) und Fakten (Messwerte), verbunden über deterministische BIGINT-Surrogate-Keys.
 
 ## Hausmuster: Tabelle + publizierte View
 
@@ -22,10 +21,7 @@ Vault (Current Views, PIT, Links) ─► dim_<entity> / fakt_<inhalt>      Tabel
 | `dim_*`, `fakt_*` | `table` (Voreinstellung für `mart` in `dbt_project.yml`), `as_columnstore=false` | gesamte Logik | nur Entwickler |
 | `dim_*_v`, `fakt_*_v` | `view` | `SELECT *` aus der Tabelle + `rls_filter`/`cls_mask` bzw. Join auf Träger-Dimensionen | BI-Tools (View-Grants per Hook) |
 
-Warum: Nicht materialisierte View-Ketten werden bei **jedem** DirectQuery-Aufruf komplett
-neu berechnet, und Ketten bis zu einer External Table brechen, sobald die Landing Zone
-gerade beschrieben wird. Triviale Dimensionen ohne nennenswerte Joins dürfen direkt als
-`_v`-View gebaut werden.
+Warum: Nicht materialisierte View-Ketten werden bei **jedem** DirectQuery-Aufruf komplett neu berechnet, und Ketten bis zu einer External Table brechen, sobald die Landing Zone gerade beschrieben wird. Triviale Dimensionen ohne nennenswerte Joins dürfen direkt als `_v`-View gebaut werden.
 
 ## Surrogate Keys
 
@@ -34,10 +30,8 @@ gerade beschrieben wird. Triviale Dimensionen ohne nennenswerte Joins dürfen di
 -- = ABS(CONVERT(BIGINT, HASHBYTES('MD5', CAST(<bk_spalte> AS NVARCHAR(MAX)))))
 ```
 
-- Dimension (PK) und Fakt (FK) rufen `surrogate_key()` auf **derselben** Business-Key-Spalte
-  auf — nur so matchen die Joins. Nie `ROW_NUMBER()` oder Identity (ändert sich bei Rebuilds).
-- Zusammengesetzter Schlüssel: Spalten vorher verketten, z. B.
-  `{{ surrogate_key("CONCAT_WS('||', mandant, kst)") }}`.
+- Dimension (PK) und Fakt (FK) rufen `surrogate_key()` auf **derselben** Business-Key-Spalte auf — nur so matchen die Joins. Nie `ROW_NUMBER()` oder Identity (ändert sich bei Rebuilds).
+- Zusammengesetzter Schlüssel: Spalten vorher verketten, z. B. `{{ surrogate_key("CONCAT_WS('||', mandant, kst)") }}`.
 - Datum: `CONVERT(INT, FORMAT(<datum>, 'yyyyMMdd')) AS datum_key` gegen `dim_date`.
 
 ## SCD1 oder SCD2?
@@ -68,10 +62,7 @@ FROM {{ ref('hub_<entity>') }} h
 JOIN {{ ref('sat_<entity>__<quelle>') }} s ON s.hk_<entity> = h.hk_<entity>
 ```
 
-Der Fakt wählt die Version über das Ereignisdatum:
-`JOIN dim_<entity> d ON d.<dim>_id = f.<bk> AND f.<datum> >= d.gueltig_von AND f.<datum> < d.gueltig_bis`.
-Fachliche Gültigkeiten der Quelle (z. B. `gueltig_von` einer Zeitreihe) haben Vorrang vor
-Ladezeitpunkten, wenn sie vorhanden sind.
+Der Fakt wählt die Version über das Ereignisdatum: `JOIN dim_<entity> d ON d.<dim>_id = f.<bk> AND f.<datum> >= d.gueltig_von AND f.<datum> < d.gueltig_bis`. Fachliche Gültigkeiten der Quelle (z. B. `gueltig_von` einer Zeitreihe) haben Vorrang vor Ladezeitpunkten, wenn sie vorhanden sind.
 
 ## Pflichtspalten
 
@@ -139,9 +130,7 @@ FROM {{ ref('link_<e1>_<e2>') }} l
 JOIN {{ ref('sat_<ereignis>__<quelle>_current_v') }} s ON s.hk_<ereignis> = l.hk_<ereignis>
 ```
 
-`fakt_<inhalt>_v.sql` joint die Träger-Dimensionen (`INNER JOIN dim_<x>_v`), damit der Fakt
-deren Zeilenfilter erbt — Details und die vier Regeln: [Security (RLS/CLS)](03-security-rls-cls.md),
-Referenz: [Security → RLS dimensional](../../../03-system/security/04-rls-dimensional.md).
+`fakt_<inhalt>_v.sql` joint die Träger-Dimensionen (`INNER JOIN dim_<x>_v`), damit der Fakt deren Zeilenfilter erbt — Details und die vier Regeln: [Security (RLS/CLS)](03-security-rls-cls.md), Referenz: [Security → RLS dimensional](../../../03-system/security/04-rls-dimensional.md).
 
 ## YAML und Diagramm
 

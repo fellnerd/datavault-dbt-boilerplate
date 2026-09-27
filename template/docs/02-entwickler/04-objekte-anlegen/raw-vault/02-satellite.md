@@ -7,11 +7,9 @@ tags:
 
 # Satellite erstellen
 
-Ein Satellite hält die beschreibenden Attribute eines Hubs (oder Links) und historisiert
-sie: Ändert sich der Inhalt, entsteht eine neue Zeile.
+Ein Satellite hält die beschreibenden Attribute eines Hubs (oder Links) und historisiert sie: Ändert sich der Inhalt, entsteht eine neue Zeile.
 
-Namenskonvention: `sat_<entity>__<quelle>` — der Quell-Suffix ist Pflicht, denn je Quelle
-gibt es einen eigenen Satellite.
+Namenskonvention: `sat_<entity>__<quelle>` — der Quell-Suffix ist Pflicht, denn je Quelle gibt es einen eigenen Satellite.
 
 ## Template
 
@@ -60,30 +58,23 @@ src_source: "dss_record_source"
 
 ## Die Regeln, die man kennen muss
 
-**Payload = Hashdiff-Spalten.** Die Spalten in `src_payload` müssen exakt denen
-entsprechen, aus denen im Staging `hd_<entity>` gebildet wird. Weichen sie ab, erkennt
-der Satellite bei jedem Lauf eine Änderung und schreibt Dauer-Deltas.
+**Payload = Hashdiff-Spalten.** Die Spalten in `src_payload` müssen exakt denen entsprechen, aus denen im Staging `hd_<entity>` gebildet wird. Weichen sie ab, erkennt der Satellite bei jedem Lauf eine Änderung und schreibt Dauer-Deltas.
 
-**`dss_create_datetime` in `src_extra_columns`, nie im Payload.** Im Payload wäre es Teil
-des Hashdiff — jede Zeile sähe dann bei jedem Lauf wie eine neue Version aus.
+**`dss_create_datetime` in `src_extra_columns`, nie im Payload.** Im Payload wäre es Teil des Hashdiff — jede Zeile sähe dann bei jedem Lauf wie eine neue Version aus.
 
-**Lineage-Spalten nie in den Payload** (`dss_source_file_name`, `dss_run_id`,
-`dss_stage_timestamp` …) — aus demselben Grund.
+**Lineage-Spalten nie in den Payload** (`dss_source_file_name`, `dss_run_id`, `dss_stage_timestamp` …) — aus demselben Grund.
 
 **`alias: "HASHDIFF"`** ist Pflicht, nicht der `hd_*`-Name.
 
-**Beide Post-Hooks.** Ohne `update_satellite_current_flag` bleiben `dss_is_current` und
-`dss_end_date` leer, und die `_current_v`-Views liefern nichts Sinnvolles.
+**Beide Post-Hooks.** Ohne `update_satellite_current_flag` bleiben `dss_is_current` und `dss_end_date` leer, und die `_current_v`-Views liefern nichts Sinnvolles.
 
 ## Current View
 
-Zu jedem Satellite gehört eine View mit nur der aktuellen Version je Schlüssel —
-siehe [Current View erstellen](../business-vault/01-current-view.md).
+Zu jedem Satellite gehört eine View mit nur der aktuellen Version je Schlüssel — siehe [Current View erstellen](../business-vault/01-current-view.md).
 
 ## Sondertypen
 
-Für abweichende Grain-Anforderungen gibt es eigene Muster, die **nicht** alle
-`dss_create_datetime` führen:
+Für abweichende Grain-Anforderungen gibt es eigene Muster, die **nicht** alle `dss_create_datetime` führen:
 
 | Typ | Wann | Anleitung |
 |---|---|---|

@@ -60,14 +60,10 @@ models:
 
 Wichtige Punkte:
 
-- **Schema-Konvention:** `stg` · `vault` / `vault_<concept>` · `mart` / `mart_<domain>`.
-  Der dbt-Standard-Prefix wird von `generate_schema_name` unterdrückt.
-- **Tags je Domäne:** Domänen mit eigenem Ladefenster (z. B. CDR-Massendaten, Energiedaten)
-  tragen ein Tag und werden über eigene CI-Jobs geladen, nicht im regulären `dbt run`.
-- **Business Vault liegt im Mart-Schema:** Objekte, die Power BI direkt konsumiert, dürfen
-  nicht im `vault`-Schema liegen — Endnutzer sehen ausschliesslich `mart*`.
-- **Seeds:** Standard-Schema `vault`; Seeds mit operativem Charakter (z. B. Berechtigungs-
-  matrizen) werden explizit nach `stg` gelegt und erhalten `+column_types` (NVARCHAR für Umlaute).
+- **Schema-Konvention:** `stg` · `vault` / `vault_<concept>` · `mart` / `mart_<domain>`. Der dbt-Standard-Prefix wird von `generate_schema_name` unterdrückt.
+- **Tags je Domäne:** Domänen mit eigenem Ladefenster (z. B. CDR-Massendaten, Energiedaten) tragen ein Tag und werden über eigene CI-Jobs geladen, nicht im regulären `dbt run`.
+- **Business Vault liegt im Mart-Schema:** Objekte, die Power BI direkt konsumiert, dürfen nicht im `vault`-Schema liegen — Endnutzer sehen ausschliesslich `mart*`.
+- **Seeds:** Standard-Schema `vault`; Seeds mit operativem Charakter (z. B. Berechtigungsmatrizen) werden explizit nach `stg` gelegt und erhalten `+column_types` (NVARCHAR für Umlaute).
 
 ### 6.2 Azure SQL — Einschränkungen und Konventionen
 
@@ -75,5 +71,4 @@ Wichtige Punkte:
 - ❌ Keine Cross-Database-Queries → immer `{{ target.database }}` bzw. `ref()`/`source()`
 - ✅ External Tables auf ADLS Gen2 (PolyBase/OPENROWSET)
 - ✅ Native Row-Level- und Column-Level-Security (siehe [Sicherheit](07-sicherheit.md))
-- ⚠️ Inkrementelle Modelle laufen mit `incremental_strategy: append`; Schemaänderungen werden
-  über `on_schema_change: append_new_columns` ergänzt, geänderte Hash-Inputs erfordern `--full-refresh`
+- ⚠️ Inkrementelle Modelle laufen mit `incremental_strategy: append`; Schemaänderungen werden über `on_schema_change: append_new_columns` ergänzt, geänderte Hash-Inputs erfordern `--full-refresh`

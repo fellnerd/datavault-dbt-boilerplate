@@ -11,10 +11,7 @@ tags:
 
 # Raw Vault
 
-Der Raw Vault speichert alle Quelldaten **insert-only und vollständig historisiert** —
-ohne fachliche Umrechnung. Jedes Objekt ist `incremental` mit `append`, erzeugt von einem
-automate_dv-Makro. Schema `vault` (`models/raw_vault/_common/`) oder `vault_<concept>`
-(`models/raw_vault/<concept>/`).
+Der Raw Vault speichert alle Quelldaten **insert-only und vollständig historisiert** — ohne fachliche Umrechnung. Jedes Objekt ist `incremental` mit `append`, erzeugt von einem automate_dv-Makro. Schema `vault` (`models/raw_vault/_common/`) oder `vault_<concept>` (`models/raw_vault/<concept>/`).
 
 | # | Objekt | automate_dv | Grain (eine Zeile je …) | Pflicht-Post-Hooks |
 |---|--------|-------------|--------------------------|--------------------|

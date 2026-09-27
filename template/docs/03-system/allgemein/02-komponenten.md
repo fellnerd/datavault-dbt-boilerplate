@@ -33,8 +33,7 @@ Pro Mandant werden dieselben Bausteine verwendet; die Namen stehen in der Mandan
 | `mart`, `mart_<domain>` | Dimensionen, Fakten, `_v`-Views | Publizierte Konsumenten-Schicht (einzige Schemas mit Business-Grants) |
 | `sec` | `sec_user_privilege`, `sec_group_privilege`, `sec_special_user_privilege`, `fn_check_rls`, `fn_check_cls` | Security-Fundament für RLS/CLS (manuell via `security/`-Skripte deployed) |
 
-Das Schema eines Modells kommt aus `dbt_project.yml` (Ordner → Schema) in Verbindung mit dem
-Macro `generate_schema_name`, das den dbt-Standard-Prefix unterdrückt.
+Das Schema eines Modells kommt aus `dbt_project.yml` (Ordner → Schema) in Verbindung mit dem Macro `generate_schema_name`, das den dbt-Standard-Prefix unterdrückt.
 
 ### 2.3 dbt Packages
 
@@ -44,6 +43,4 @@ Macro `generate_schema_name`, das den dbt-Standard-Prefix unterdrückt.
 | `dbt_external_tables` | 0.12.0 | Deklarative External-Table-Verwaltung aus `sources.yml` |
 | `dbt_utils` | 1.3.3 | Allgemeine Utility-Macros (transitive Abhängigkeit) |
 
-Massgeblich sind `packages.yml` und `package-lock.yml`. Eigene Macros haben Vorrang vor denen
-des Packages — geregelt über `dispatch` in `dbt_project.yml`
-(`search_order: ['datavault', 'automate_dv']`).
+Massgeblich sind `packages.yml` und `package-lock.yml`. Eigene Macros haben Vorrang vor denen des Packages — geregelt über `dispatch` in `dbt_project.yml` (`search_order: ['datavault', 'automate_dv']`).

@@ -9,30 +9,21 @@ tags:
 
 ## Abfragen und Berichte
 
-- **Für Berichte nur `_v`-Views aus `mart*` verwenden.** Sie sind stabil benannt,
-  berechtigt und tragen die Zeilenfilter. Vault-Tabellen ändern sich mit der Modellierung.
-- **Aktuellen Stand über `dss_is_current = 'Y'` oder `…_current_v`**, nie über
-  `MAX(dss_load_date)` je Schlüssel selbst nachbauen.
-- **Stichtagsabfragen** über `dss_load_date`/`dss_end_date` (siehe
-  [Daten prüfen](08-daten-pruefen.md)) oder eine PIT-Tabelle, nicht über das Änderungsdatum
-  der Quelle.
+- **Für Berichte nur `_v`-Views aus `mart*` verwenden.** Sie sind stabil benannt, berechtigt und tragen die Zeilenfilter. Vault-Tabellen ändern sich mit der Modellierung.
+- **Aktuellen Stand über `dss_is_current = 'Y'` oder `…_current_v`**, nie über `MAX(dss_load_date)` je Schlüssel selbst nachbauen.
+- **Stichtagsabfragen** über `dss_load_date`/`dss_end_date` (siehe [Daten prüfen](08-daten-pruefen.md)) oder eine PIT-Tabelle, nicht über das Änderungsdatum der Quelle.
 - **Joins immer über `hk_*` bzw. `<dim>_key`**, nicht über Namen oder Texte.
-- **Ghost Records** (Hash `0000…`/`FFFF…`, Key `-1`) nicht herausfiltern, ohne zu prüfen,
-  wie viele Fakten daran hängen — sie zeigen fehlende Stammdaten an.
+- **Ghost Records** (Hash `0000…`/`FFFF…`, Key `-1`) nicht herausfiltern, ohne zu prüfen, wie viele Fakten daran hängen — sie zeigen fehlende Stammdaten an.
 
 ## Entwicklung
 
 1. **Branch von `dev` anlegen** (`feat/<thema>`), nie direkt auf `test`/`main` arbeiten.
-2. **Model First:** Entwurf und ER-Diagramm unter `design/` vor dem Code
-   (Skill `dv-design-sync`).
-3. **Business Key vor dem Hub prüfen** — Eindeutigkeit in der Quelle
-   ([Daten prüfen → Eindeutigkeit](08-daten-pruefen.md)).
+2. **Model First:** Entwurf und ER-Diagramm unter `design/` vor dem Code (Skill `dv-design-sync`).
+3. **Business Key vor dem Hub prüfen** — Eindeutigkeit in der Quelle ([Daten prüfen → Eindeutigkeit](08-daten-pruefen.md)).
 4. **Klein bauen:** `dbt build --select +<modell>+` statt `dbt run` über alles.
 5. **Kompiliertes SQL lesen**, bevor es gegen Test geht (`target/compiled/…`).
-6. **Jedes Modell dokumentieren und testen** (`_…__models.yml`: Beschreibung, Spalten,
-   `unique`/`not_null`/`relationships`).
-7. **Changelog und Design-Diagramm nachziehen**, dann Merge Request — die CI validiert
-   Kompilierung und Tests ([Deployment Workflow](../02-entwickler/06-deployment-workflow.md)).
+6. **Jedes Modell dokumentieren und testen** (`_…__models.yml`: Beschreibung, Spalten, `unique`/`not_null`/`relationships`).
+7. **Changelog und Design-Diagramm nachziehen**, dann Merge Request — die CI validiert Kompilierung und Tests ([Deployment Workflow](../02-entwickler/06-deployment-workflow.md)).
 
 ## Was man nicht tun sollte
 

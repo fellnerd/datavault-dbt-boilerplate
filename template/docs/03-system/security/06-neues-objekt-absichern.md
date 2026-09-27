@@ -7,8 +7,7 @@ tags:
 
 # Neues Mart-Objekt absichern
 
-Für Modellentwickler. Die Frage ist immer dieselbe: **Trägt das Objekt den Filter, oder
-erbt es ihn?**
+Für Modellentwickler. Die Frage ist immer dieselbe: **Trägt das Objekt den Filter, oder erbt es ihn?**
 
 ## Entscheidungsbaum
 
@@ -51,18 +50,11 @@ WHERE {{ rls_filter('<kontext>') }}
 
 Drei Dinge dabei:
 
-1. **Neuen Kontext** in [02 – sec-Schema](02-sec-schema.md) eintragen und in der Doku
-   ergänzen.
-2. **Plug-/Ghost-Zeilen** durchlassen, falls die Dimension welche hat:
-   `WHERE <key> < 0 OR {{ rls_filter(…) }}`.
-3. **Materialisieren.** Die Träger-Dimension liegt auf dem kritischen Pfad *jeder*
-   Fakt-Abfrage. Als View liest sie pro Abfrage ihre Quellen neu — bei
-   `dim_kostenstelle` waren das 1.938 statt 325 logische Reads, weil `ref_kostenstelle_v`
-   an einer externen Parquet-Tabelle hängt.
+1. **Neuen Kontext** in [02 – sec-Schema](02-sec-schema.md) eintragen und in der Doku ergänzen.
+2. **Plug-/Ghost-Zeilen** durchlassen, falls die Dimension welche hat: `WHERE <key> < 0 OR {{ rls_filter(…) }}`.
+3. **Materialisieren.** Die Träger-Dimension liegt auf dem kritischen Pfad *jeder* Fakt-Abfrage. Als View liest sie pro Abfrage ihre Quellen neu — bei `dim_kostenstelle` waren das 1.938 statt 325 logische Reads, weil `ref_kostenstelle_v` an einer externen Parquet-Tabelle hängt.
 
-> **Eine CTE hilft dagegen nicht.** Benannte CTEs sind in SQL Server keine
-> Materialisierungsgrenze — der Versuch machte es messbar schlechter (1.938 → 2.654 Reads).
-> Nur echte Materialisierung wirkt.
+> **Eine CTE hilft dagegen nicht.** Benannte CTEs sind in SQL Server keine Materialisierungsgrenze — der Versuch machte es messbar schlechter (1.938 → 2.654 Reads). Nur echte Materialisierung wirkt.
 
 ## B — Fakt, der erbt
 
@@ -104,8 +96,7 @@ SELECT f.* FROM fakt f INNER JOIN {{ ref('dim_…_v') }} d ON …
 
 ## C — Dimension ohne Zugriffsbezug
 
-Kein Filter. `dim_date`, `dim_buchungsstatus` und ähnliche tragen keine Kennzahlen; wer sie
-sieht, erfährt nichts Schützenswertes. Ein Filter würde nur Joins kaputtmachen.
+Kein Filter. `dim_date`, `dim_buchungsstatus` und ähnliche tragen keine Kennzahlen; wer sie sieht, erfährt nichts Schützenswertes. Ein Filter würde nur Joins kaputtmachen.
 
 ## D — Physischer Cache
 
@@ -113,9 +104,7 @@ sieht, erfährt nichts Schützenswertes. Ein Filter würde nur Joins kaputtmache
 {{ config(materialized='table', as_columnstore=false, tags=['dimension']) }}
 ```
 
-Kein Filter (ein benutzerabhängiger Filter kann nicht in einer Tabelle stehen), kein Grant
-(der Hook berechtigt nur Views). **Immer** eine `_v`-Wrapper-View dazu, sonst ist das
-Objekt für Konsumenten unerreichbar.
+Kein Filter (ein benutzerabhängiger Filter kann nicht in einer Tabelle stehen), kein Grant (der Hook berechtigt nur Views). **Immer** eine `_v`-Wrapper-View dazu, sonst ist das Objekt für Konsumenten unerreichbar.
 
 Namenskonvention: Tabelle ohne `_v`, View mit. Eine Tabelle mit `_v`-Suffix ist ein Fehler.
 

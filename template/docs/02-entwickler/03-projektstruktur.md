@@ -78,12 +78,9 @@ datavault-dbt/
 
 **Konventionen:**
 
-- `_common` enthält Objekte, die aus mehreren Quellen gespeist werden (Schema `vault`),
-  `<concept>` alles, was an ein Quellsystem oder eine Domäne gebunden ist (Schema `vault_<concept>`).
-- Domänen mit eigenem Ladefenster (Massendaten) tragen in `dbt_project.yml` ein Tag und werden
-  nicht vom regulären `dbt run` erfasst.
-- Satellites tragen das Quellsuffix `__<quelle>`, damit dieselbe Entität aus mehreren Quellen
-  historisiert werden kann.
+- `_common` enthält Objekte, die aus mehreren Quellen gespeist werden (Schema `vault`), `<concept>` alles, was an ein Quellsystem oder eine Domäne gebunden ist (Schema `vault_<concept>`).
+- Domänen mit eigenem Ladefenster (Massendaten) tragen in `dbt_project.yml` ein Tag und werden nicht vom regulären `dbt run` erfasst.
+- Satellites tragen das Quellsuffix `__<quelle>`, damit dieselbe Entität aus mehreren Quellen historisiert werden kann.
 
 ---
 

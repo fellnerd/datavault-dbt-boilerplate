@@ -12,11 +12,7 @@ tags:
 
 - dbt Logs: `logs/dbt.log`
 - Target-Artefakte: `target/` (`run_results.json`, kompiliertes SQL)
-- **Ladeprotokoll in der Datenbank:** der `on-run-end`-Hook `log_load_status()` schreibt je
-  dbt-Lauf einen Statuseintrag (Tabelle via `create_load_status_table`); die View
-  `vault.load_status_pending_v` zeigt an, ob seit dem letzten Lauf neue Quelldaten
-  eingetroffen sind. Das Skript `scripts/check_load_pending.py` wertet sie aus und steuert
-  den ADF-getriggerten CI-Job.
+- **Ladeprotokoll in der Datenbank:** der `on-run-end`-Hook `log_load_status()` schreibt je dbt-Lauf einen Statuseintrag (Tabelle via `create_load_status_table`); die View `vault.load_status_pending_v` zeigt an, ob seit dem letzten Lauf neue Quelldaten eingetroffen sind. Das Skript `scripts/check_load_pending.py` wertet sie aus und steuert den ADF-getriggerten CI-Job.
 - **Row Counts:** `dbt run-operation log_row_counts`
 - **RLS-Overhead messen:** `dbt run-operation measure_rls_overhead --args '{"relation": "<objekt>"}'`
 

@@ -10,9 +10,7 @@ tags:
 
 # Staging
 
-Die Staging-Schicht (Schema `stg`) macht Quelldateien als Tabellen lesbar und berechnet
-alles, was der Vault braucht: Hash Keys, Hash Diffs und `dss_*`-Metadaten. Sie verändert
-die Daten fachlich nicht (nur Hard Rules: Typ, Format, Trimmen, NULL-Platzhalter).
+Die Staging-Schicht (Schema `stg`) macht Quelldateien als Tabellen lesbar und berechnet alles, was der Vault braucht: Hash Keys, Hash Diffs und `dss_*`-Metadaten. Sie verändert die Daten fachlich nicht (nur Hard Rules: Typ, Format, Trimmen, NULL-Platzhalter).
 
 ```
 Landing Zone (Parquet) ─► ext_<concept>_<entity> ─► [<concept>_<entity>_dedup] ─► <concept>_<entity> ─► Vault
@@ -26,5 +24,4 @@ Landing Zone (Parquet) ─► ext_<concept>_<entity> ─► [<concept>_<entity>_
 | 2 | [Staging View](02-staging-view.md) | View | jede Quelle, die in den Vault geht |
 | 3 | [PSA](03-psa.md) | Incremental | große Dateien, mehrere Konsumenten, instabile Landing Zone |
 
-Staging Views lesen bei jedem Zugriff live die Parquet-Dateien. Deshalb laufen ihre Tests
-nicht in der Merge-Request-Validierung, sondern nachts ([Tests](../../05-tests.md)).
+Staging Views lesen bei jedem Zugriff live die Parquet-Dateien. Deshalb laufen ihre Tests nicht in der Merge-Request-Validierung, sondern nachts ([Tests](../../05-tests.md)).

@@ -11,20 +11,15 @@ Der Arbeitsablauf, wenn jemand Zugriff bekommen soll.
 
 ## Die wichtigste Regel vorweg
 
-> **Jeder Nutzer braucht auf JEDER Achse ein Recht — auch dort, wo er nicht eingeschränkt
-> ist.** Auf der freien Achse ist das Recht schlicht `<mandant>`.
+> **Jeder Nutzer braucht auf JEDER Achse ein Recht — auch dort, wo er nicht eingeschränkt ist.** Auf der freien Achse ist das Recht schlicht `<mandant>`.
 
-Grund: Die Fakt-Views joinen beide Dimensionen. Fehlt das Recht auf einer Achse, liefert
-diese Dimension null Zeilen, und der Join schneidet den Nutzer auf null — trotz korrektem
-Recht auf der anderen Achse.
+Grund: Die Fakt-Views joinen beide Dimensionen. Fehlt das Recht auf einer Achse, liefert diese Dimension null Zeilen, und der Join schneidet den Nutzer auf null — trotz korrektem Recht auf der anderen Achse.
 
 ## Schritt 1: Objektzugriff (OLS)
 
-Aufnahme in `<gruppen-prefix>-finance-employees-ro` (Entra ID, über die IT). Das gilt für **alle**
-Finance-Nutzer, eingeschränkt oder nicht.
+Aufnahme in `<gruppen-prefix>-finance-employees-ro` (Entra ID, über die IT). Das gilt für **alle** Finance-Nutzer, eingeschränkt oder nicht.
 
-Nach der Aufnahme wirkt der Zugriff mit dem nächsten `dbt run` bzw. nach erneuter
-Anmeldung.
+Nach der Aufnahme wirkt der Zugriff mit dem nächsten `dbt run` bzw. nach erneuter Anmeldung.
 
 ## Schritt 2: Zeilenrechte (RLS)
 
@@ -42,8 +37,7 @@ VALUES (N'<gruppen-prefix>-finance-full-ro', N'finance_kst',   N'<mandant>', N'V
 
 ### Fall B — der Nutzer ist eingeschränkt
 
-**Nicht** in die `-all-ro`-Gruppe aufnehmen — das Gruppenrecht würde die Einschränkung per
-ODER wieder aufheben. Stattdessen Einzelzeilen:
+**Nicht** in die `-all-ro`-Gruppe aufnehmen — das Gruppenrecht würde die Einschränkung per ODER wieder aufheben. Stattdessen Einzelzeilen:
 
 ```sql
 -- Beispiel: nur Kontogruppe "5 Personalaufwand", alle Kostenstellen
@@ -80,10 +74,7 @@ Für eine **ganze Gruppe** reicht der Pfad bis zur Gruppenebene:
 | Einzelnes Konto 61400 | voller Pfad aus `dss_sec_value_key` |
 
 > [!WARNING]
-> **Labels sind nicht verlässlich.** Die Matrix nennt `6a Übriger Betriebsaufwand`,
-> in `dim_konto` heißt die Gruppe `6a Uebriger Betriebsaufwand` — eine bekannte
-> Sharepoint-Encoding-Korrektur. Ein abgetippter Wert trifft nichts und bewirkt still
-> nichts. Bei Kontogruppen deshalb über den stabilen Präfix auflösen:
+> **Labels sind nicht verlässlich.** Die Matrix nennt `6a Übriger Betriebsaufwand`, in `dim_konto` heißt die Gruppe `6a Uebriger Betriebsaufwand` — eine bekannte Sharepoint-Encoding-Korrektur. Ein abgetippter Wert trifft nichts und bewirkt still nichts. Bei Kontogruppen deshalb über den stabilen Präfix auflösen:
 >
 > ```sql
 > SELECT DISTINCT konto_l2, dss_sec_value_key FROM mart_finance.dim_konto
@@ -124,24 +115,14 @@ Mit einem echten Login prüfen — siehe [07 – Verifizieren](07-verifizieren.m
 
 ## Viele Nutzer auf einmal
 
-Für eine ganze Berechtigungsmatrix lohnt sich Generieren statt Tippen: die
-Matrixwerte gegen `dim_konto` und `dim_kostenstelle` auflösen und daraus die
-`INSERT`-Anweisungen erzeugen. Beispiel:
-`security/privileges/insert_sec_user_privilege_finance.sql`
-— 57 Zeilen für 13 Nutzer, so entstanden.
+Für eine ganze Berechtigungsmatrix lohnt sich Generieren statt Tippen: die Matrixwerte gegen `dim_konto` und `dim_kostenstelle` auflösen und daraus die `INSERT`-Anweisungen erzeugen. Beispiel: `security/privileges/insert_sec_user_privilege_finance.sql` — 57 Zeilen für 13 Nutzer, so entstanden.
 
-> **Die Matrix selbst ist keine technische Quelle.** Gepflegt werden
-> Berechtigungen ausschließlich in `sec_user_privilege` und in den AD-Gruppen.
-> Eine Excel oder ein Seed daneben würde nur so aussehen, als wäre sie die
-> Wahrheit, und unbemerkt veralten. Der Abgleich „stimmt die Datenbank noch mit
-> dem, was der Fachbereich entschieden hat" ist bewusst ein manueller Schritt.
+> **Die Matrix selbst ist keine technische Quelle.** Gepflegt werden Berechtigungen ausschließlich in `sec_user_privilege` und in den AD-Gruppen. Eine Excel oder ein Seed daneben würde nur so aussehen, als wäre sie die Wahrheit, und unbemerkt veralten. Der Abgleich „stimmt die Datenbank noch mit dem, was der Fachbereich entschieden hat" ist bewusst ein manueller Schritt.
 
 **Beim Generieren zwei Dinge beachten:**
 
-1. Leere Matrix-Spalten sind in der Datenbank **NULL**, nicht `''`. Prüfungen
-   `ISNULL(spalte,'') = ''` schreiben, sonst fehlen die `<mandant>`-Zeilen der freien Achsen.
-2. Das Ergebnis **gegen die Matrix zurückrechnen**, bevor es ausgeführt wird: Anzahl Werte
-   je Achse und Nutzer muss übereinstimmen.
+1. Leere Matrix-Spalten sind in der Datenbank **NULL**, nicht `''`. Prüfungen `ISNULL(spalte,'') = ''` schreiben, sonst fehlen die `<mandant>`-Zeilen der freien Achsen.
+2. Das Ergebnis **gegen die Matrix zurückrechnen**, bevor es ausgeführt wird: Anzahl Werte je Achse und Nutzer muss übereinstimmen.
 
 ## Rechte entziehen
 
@@ -150,9 +131,7 @@ DELETE FROM sec.sec_user_privilege
 WHERE user_name = N'<upn>' AND security_context = N'finance_kst';
 ```
 
-Bei Austritt: Entfernen aus der Entra-Gruppe nimmt den **Objektzugriff**. Die RLS-Zeilen
-bleiben stehen und würden bei Wiedereintritt erneut greifen — beim Offboarding also
-bewusst mitlöschen.
+Bei Austritt: Entfernen aus der Entra-Gruppe nimmt den **Objektzugriff**. Die RLS-Zeilen bleiben stehen und würden bei Wiedereintritt erneut greifen — beim Offboarding also bewusst mitlöschen.
 
 ---
 

@@ -7,8 +7,7 @@ tags:
 
 # Erste Schritte
 
-Von einem leeren Rechner bis zum ersten erfolgreichen `dbt debug`. Getestete Versionen:
-Python 3.11, dbt-core 1.11, dbt-sqlserver 1.9, automate_dv 0.11.4, dbt_external_tables 0.12.0.
+Von einem leeren Rechner bis zum ersten erfolgreichen `dbt debug`. Getestete Versionen: Python 3.11, dbt-core 1.11, dbt-sqlserver 1.9, automate_dv 0.11.4, dbt_external_tables 0.12.0.
 
 ## 1. Voraussetzungen
 
@@ -47,13 +46,11 @@ dbt deps
 | `Datavault-UK/automate_dv` | 0.11.4 | Makros `stage()`, `hub()`, `sat()`, `link()`, `t_link()`, `eff_sat()`, `ma_sat()`, `pit()` — erzeugen das SQL der Vault-Objekte |
 | `dbt-labs/dbt_external_tables` | 0.12.0 | `stage_external_sources`: legt die External Tables aus `sources.yml` an |
 
-Die exakten Versionen sind in `packages.yml` bzw. `package-lock.yml` fixiert. Nach jeder
-Änderung an `packages.yml` erneut `dbt deps` ausführen.
+Die exakten Versionen sind in `packages.yml` bzw. `package-lock.yml` fixiert. Nach jeder Änderung an `packages.yml` erneut `dbt deps` ausführen.
 
 ## 3. Verbindung konfigurieren
 
-dbt liest das Profil `datavault` aus `profiles.yml`. Die Datei enthält Zugangsdaten und wird
-**nie** eingecheckt (steht in `.gitignore`). Vorlage: `profiles.yml.example` im Repository.
+dbt liest das Profil `datavault` aus `profiles.yml`. Die Datei enthält Zugangsdaten und wird **nie** eingecheckt (steht in `.gitignore`). Vorlage: `profiles.yml.example` im Repository.
 
 ```yaml
 datavault:
@@ -73,8 +70,7 @@ datavault:
     <mandant>:        { … database: <datenbank> … }
 ```
 
-Ablageort: im Projektordner (dbt findet ihn dort automatisch) oder in `~/.dbt/`. Bei
-`authentication: cli` vorher anmelden:
+Ablageort: im Projektordner (dbt findet ihn dort automatisch) oder in `~/.dbt/`. Bei `authentication: cli` vorher anmelden:
 
 ```bash
 az login
@@ -89,9 +85,7 @@ az account show          # richtige Subscription/Tenant?
 | `<mandant>-test` | Test / fachliche Abnahme | Pipeline, Entwickler im Ausnahmefall | `dbt run --target <mandant>-test` |
 | `<mandant>` | Produktion | **nur die Pipeline** | — |
 
-Konkrete Server- und Datenbanknamen: [Projektspezifische Dokumentation](../04-mandant-architektur/00-mandant-architektur.md).
-Test und Produktion werden über die Pipeline beliefert, siehe
-[Deployment Workflow](../02-entwickler/06-deployment-workflow.md).
+Konkrete Server- und Datenbanknamen: [Projektspezifische Dokumentation](../04-mandant-architektur/00-mandant-architektur.md). Test und Produktion werden über die Pipeline beliefert, siehe [Deployment Workflow](../02-entwickler/06-deployment-workflow.md).
 
 ## 5. Verbindung testen
 
@@ -99,13 +93,11 @@ Test und Produktion werden über die Pipeline beliefert, siehe
 dbt debug
 ```
 
-Erwartet: `Connection test: [OK connection ok]` und `All checks passed!`. Schlägt es fehl:
-[Troubleshooting → Verbindung](11-troubleshooting.md).
+Erwartet: `Connection test: [OK connection ok]` und `All checks passed!`. Schlägt es fehl: [Troubleshooting → Verbindung](11-troubleshooting.md).
 
 ## 6. Optional: Landing Zone erkunden
 
-Die Macros zum Durchsuchen von Parquet-Dateien brauchen ein SAS-Token des Storage-Containers
-(Leserechte, zeitlich begrenzt) als Umgebungsvariable:
+Die Macros zum Durchsuchen von Parquet-Dateien brauchen ein SAS-Token des Storage-Containers (Leserechte, zeitlich begrenzt) als Umgebungsvariable:
 
 ```bash
 export STAGE_FS_SAS="se=...&sp=rl&sv=...&sig=..."

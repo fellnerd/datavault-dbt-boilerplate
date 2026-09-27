@@ -7,10 +7,7 @@ tags:
 
 # Neue Entity hinzufügen
 
-Kurzablauf, um eine neue Quelltabelle bis in den Raw Vault zu bringen: External Table →
-Staging View → Hub → Satellite → Link. Jeder Schritt verweist auf die ausführliche
-Anleitung unter [Objekte anlegen](../02-entwickler/04-objekte-anlegen/00-objekte-anlegen.md).
-Beispiel: Quelle `crm`, Entität `auftrag` mit Fremdschlüssel auf `kunde`.
+Kurzablauf, um eine neue Quelltabelle bis in den Raw Vault zu bringen: External Table → Staging View → Hub → Satellite → Link. Jeder Schritt verweist auf die ausführliche Anleitung unter [Objekte anlegen](../02-entwickler/04-objekte-anlegen/00-objekte-anlegen.md). Beispiel: Quelle `crm`, Entität `auftrag` mit Fremdschlüssel auf `kunde`.
 
 ```
 sources.yml ─► ext_crm_auftrag ─► crm_auftrag (Staging View, Hashes)
@@ -78,9 +75,7 @@ Ausführlich: [Staging View](../02-entwickler/04-objekte-anlegen/staging/02-stag
                    source_model="crm_auftrag") }}
 ```
 
-Für `hub_kunde` (Fremdschlüssel) liest der Hub aus einer eigenen FK-Staging-View
-`crm_auftrag__kunde`, damit sein `dss_business_key` die Kundennummer enthält —
-[Hub → Primär- oder FK-Hub](../02-entwickler/04-objekte-anlegen/raw-vault/01-hub.md).
+Für `hub_kunde` (Fremdschlüssel) liest der Hub aus einer eigenen FK-Staging-View `crm_auftrag__kunde`, damit sein `dss_business_key` die Kundennummer enthält — [Hub → Primär- oder FK-Hub](../02-entwickler/04-objekte-anlegen/raw-vault/01-hub.md).
 
 ## 4. Satellite — `models/raw_vault/_common/satellites/sat_auftrag__crm.sql`
 
@@ -114,8 +109,7 @@ Der Link-Hash besteht aus den Business Keys **beider** Hubs in der Reihenfolge v
 
 ## 6. Dokumentieren, bauen, prüfen
 
-1. Modelle mit Spalten und Tests in `_staging__models.yml` bzw. `_<ordner>__models.yml`
-   eintragen (Hub: `unique` + `not_null` auf `hk_auftrag`, Satellite: `relationships` zum Hub).
+1. Modelle mit Spalten und Tests in `_staging__models.yml` bzw. `_<ordner>__models.yml` eintragen (Hub: `unique` + `not_null` auf `hk_auftrag`, Satellite: `relationships` zum Hub).
 2. Bauen und testen:
 
    ```bash
@@ -124,8 +118,7 @@ Der Link-Hash besteht aus den Business Keys **beider** Hubs in der Reihenfolge v
    ```
 
 3. Ergebnis prüfen: [Daten prüfen](08-daten-pruefen.md) (Eindeutigkeit, Waisen, Zeilenzahlen).
-4. Design-Diagramm unter `design/` und den [Changelog](../changelog.md) nachziehen,
-   Merge Request stellen ([Deployment Workflow](../02-entwickler/06-deployment-workflow.md)).
+4. Design-Diagramm unter `design/` und den [Changelog](../changelog.md) nachziehen, Merge Request stellen ([Deployment Workflow](../02-entwickler/06-deployment-workflow.md)).
 
 ---
 

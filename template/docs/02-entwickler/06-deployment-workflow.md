@@ -7,9 +7,7 @@ tags:
 
 # Deployment Workflow
 
-Wie eine Änderung vom lokalen Rechner in die Produktion kommt: Git-Branches, Merge Request,
-Review, fachliche Abnahme, Pipelines und Release. Technische Details der Pipeline-Jobs:
-[CI/CD Pipeline](../03-system/allgemein/10-ci-cd-pipeline.md).
+Wie eine Änderung vom lokalen Rechner in die Produktion kommt: Git-Branches, Merge Request, Review, fachliche Abnahme, Pipelines und Release. Technische Details der Pipeline-Jobs: [CI/CD Pipeline](../03-system/allgemein/10-ci-cd-pipeline.md).
 
 ## Branches und Umgebungen
 
@@ -28,15 +26,13 @@ feat/<thema> ──MR──► dev ──MR──► test ──MR──► main
 | `test` | Fachliche Abnahme | `<datenbank>-test` / `<mandant>-test` | manuell bzw. automatisch nach Quell-Load | nein, nur per MR |
 | `main` | Produktionsstand | `<datenbank>` / `<mandant>` | beim Release-Tag `v*` | nein, nur per MR |
 
-Branches `dev`, `test` und `main` sind geschützt (Push nur per Merge Request, Merge nur mit
-Freigabe und grüner Pipeline).
+Branches `dev`, `test` und `main` sind geschützt (Push nur per Merge Request, Merge nur mit Freigabe und grüner Pipeline).
 
 ## Ablauf einer Änderung
 
 ### 1. Auftrag und Branch
 
-- Jede Änderung hat ein Ticket (Jira/Issue) mit fachlicher Anforderung und
-  Akzeptanzkriterien.
+- Jede Änderung hat ein Ticket (Jira/Issue) mit fachlicher Anforderung und Akzeptanzkriterien.
 - Branch vom aktuellen `dev`:
 
   ```bash
@@ -53,13 +49,9 @@ dbt test --exclude tag:nightly path:models/staging # entspricht der MR-Validieru
 ```
 
 > [!WARNING]
-> Die Dev-Datenbank ist **gemeinsam**. Ein lokaler `dbt run` überschreibt die Objekte für
-> alle. Nur die eigenen Modelle selektieren, nie `--full-refresh` auf Vault-Tabellen,
-> Umbenennungen und Löschungen vorher abstimmen.
+> Die Dev-Datenbank ist **gemeinsam**. Ein lokaler `dbt run` überschreibt die Objekte für alle. Nur die eigenen Modelle selektieren, nie `--full-refresh` auf Vault-Tabellen, Umbenennungen und Löschungen vorher abstimmen.
 
-Zu jeder Änderung gehören: Modell-YAML (Beschreibung, Spalten, Tests), Design-Diagramm
-unter `design/` (Skill `dv-design-sync`), Doku-Kapitel falls betroffen und ein
-[Changelog](../changelog.md)-Eintrag.
+Zu jeder Änderung gehören: Modell-YAML (Beschreibung, Spalten, Tests), Design-Diagramm unter `design/` (Skill `dv-design-sync`), Doku-Kapitel falls betroffen und ein [Changelog](../changelog.md)-Eintrag.
 
 ### 3. Commit und Push
 
@@ -99,9 +91,7 @@ Beschreibung des Merge Requests:
 | Prüfung | ausgeführte Prüfabfragen und Ergebnis (Zeilenzahlen, Eindeutigkeit) |
 | Checkliste | [Checklisten → Pre-Merge](08-checklisten.md) abgehakt |
 
-Automatisch läuft die **CI-Validierung** gegen die Dev-Datenbank:
-`stage_external_sources` → `dbt compile` → `dbt test` (ohne `tag:nightly` und Staging-Tests).
-Ein Merge ist nur mit grüner Pipeline möglich.
+Automatisch läuft die **CI-Validierung** gegen die Dev-Datenbank: `stage_external_sources` → `dbt compile` → `dbt test` (ohne `tag:nightly` und Staging-Tests). Ein Merge ist nur mit grüner Pipeline möglich.
 
 **Review** (mindestens eine zweite Person, „Vier-Augen-Prinzip“) prüft:
 
@@ -111,24 +101,17 @@ Ein Merge ist nur mit grüner Pipeline möglich.
 - Security bei Mart-Objekten: nur `_v`-Views publiziert, RLS/CLS angewendet
 - Datenwirkung: kein unbeabsichtigter Full Refresh, keine Historienverluste
 
-Merge-Art: **Squash** für Feature-Branches (ein Commit je Änderung auf `dev`).
-Nach dem Merge deployt die Pipeline automatisch nach Dev (`stage_external_sources` →
-`dbt run` → `dbt test`) und der Feature-Branch wird gelöscht.
+Merge-Art: **Squash** für Feature-Branches (ein Commit je Änderung auf `dev`). Nach dem Merge deployt die Pipeline automatisch nach Dev (`stage_external_sources` → `dbt run` → `dbt test`) und der Feature-Branch wird gelöscht.
 
 ### 5. Promotion nach `test` und fachliche Abnahme
 
-- Merge Request `dev` → `test` (gesammelte Änderungen, Titel mit Kurzliste). Merge-Art:
-  **Merge Commit**, damit die Historie der einzelnen Änderungen erhalten bleibt.
-- Deployment nach Test: manuell per Pipeline-Button oder automatisch mit dem nächsten
-  Quell-Load (ADF-Übergabe, siehe [CI/CD](../03-system/allgemein/10-ci-cd-pipeline.md)).
-- **Fachliche Abnahme** durch den Fachbereich in der Test-Umgebung: Berichte bzw. Views
-  gegen Akzeptanzkriterien und Vergleichszahlen (Quellsystem, Altbericht) prüfen.
-  Ergebnis im Ticket festhalten (Abnahme erteilt / Mängel). Ohne Abnahme keine Produktion.
+- Merge Request `dev` → `test` (gesammelte Änderungen, Titel mit Kurzliste). Merge-Art: **Merge Commit**, damit die Historie der einzelnen Änderungen erhalten bleibt.
+- Deployment nach Test: manuell per Pipeline-Button oder automatisch mit dem nächsten Quell-Load (ADF-Übergabe, siehe [CI/CD](../03-system/allgemein/10-ci-cd-pipeline.md)).
+- **Fachliche Abnahme** durch den Fachbereich in der Test-Umgebung: Berichte bzw. Views gegen Akzeptanzkriterien und Vergleichszahlen (Quellsystem, Altbericht) prüfen. Ergebnis im Ticket festhalten (Abnahme erteilt / Mängel). Ohne Abnahme keine Produktion.
 
 ### 6. Release nach Produktion
 
-1. Merge Request `test` → `main`; Freigabe durch fachlichen Verantwortlichen **und**
-   technisch Verantwortlichen.
+1. Merge Request `test` → `main`; Freigabe durch fachlichen Verantwortlichen **und** technisch Verantwortlichen.
 2. Release-Tag setzen (Semantic Versioning):
 
    ```bash
@@ -143,8 +126,7 @@ Nach dem Merge deployt die Pipeline automatisch nach Dev (`stage_external_source
    | MINOR | neue Objekte, Quellen, Spalten |
    | PATCH | Fehlerbehebungen ohne Strukturänderung |
 
-3. Der Tag startet das Produktions-Deployment. Danach: Pipeline-Ergebnis und
-   `vault.load_status` prüfen, Changelog-Einträge mit der Version versehen.
+3. Der Tag startet das Produktions-Deployment. Danach: Pipeline-Ergebnis und `vault.load_status` prüfen, Changelog-Einträge mit der Version versehen.
 
 ## Standard-Pipelines
 
@@ -160,9 +142,7 @@ Nach dem Merge deployt die Pipeline automatisch nach Dev (`stage_external_source
 | Zeitplan nachts | Langsame Tests (`tag:nightly`, Staging) | `ci:nightly-tests` | geplanter Workflow |
 | Push auf `main` | dbt-Doku veröffentlichen | — | `docs.yml` |
 
-Welche davon im Repository aktiv sind, steht im Kapitel
-[CI/CD Pipeline](../03-system/allgemein/10-ci-cd-pipeline.md). Alle Deploy-Jobs einer
-Umgebung laufen nacheinander (Resource Group bzw. Concurrency), nie parallel.
+Welche davon im Repository aktiv sind, steht im Kapitel [CI/CD Pipeline](../03-system/allgemein/10-ci-cd-pipeline.md). Alle Deploy-Jobs einer Umgebung laufen nacheinander (Resource Group bzw. Concurrency), nie parallel.
 
 ## Freigaben im Überblick
 
@@ -177,18 +157,11 @@ Umgebung laufen nacheinander (Resource Group bzw. Concurrency), nie parallel.
 
 ## Sonderfälle
 
-**Hotfix** (Fehler in Produktion, der nicht warten kann): Branch `fix/<thema>` von `main`,
-Merge Request direkt nach `main` mit Freigabe, Patch-Tag (`v1.5.1`). Danach `main` in
-`test` und `dev` zurückführen, damit der Fix nicht verloren geht.
+**Hotfix** (Fehler in Produktion, der nicht warten kann): Branch `fix/<thema>` von `main`, Merge Request direkt nach `main` mit Freigabe, Patch-Tag (`v1.5.1`). Danach `main` in `test` und `dev` zurückführen, damit der Fix nicht verloren geht.
 
-**Full Refresh:** nur als eigener, bestätigter Job. Empfohlen (Referenzumsetzung in GitLab): der Job verlangt
-eine Variable `CONFIRM_FULL_REFRESH=<jobname>@<heutiges Datum UTC>` und bricht ohne sie ab.
-Vorher klären, welche Historie verloren geht (Quelle liefert nur den aktuellen Stand?).
+**Full Refresh:** nur als eigener, bestätigter Job. Empfohlen (Referenzumsetzung in GitLab): der Job verlangt eine Variable `CONFIRM_FULL_REFRESH=<jobname>@<heutiges Datum UTC>` und bricht ohne sie ab. Vorher klären, welche Historie verloren geht (Quelle liefert nur den aktuellen Stand?).
 
-**Rollback:** Code per `git revert` auf dem betroffenen Branch zurücknehmen und neu
-deployen. Daten im Raw Vault sind insert-only — falsch geladene Versionen bleiben stehen
-und werden durch die nächste korrekte Version abgelöst; ein Entfernen ist ein
-abgestimmter Eingriff mit Ticket. Mart-Objekte werden beim nächsten Lauf neu gebaut.
+**Rollback:** Code per `git revert` auf dem betroffenen Branch zurücknehmen und neu deployen. Daten im Raw Vault sind insert-only — falsch geladene Versionen bleiben stehen und werden durch die nächste korrekte Version abgelöst; ein Entfernen ist ein abgestimmter Eingriff mit Ticket. Mart-Objekte werden beim nächsten Lauf neu gebaut.
 
 **Manuelles Deployment** (Ausnahme, z. B. Pipeline-Störung):
 
@@ -201,12 +174,9 @@ dbt test  --target <mandant>-test --exclude tag:nightly path:models/staging
 
 ## Neue Umgebung aufsetzen
 
-1. Azure-Ressourcen: SQL Server/Datenbank, Storage, Firewall (Infrastruktur-Skripte bzw.
-   `infra/`), Entra-Gruppen für OLS.
-2. Datenbank-Grundlagen: Schemas, Credential, External Data Source `StageFileSystem`,
-   File Format `ParquetFormat` (`scripts/`).
-3. Security-Fundament **vor** dem ersten `dbt run`: `security/ddl/01–03`,
-   Dienstbenutzer-Ausnahme, Gruppenrechte (`security/DEPLOYMENT.md`).
+1. Azure-Ressourcen: SQL Server/Datenbank, Storage, Firewall (Infrastruktur-Skripte bzw. `infra/`), Entra-Gruppen für OLS.
+2. Datenbank-Grundlagen: Schemas, Credential, External Data Source `StageFileSystem`, File Format `ParquetFormat` (`scripts/`).
+3. Security-Fundament **vor** dem ersten `dbt run`: `security/ddl/01–03`, Dienstbenutzer-Ausnahme, Gruppenrechte (`security/DEPLOYMENT.md`).
 4. Target im Profil und in den CI-Variablen anlegen.
 5. Erstbefüllung:
 

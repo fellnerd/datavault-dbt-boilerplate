@@ -7,17 +7,13 @@ tags:
 
 # Verifizieren
 
-Eine Berechtigung gilt erst als umgesetzt, wenn sie **mit einem echten Login** geprüft
-wurde.
+Eine Berechtigung gilt erst als umgesetzt, wenn sie **mit einem echten Login** geprüft wurde.
 
 ## `EXECUTE AS` taugt nicht zum Testen
 
-> `sec.fn_check_rls` matcht auf `ORIGINAL_LOGIN()`, und das bleibt unter Impersonation
-> **dein eigener Login** — samt Service-User-Bypass. Der Test bestünde fälschlich, du
-> sähest alle Zeilen und hieltest die Berechtigung für korrekt.
+> `sec.fn_check_rls` matcht auf `ORIGINAL_LOGIN()`, und das bleibt unter Impersonation **dein eigener Login** — samt Service-User-Bypass. Der Test bestünde fälschlich, du sähest alle Zeilen und hieltest die Berechtigung für korrekt.
 
-Das ist kein Mangel, sondern Absicht: genau diese Stabilität ist der Grund, weshalb
-`ORIGINAL_LOGIN()` statt `USER_NAME()` verwendet wird.
+Das ist kein Mangel, sondern Absicht: genau diese Stabilität ist der Grund, weshalb `ORIGINAL_LOGIN()` statt `USER_NAME()` verwendet wird.
 
 ## Test-Login einrichten
 
@@ -27,11 +23,9 @@ Ohne Entra-Admin-Rechte reicht ein Contained User:
 CREATE USER [rls_test] WITH PASSWORD = '<passwort>';
 ```
 
-`ORIGINAL_LOGIN()` liefert dafür `rls_test`. Was damit getestet wird, gilt eins zu eins für
-Entra-Logins — die Prüffunktion unterscheidet die Auth-Art nicht.
+`ORIGINAL_LOGIN()` liefert dafür `rls_test`. Was damit getestet wird, gilt eins zu eins für Entra-Logins — die Prüffunktion unterscheidet die Auth-Art nicht.
 
-Dann in `dbt_project.yml` unter `ols_view_grants` eintragen und einmal `dbt run`, damit der
-Hook die View-Grants setzt. **Sonst nichts** — keine weiteren Rollen, keine Schema-Grants.
+Dann in `dbt_project.yml` unter `ols_view_grants` eintragen und einmal `dbt run`, damit der Hook die View-Grants setzt. **Sonst nichts** — keine weiteren Rollen, keine Schema-Grants.
 
 ### dbt-Target für automatisierte Prüfungen
 
@@ -64,8 +58,7 @@ dbt show -t <mandant>-dev-rlstest --limit 5 --inline "SELECT COUNT(*) FROM mart_
 SELECT COUNT(*) FROM mart_finance.fakt_buchungen_v;   -- 0 erwartet
 ```
 
-Null Zeilen **ohne Fehler** beweist beides auf einmal: OLS greift (die View ist lesbar) und
-RLS ist scharf (Deny-by-default). Kommt stattdessen ein Fehler, fehlt der Grant.
+Null Zeilen **ohne Fehler** beweist beides auf einmal: OLS greift (die View ist lesbar) und RLS ist scharf (Deny-by-default). Kommt stattdessen ein Fehler, fehlt der Grant.
 
 ### 2. OLS — physische Objekte müssen verweigert werden
 
@@ -98,8 +91,7 @@ SELECT COUNT(*) FROM mart_finance.dim_konto_v;          -- inkl. 14 Plug-Zeilen
 
 ### 4. Hierarchie-Prefix
 
-Recht auf eine Gruppe statt auf ein Detail setzen (`<mandant>||3 Vertrieb`) und prüfen,
-dass alle 19 Kostenstellen erscheinen — ohne je eine eigene Zeile.
+Recht auf eine Gruppe statt auf ein Detail setzen (`<mandant>||3 Vertrieb`) und prüfen, dass alle 19 Kostenstellen erscheinen — ohne je eine eigene Zeile.
 
 ### 5. Beide Achsen zusammen
 
@@ -113,8 +105,7 @@ WHERE f.kostenstelle_nr = 2030
   AND k.dss_sec_value_key LIKE N'<mandant>||5 Personalaufwand||%';
 ```
 
-**Gegenprobe:** das Recht auf einer Achse entfernen → 0 Zeilen. Das beweist, dass wirklich
-beide Joins filtern und nicht einer wirkungslos ist.
+**Gegenprobe:** das Recht auf einer Achse entfernen → 0 Zeilen. Das beweist, dass wirklich beide Joins filtern und nicht einer wirkungslos ist.
 
 ### 6. Plug-Zeilen
 
@@ -122,8 +113,7 @@ beide Joins filtern und nicht einer wirkungslos ist.
 SELECT COUNT(*) FROM mart_finance.dim_konto_v WHERE konto_key < 0;   -- 14 erwartet
 ```
 
-Muss auch bei stark eingeschränktem Nutzer vollständig sein, sonst brechen die
-Zwischensummen im Report.
+Muss auch bei stark eingeschränktem Nutzer vollständig sein, sonst brechen die Zwischensummen im Report.
 
 ### 7. Vollzugriff unverändert
 
@@ -156,10 +146,7 @@ dbt run-operation measure_rls_overhead \
   --args '{relation: mart_finance.fakt_buchungen_v, iterations: 4}' --target <mandant>-dev
 ```
 
-Misst sitzungsisoliert über `sys.dm_exec_sessions.logical_reads`.
-`sys.dm_exec_query_stats` ist dafür unbrauchbar: dbt umhüllt Abfragen, und paralleler
-Power-BI-Traffic landet in denselben Einträgen. Ersten Lauf beim Vergleich ausklammern
-(kalter Buffer Pool).
+Misst sitzungsisoliert über `sys.dm_exec_sessions.logical_reads`. `sys.dm_exec_query_stats` ist dafür unbrauchbar: dbt umhüllt Abfragen, und paralleler Power-BI-Traffic landet in denselben Einträgen. Ersten Lauf beim Vergleich ausklammern (kalter Buffer Pool).
 
 ---
 

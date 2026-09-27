@@ -7,8 +7,7 @@ tags:
 
 # Security in Mart-Models (RLS/CLS)
 
-> Kurzfassung für Modellentwickler. Vollständige Referenz: **[03-system/security/](../../../03-system/security/00-security.md)**
-> — insbesondere [Neues Objekt absichern](../../../03-system/security/06-neues-objekt-absichern.md).
+> Kurzfassung für Modellentwickler. Vollständige Referenz: **[03-system/security/](../../../03-system/security/00-security.md)** — insbesondere [Neues Objekt absichern](../../../03-system/security/06-neues-objekt-absichern.md).
 
 ## Das Grundprinzip in einem Satz
 
@@ -27,9 +26,7 @@ fakt_buchungen_v · fakt_budget_v · fakt_forecast_v   ← erben, kein eigener F
 
 ### Regel 1: Nur Views werden berechtigt
 
-Physische Models (`materialized='table'`) bekommen **keinen** Grant — der `on-run-end`-Hook
-`grant_select_on_views()` iteriert über `sys.views`. Deshalb braucht **jeder physische
-Cache eine `_v`-Wrapper-View**, sonst ist er für Konsumenten unerreichbar.
+Physische Models (`materialized='table'`) bekommen **keinen** Grant — der `on-run-end`-Hook `grant_select_on_views()` iteriert über `sys.views`. Deshalb braucht **jeder physische Cache eine `_v`-Wrapper-View**, sonst ist er für Konsumenten unerreichbar.
 
 ```
 dim_beleg.sql      materialized='table'   ← Logik, kein Grant
@@ -40,8 +37,7 @@ Eine Tabelle mit `_v`-Suffix ist ein Fehler.
 
 ### Regel 2: Träger-Dimensionen führen `dss_sec_value_key` und filtern
 
-Nur Dimensionen, die einen **Zugriffsbereich** definieren (Kostenstelle, Konto, …). Der
-Schlüssel ist ein hierarchischer Pfad, die Prüffunktion matcht per Prefix:
+Nur Dimensionen, die einen **Zugriffsbereich** definieren (Kostenstelle, Konto, …). Der Schlüssel ist ein hierarchischer Pfad, die Prüffunktion matcht per Prefix:
 
 ```sql
 -- dim_kostenstelle.sql (Tabelle, ungefiltert)
@@ -53,8 +49,7 @@ SELECT <spalten> FROM {{ ref('dim_kostenstelle') }}
 WHERE {{ rls_filter('finance_kst') }}
 ```
 
-Träger-Dimensionen **materialisieren** — sie liegen auf dem kritischen Pfad jeder
-Fakt-Abfrage.
+Träger-Dimensionen **materialisieren** — sie liegen auf dem kritischen Pfad jeder Fakt-Abfrage.
 
 Plug-/Ghost-Zeilen müssen immer durch:
 
@@ -71,8 +66,7 @@ INNER JOIN {{ ref('dim_kostenstelle_v') }} d ON d.kostenstelle_key = f.kostenste
 INNER JOIN {{ ref('dim_konto_v') }}        k ON k.konto_key        = f.konto_key
 ```
 
-**Vorher prüfen, dass die Dimension vollständig ist** — sonst unterschlägt der `INNER JOIN`
-Zeilen, still und auch für Admins:
+**Vorher prüfen, dass die Dimension vollständig ist** — sonst unterschlägt der `INNER JOIN` Zeilen, still und auch für Admins:
 
 ```sql
 SELECT COUNT(*) FROM <fakt> f
@@ -88,9 +82,7 @@ Danach den `relationships`-Test auf `severity: error` setzen.
 {{ cls_mask('geburtsdatum', 'person_pii', 'NULL') }}  AS geburtsdatum,
 ```
 
-**Tier-1-Spalten** (`SOC_INSURANCE_NR`, `ZEMIS_NR`, `BADGE_ID`) dürfen in **keinem**
-Mart-Objekt auftauchen — Vorsicht bei `SELECT *` aus Satellites. Der Test
-`assert_no_tier1_columns_in_mart` schlägt sonst an.
+**Tier-1-Spalten** (`SOC_INSURANCE_NR`, `ZEMIS_NR`, `BADGE_ID`) dürfen in **keinem** Mart-Objekt auftauchen — Vorsicht bei `SELECT *` aus Satellites. Der Test `assert_no_tier1_columns_in_mart` schlägt sonst an.
 
 ## Referenz-Implementierungen
 
@@ -122,14 +114,9 @@ dbt run  -s <models> --target <mandant>-dev
 dbt test -s <models> tests/security --target <mandant>-dev
 ```
 
-Und mit einem echten Test-Login gegenprüfen —
-[Verifizieren](../../../03-system/security/07-verifizieren.md). `EXECUTE AS` taugt dafür **nicht**.
+Und mit einem echten Test-Login gegenprüfen — [Verifizieren](../../../03-system/security/07-verifizieren.md). `EXECUTE AS` taugt dafür **nicht**.
 
-> **Keine Security Policies mehr.** Das frühere Hook-Paar
-> `drop_security_policy` / `apply_security_policy` auf physischen Fakt-Tabellen wurde am
-> 13.09.2026 entfernt: Seit nur noch Views berechtigt werden, sind die Tabellen ohnehin
-> unerreichbar — und die Policy kostete 2 logische Reads pro Basiszeile. Die Macros
-> bleiben im Projekt, falls je eine physische Tabelle direkt berechtigt werden muss.
+> **Keine Security Policies mehr.** Das frühere Hook-Paar `drop_security_policy` / `apply_security_policy` auf physischen Fakt-Tabellen wurde am 13.09.2026 entfernt: Seit nur noch Views berechtigt werden, sind die Tabellen ohnehin unerreichbar — und die Policy kostete 2 logische Reads pro Basiszeile. Die Macros bleiben im Projekt, falls je eine physische Tabelle direkt berechtigt werden muss.
 
 ---
 

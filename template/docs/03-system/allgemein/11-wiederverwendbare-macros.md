@@ -8,10 +8,7 @@ tags:
 
 # Wiederverwendbare Macros
 
-Alle projekteigenen Macros unter `macros/`. Aufruf in Modellen als `{{ macro(...) }}`,
-im Betrieb als `dbt run-operation <macro> --args '{…}'`. Eigene Macros haben über
-`dispatch` (`search_order: ['datavault', 'automate_dv']`) Vorrang vor gleichnamigen
-automate_dv-Macros.
+Alle projekteigenen Macros unter `macros/`. Aufruf in Modellen als `{{ macro(...) }}`, im Betrieb als `dbt run-operation <macro> --args '{…}'`. Eigene Macros haben über `dispatch` (`search_order: ['datavault', 'automate_dv']`) Vorrang vor gleichnamigen automate_dv-Macros.
 
 ## Vault und Hashing
 
@@ -56,8 +53,7 @@ automate_dv-Macros.
 | `get_parquet_data` | `get_parquet_data.sql` | wie oben + `"limit": 5` | Beispieldaten |
 | `list_parquet_files` | `list_parquet_files.sql` | — | in Azure SQL Database **nicht ausführbar** (keine Ordner-Enumeration); nur Synapse Serverless |
 
-Aus Paketen: `stage_external_sources` (dbt_external_tables); `stage`, `hub`, `sat`, `link`,
-`t_link`, `ma_sat`, `pit`, `bridge` (automate_dv).
+Aus Paketen: `stage_external_sources` (dbt_external_tables); `stage`, `hub`, `sat`, `link`, `t_link`, `ma_sat`, `pit`, `bridge` (automate_dv).
 
 ## Security
 
@@ -70,11 +66,8 @@ Aus Paketen: `stage_external_sources` (dbt_external_tables); `stage`, `hub`, `sa
 | `drop_security_policy()` / `apply_security_policy('<kontext>')` | `security/security_policy.sql` | Pre-/Post-Hook physischer Tabellen | native Security Policy |
 | `grant_select_on_views()` | `security/grant_select_on_views.sql` | `on-run-end` | SELECT-Grants auf `mart*`-Views gemäß Var `ols_view_grants` |
 
-Die Security-Macros setzen das Schema `sec` mit Funktionen und Rechtetabellen voraus
-(`security/ddl/`, Runbook `security/DEPLOYMENT.md`) — siehe [Security](../security/00-security.md).
+Die Security-Macros setzen das Schema `sec` mit Funktionen und Rechtetabellen voraus (`security/ddl/`, Runbook `security/DEPLOYMENT.md`) — siehe [Security](../security/00-security.md).
 
 ## Projektspezifische Macros
 
-Macros für eine einzelne Quelle (Batch-Loader, Zeitstempel-Parser aus Dateinamen) liegen
-ebenfalls in `macros/` und sind im Kopfkommentar sowie in der
-[projektspezifischen Dokumentation](../../04-mandant-architektur/00-mandant-architektur.md) beschrieben.
+Macros für eine einzelne Quelle (Batch-Loader, Zeitstempel-Parser aus Dateinamen) liegen ebenfalls in `macros/` und sind im Kopfkommentar sowie in der [projektspezifischen Dokumentation](../../04-mandant-architektur/00-mandant-architektur.md) beschrieben.

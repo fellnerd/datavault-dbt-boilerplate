@@ -50,8 +50,7 @@ Links führen kein `dss_business_key` und im Projekt auch kein `dss_create_datet
 
 ## Der Link-Hash im Staging
 
-Der Link-Hash wird aus den **Business Keys beider Hubs** gebildet, in der Reihenfolge
-von `src_fk`:
+Der Link-Hash wird aus den **Business Keys beider Hubs** gebildet, in der Reihenfolge von `src_fk`:
 
 ```yaml
 hashed_columns:
@@ -63,8 +62,7 @@ hashed_columns:
     - "<BK_E2_B>"        # ┘ Business Key von hub_<e2>
 ```
 
-> **Doppelte Spalten sind hier richtig.** Ist eine Spalte Teil *beider* Hub-Schlüssel,
-> steht sie zweimal. Beispiel Kreditorenbeleg ↔ Zahlung:
+> **Doppelte Spalten sind hier richtig.** Ist eine Spalte Teil *beider* Hub-Schlüssel, steht sie zweimal. Beispiel Kreditorenbeleg ↔ Zahlung:
 >
 > ```yaml
 > hk_link_kreditorenbeleg_zahlung:
@@ -75,8 +73,7 @@ hashed_columns:
 >   - "INR"            # ┘
 > ```
 >
-> Das sieht nach einem Kopierfehler aus, ist aber die korrekte Verkettung beider
-> Schlüssel. Nachgeprüft: eine Link-Zeile je Zahlung, nichts verloren.
+> Das sieht nach einem Kopierfehler aus, ist aber die korrekte Verkettung beider Schlüssel. Nachgeprüft: eine Link-Zeile je Zahlung, nichts verloren.
 
 **Prüfen, ob der Grain stimmt:**
 
@@ -89,8 +86,7 @@ Bei einer 1:n-Beziehung (ein `<e1>` zu vielen `<e2>`) müssen beide Zahlen gleic
 
 ## Transaction Link
 
-Für Ereignisse ohne Historisierung (Buchungen, Gesprächsdatensätze): `_tl`-Suffix, siehe
-Skill `dv-patterns` im Plugin.
+Für Ereignisse ohne Historisierung (Buchungen, Gesprächsdatensätze): `_tl`-Suffix, siehe Skill `dv-patterns` im Plugin.
 
 ## Häufige Fehler
 

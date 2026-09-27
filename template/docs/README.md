@@ -8,16 +8,11 @@ tags:
 ---
 # Dokumentation
 
-Einstiegspunkt für die Projektdokumentation. Fachsprache ist Deutsch. Jedes Handbuch ist
-ein Ordner mit einem Inhaltsverzeichnis `00-<ordner>.md` (in Obsidian oben), einer Base
-`00-<ordner>.base` (tabellarische Übersicht mit Filteransichten) und einer Datei je Kapitel
-mit Breadcrumb und Vor-/Zurück-Navigation.
+Einstiegspunkt für die Projektdokumentation. Fachsprache ist Deutsch. Jedes Handbuch ist ein Ordner mit einem Inhaltsverzeichnis `00-<ordner>.md` (in Obsidian oben), einer Base `00-<ordner>.base` (tabellarische Übersicht mit Filteransichten) und einer Datei je Kapitel mit Breadcrumb und Vor-/Zurück-Navigation.
 
 ## Handbücher
 
-Die Handbücher `01-` bis `03-`, `lessons-learned/` und `schulung/` sind bewusst mandantenunabhängig formuliert
-(Platzhalter `<mandant>`, `<concept>`, `<entity>`). Konkrete Server-, Datenbank- und
-Quellsystemnamen stehen in `04-mandant-architektur/`.
+Die Handbücher `01-` bis `03-`, `lessons-learned/` und `schulung/` sind bewusst mandantenunabhängig formuliert (Platzhalter `<mandant>`, `<concept>`, `<entity>`). Konkrete Server-, Datenbank- und Quellsystemnamen stehen in `04-mandant-architektur/`.
 
 | Bereich | Zielgruppe | Inhalt |
 |---------|-----------|--------|
@@ -47,41 +42,23 @@ Quellsystemnamen stehen in `04-mandant-architektur/`.
 
 ## Namenskonvention der Doku
 
-- **Ordner und Dateien:** Kleinschreibung, `kebab-case`, keine Unterstriche, Leerzeichen
-  oder Umlaute im Dateinamen.
-- **Nummerierung:** Handbuch-Ordner `01-` bis `04-`, Kapitel mit zweistelligem Präfix in
-  Lesereihenfolge; das Inhaltsverzeichnis heißt `00-<ordner>.md`.
+- **Ordner und Dateien:** Kleinschreibung, `kebab-case`, keine Unterstriche, Leerzeichen oder Umlaute im Dateinamen.
+- **Nummerierung:** Handbuch-Ordner `01-` bis `04-`, Kapitel mit zweistelligem Präfix in Lesereihenfolge; das Inhaltsverzeichnis heißt `00-<ordner>.md`.
 - **Assets** im Unterordner `assets/` des jeweiligen Bereichs.
 - **Datierte Dokumente** (Use Cases, Meetings, Analysen): `JJJJ-MM-TT-<thema>.md`.
-- **Kein Versions- oder Statussuffix** (`_v2`, `_final`) — der Stand steht im Dokument bzw.
-  im [Changelog](changelog.md), die Historie in Git.
+- **Kein Versions- oder Statussuffix** (`_v2`, `_final`) — der Stand steht im Dokument bzw. im [Changelog](changelog.md), die Historie in Git.
 - Objektnamen der Plattform: [Namenskonventionen](01-benutzer/04-namenskonventionen.md).
 
 ## Arbeiten mit Obsidian
 
-Dieser Ordner (`docs`) ist ein Obsidian-Vault (*Ordner als Vault öffnen*).
-Damit die Doku in Obsidian **und** in GitLab/GitHub funktioniert:
+Dieser Ordner (`docs`) ist ein Obsidian-Vault (*Ordner als Vault öffnen*). Damit die Doku in Obsidian **und** in GitLab/GitHub funktioniert:
 
-- **Links:** nur relative Markdown-Links (`[Text](../ordner/datei.md)`), keine `[[Wikilinks]]`.
-  Obsidian zieht Links beim Umbenennen oder Verschieben automatisch nach.
-- **Properties:** jede Notiz trägt `title` (Anzeigename in Explorer, Graph und Tabs über das
-  Plugin „Front Matter Title“) und `tags` für ihren Bereich (`benutzer`, `entwickler/raw-vault`,
-  `system/security`, `architektur/raw-vault` …) sowie bei Bedarf einen Typ
-  (`typ/inhaltsverzeichnis`, `typ/nachschlagen`, `typ/glossar`, `typ/faq`, `typ/troubleshooting`,
-  `typ/checkliste`, `typ/changelog`, `typ/er-diagramm`). Inhaltsverzeichnisse haben `aliases`.
+- **Links:** nur relative Markdown-Links (`[Text](../ordner/datei.md)`), keine `[[Wikilinks]]`. Obsidian zieht Links beim Umbenennen oder Verschieben automatisch nach.
+- **Properties:** jede Notiz trägt `title` (Anzeigename in Explorer, Graph und Tabs über das Plugin „Front Matter Title“) und `tags` für ihren Bereich (`benutzer`, `entwickler/raw-vault`, `system/security`, `architektur/raw-vault` …) sowie bei Bedarf einen Typ (`typ/inhaltsverzeichnis`, `typ/nachschlagen`, `typ/glossar`, `typ/faq`, `typ/troubleshooting`, `typ/checkliste`, `typ/changelog`, `typ/er-diagramm`). Inhaltsverzeichnisse haben `aliases`.
 - **Hinweise:** als Callouts (`> [!TIP]`, `> [!WARNING]`, `> [!IMPORTANT]`, `> [!NOTE]`).
-- **Bases:** je Handbuch `00-<ordner>.base` (Ansichten: Kapitel, nach Ordner, nach Tag,
-  Unterbereiche, Nachschlagen, zuletzt geändert, wenig verlinkt); über den ganzen Vault
-  [`dokumentation.base`](uebersichten/dokumentation.base) und
-  [`design-diagramme.base`](uebersichten/design-diagramme.base).
-- **Design-Diagramme:** die Notizen unter `04-mandant-architektur/raw-vault/` und
-  `information-mart/` erzeugt `python3 scripts/sync_design_to_vault.py` aus `design/`
-  (Konfiguration `design/vault-sync.json`) — nicht von Hand ändern.
-- **Neue Kapitel:** über *Vorlage einfügen* mit den Vorlagen aus `vorlagen/`; im
-  Inhaltsverzeichnis verlinken, Eintrag im Changelog.
-- **Graph und Explorer:** Farbe je Bereich — Benutzer blau, Entwickler grün, System ocker,
-  Architektur rot, Schulung türkis, Lessons Learned violett. Startseite und Changelog sind im Graph ausgeblendet.
-- **Gemeinsame Einstellungen** (CSS-Snippet `datavault`, Graph, Lesezeichen, Vorlagen,
-  Plugins) liegen versioniert in `.obsidian/`; `workspace*.json` ist von Git ausgenommen.
-- **Claude Code:** Skill `dv-docs` des Plugins `dv-toolkit` kennt diese Struktur; die Agents
-  pflegen Doku und Changelog bei jeder Modelländerung mit.
+- **Bases:** je Handbuch `00-<ordner>.base` (Ansichten: Kapitel, nach Ordner, nach Tag, Unterbereiche, Nachschlagen, zuletzt geändert, wenig verlinkt); über den ganzen Vault [`dokumentation.base`](uebersichten/dokumentation.base) und [`design-diagramme.base`](uebersichten/design-diagramme.base).
+- **Design-Diagramme:** die Notizen unter `04-mandant-architektur/raw-vault/` und `information-mart/` erzeugt `python3 scripts/sync_design_to_vault.py` aus `design/` (Konfiguration `design/vault-sync.json`) — nicht von Hand ändern.
+- **Neue Kapitel:** über *Vorlage einfügen* mit den Vorlagen aus `vorlagen/`; im Inhaltsverzeichnis verlinken, Eintrag im Changelog.
+- **Graph und Explorer:** Farbe je Bereich — Benutzer blau, Entwickler grün, System ocker, Architektur rot, Schulung türkis, Lessons Learned violett. Startseite und Changelog sind im Graph ausgeblendet.
+- **Gemeinsame Einstellungen** (CSS-Snippet `datavault`, Graph, Lesezeichen, Vorlagen, Plugins) liegen versioniert in `.obsidian/`; `workspace*.json` ist von Git ausgenommen.
+- **Claude Code:** Skill `dv-docs` des Plugins `dv-toolkit` kennt diese Struktur; die Agents pflegen Doku und Changelog bei jeder Modelländerung mit.

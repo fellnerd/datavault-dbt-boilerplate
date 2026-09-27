@@ -9,8 +9,7 @@ tags:
 
 Ein **Multi-Active Satellite** erlaubt **mehrere gleichzeitig gültige Werte** für denselben Business Key.
 
-> **VS Code Extension:** Im Entity Designer Spalten als `📚 Multi-Active Key` markieren.
-> MA Satellites werden automatisch beim Klick auf "Generate Satellites" oder "Generate All" erstellt.
+> **VS Code Extension:** Im Entity Designer Spalten als `📚 Multi-Active Key` markieren. MA Satellites werden automatisch beim Klick auf "Generate Satellites" oder "Generate All" erstellt.
 > **Wichtig:** MA Sat benötigt mindestens eine Hub-Spalte (Business Key) - im Gegensatz zu DC Sat.
 
 **Anwendungsfälle:**

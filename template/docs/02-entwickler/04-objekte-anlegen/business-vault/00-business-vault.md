@@ -10,10 +10,7 @@ tags:
 
 # Business Vault
 
-Der Business Vault enthält **abgeleitete** Objekte auf dem Raw Vault: Sichten auf den
-aktuellen Stand, Stichtagshilfen und fachliche Regeln (Soft Rules). Er speichert keine
-eigenen Quelldaten und ist jederzeit aus dem Raw Vault neu baubar — deshalb überwiegend
-Views.
+Der Business Vault enthält **abgeleitete** Objekte auf dem Raw Vault: Sichten auf den aktuellen Stand, Stichtagshilfen und fachliche Regeln (Soft Rules). Er speichert keine eigenen Quelldaten und ist jederzeit aus dem Raw Vault neu baubar — deshalb überwiegend Views.
 
 | # | Objekt | Name | Materialisierung | Wofür |
 |---|--------|------|------------------|-------|
@@ -31,5 +28,4 @@ Views.
 | Berichtsspezifische Aufbereitung (Umbenennen, Formatieren, Sortierschlüssel) | Mart |
 | Pflegbare Zuordnungstabellen | Seed (`seeds/seed_<thema>.csv`) → Business-Vault-View mit DV-Metadaten |
 
-Business-Vault-Views führen `dss_load_date` und `dss_record_source` weiter bzw. setzen sie
-(`'business_rule'`), damit die Herkunft nachvollziehbar bleibt.
+Business-Vault-Views führen `dss_load_date` und `dss_record_source` weiter bzw. setzen sie (`'business_rule'`), damit die Herkunft nachvollziehbar bleibt.

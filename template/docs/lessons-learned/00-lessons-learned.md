@@ -19,9 +19,7 @@ tags:
 
 ### Power-BI-Performance & Zebra-BI-Rebuild (Erfolgsrechnung)
 
-> Technisches Know-how aus einer DB-Performance-Untersuchung und dem Power-BI-Rebuild
-> einer Erfolgsrechnung (Finance-Domain, `mart_finance`) in einem Referenzprojekt. Die
-> Messwerte stammen von dort; die Erkenntnisse sind domänenübergreifend relevant.
+> Technisches Know-how aus einer DB-Performance-Untersuchung und dem Power-BI-Rebuild einer Erfolgsrechnung (Finance-Domain, `mart_finance`) in einem Referenzprojekt. Die Messwerte stammen von dort; die Erkenntnisse sind domänenübergreifend relevant.
 
 2. [dbt-Modellierung / Materialisierung](02-dbt-modellierung-materialisierung.md)
 3. [Row-Level Security (native Security Policy)](03-row-level-security-native-security-policy.md)

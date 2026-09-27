@@ -11,8 +11,7 @@ tags:
 
 # Security: Berechtigungen im Data Vault
 
-Wie der Zugriff auf die Mart-Daten geregelt ist — **wer** welche Objekte sieht (OLS),
-**welche Zeilen** darin (RLS) und **welche Spalten** (CLS).
+Wie der Zugriff auf die Mart-Daten geregelt ist — **wer** welche Objekte sieht (OLS), **welche Zeilen** darin (RLS) und **welche Spalten** (CLS).
 
 ## Wo anfangen?
 

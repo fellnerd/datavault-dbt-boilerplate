@@ -17,10 +17,7 @@ tags:
 | View-Grants | `dbt run` (`on-run-end`-Hook) | automatisch |
 | Filter in Models, Schlüsselspalten | `dbt run` | automatisch |
 
-> **Security-DDL läuft bewusst nicht über dbt.** Ein Seed oder Model würde produktive
-> Berechtigungszeilen bei jedem Run überschreiben. Zusätzlich blockiert ein
-> Werkzeugfilter `DROP SECURITY POLICY` und ähnliche DDL auch bei explizitem Approval —
-> solche Schritte führt der Mensch aus.
+> **Security-DDL läuft bewusst nicht über dbt.** Ein Seed oder Model würde produktive Berechtigungszeilen bei jedem Run überschreiben. Zusätzlich blockiert ein Werkzeugfilter `DROP SECURITY POLICY` und ähnliche DDL auch bei explizitem Approval — solche Schritte führt der Mensch aus.
 
 ## Reihenfolge beim Erst-Rollout
 
@@ -40,8 +37,7 @@ Vollständiges Runbook: [security/DEPLOYMENT.md](../../../security/DEPLOYMENT.md
 9. dbt test -s tests/security     Muss grün sein
 ```
 
-Schritt 4 ist der kritische: Fehlt die Service-User-Ausnahme, liefern alle folgenden
-dbt-Läufe und Tests **leere Ergebnisse ohne Fehlermeldung**.
+Schritt 4 ist der kritische: Fehlt die Service-User-Ausnahme, liefern alle folgenden dbt-Läufe und Tests **leere Ergebnisse ohne Fehlermeldung**.
 
 ## Umgebungen
 
@@ -51,21 +47,17 @@ dbt-Läufe und Tests **leere Ergebnisse ohne Fehlermeldung**.
 | `<mandant>-test` | `datavault-test` | ⬜ ausstehend |
 | `<mandant>` | `datavault` | ⬜ ausstehend |
 
-Für test/prod sind alle neun Schritte zu wiederholen. Die Berechtigungszeilen sind
-umgebungsspezifisch — der Testuser `rls_test` gehört **nicht** nach prod.
+Für test/prod sind alle neun Schritte zu wiederholen. Die Berechtigungszeilen sind umgebungsspezifisch — der Testuser `rls_test` gehört **nicht** nach prod.
 
 ## Power BI — Betriebsvoraussetzung
 
-> **Ohne Entra-SSO-Passthrough wirkt die ganze RLS nicht.** Der Power-BI-Service verbindet
-> sich dann mit einem festen Principal, und alle Report-Nutzer sehen dieselben Zeilen —
-> nämlich die des Verbindungs-Users.
+> **Ohne Entra-SSO-Passthrough wirkt die ganze RLS nicht.** Der Power-BI-Service verbindet sich dann mit einem festen Principal, und alle Report-Nutzer sehen dieselben Zeilen — nämlich die des Verbindungs-Users.
 
 Zu prüfen:
 
 - [ ] Datenquelle auf **DirectQuery** (bei Import greift DB-seitige RLS gar nicht)
 - [ ] SSO-Passthrough auf der Gateway-/Cloud-Verbindung aktiviert
-- [ ] Mit **zwei** Test-Nutzern unterschiedlicher Rechte geöffnet — die Zeilenzahlen müssen
-      sich unterscheiden
+- [ ] Mit **zwei** Test-Nutzern unterschiedlicher Rechte geöffnet — die Zeilenzahlen müssen sich unterscheiden
 
 ## Laufender Betrieb
 
@@ -82,9 +74,7 @@ LEFT JOIN sys.schemas s1 ON s1.schema_id = o.schema_id
 WHERE pr.name NOT IN ('public', 'dbo', 'guest') AND pe.permission_name = 'SELECT';
 ```
 
-Erwartung: ausschließlich `OBJECT_OR_COLUMN` auf `type_desc = VIEW`. Keine Zeile mit
-`SCHEMA`, keine mit `USER_TABLE`. Automatisiert im Test
-`assert_only_views_granted_in_mart`.
+Erwartung: ausschließlich `OBJECT_OR_COLUMN` auf `type_desc = VIEW`. Keine Zeile mit `SCHEMA`, keine mit `USER_TABLE`. Automatisiert im Test `assert_only_views_granted_in_mart`.
 
 ### Wer hat welche Rechte?
 
@@ -96,20 +86,15 @@ ORDER BY user_name, security_context;
 
 ### Wirken alle Rechte?
 
-Ein Recht, dessen Schlüssel keine Dimension trifft, bewirkt still nichts — die Abfrage dazu
-steht in [05 – Berechtigung vergeben](05-berechtigung-vergeben.md#schritt-4-prüfen-dass-das-recht-nicht-ins-leere-läuft).
+Ein Recht, dessen Schlüssel keine Dimension trifft, bewirkt still nichts — die Abfrage dazu steht in [05 – Berechtigung vergeben](05-berechtigung-vergeben.md#schritt-4-prüfen-dass-das-recht-nicht-ins-leere-läuft).
 
 ## Änderungen an den Dimensionen
 
 Zwei Fälle brauchen Aufmerksamkeit:
 
-**Neue Kostenstelle / neues Konto.** Liegt sie in einem bereits berechtigten Bereich, ist
-sie durch die Prefix-Logik automatisch abgedeckt — kein Eingriff nötig. Das ist der Vorteil
-des Pfad-Schlüssels.
+**Neue Kostenstelle / neues Konto.** Liegt sie in einem bereits berechtigten Bereich, ist sie durch die Prefix-Logik automatisch abgedeckt — kein Eingriff nötig. Das ist der Vorteil des Pfad-Schlüssels.
 
-**Umbenannte Hierarchiestufe.** Der Schlüssel enthält das Label (`<mandant>||3 Vertrieb`).
-Wird der Bereich im Sharepoint umbenannt, greifen bestehende Rechte nicht mehr — und zwar
-**still**. Nach Stammdatenänderungen deshalb die Prüfabfrage aus Schritt 4 laufen lassen.
+**Umbenannte Hierarchiestufe.** Der Schlüssel enthält das Label (`<mandant>||3 Vertrieb`). Wird der Bereich im Sharepoint umbenannt, greifen bestehende Rechte nicht mehr — und zwar **still**. Nach Stammdatenänderungen deshalb die Prüfabfrage aus Schritt 4 laufen lassen.
 
 ---
 

@@ -7,9 +7,7 @@ tags:
 
 # Wichtige Spalten verstehen
 
-Jede Vault-Tabelle hat neben den fachlichen Spalten der Quelle technische Spalten mit festen
-Präfixen: `hk_` (Hash Key), `hd_` (Hash Diff) und `dss_` (Data Store Service, Metadaten).
-Welche davon eine Tabelle trägt, hängt vom Objekttyp ab.
+Jede Vault-Tabelle hat neben den fachlichen Spalten der Quelle technische Spalten mit festen Präfixen: `hk_` (Hash Key), `hd_` (Hash Diff) und `dss_` (Data Store Service, Metadaten). Welche davon eine Tabelle trägt, hängt vom Objekttyp ab.
 
 ## Schlüssel (`hk_…`, `hd_…`)
 
@@ -21,9 +19,7 @@ Welche davon eine Tabelle trägt, hängt vom Objekttyp ab.
 | `HASHDIFF` | Satellite | Derselbe Hash Diff, im Satellite unter diesem Namen gespeichert (automate_dv-Alias) |
 | `<business_key>` | Hub, Staging | Der fachliche Schlüssel im Original, z. B. `BELNR`, `LOHNNR` |
 
-Hash Keys sind deterministisch: gleicher Business Key → gleicher Hash, in jeder Umgebung.
-Zwei Sonderwerte kennzeichnen [Ghost Records](02-grundkonzepte.md):
-`0000…0000` (64 × `0`, unbekannt) und `FFFF…FFFF` (64 × `F`, fehlerhaft).
+Hash Keys sind deterministisch: gleicher Business Key → gleicher Hash, in jeder Umgebung. Zwei Sonderwerte kennzeichnen [Ghost Records](02-grundkonzepte.md): `0000…0000` (64 × `0`, unbekannt) und `FFFF…FFFF` (64 × `F`, fehlerhaft).
 
 ## Metadaten, die jede Vault-Tabelle hat
 
@@ -39,8 +35,7 @@ Zwei Sonderwerte kennzeichnen [Ghost Records](02-grundkonzepte.md):
 | `dss_business_key` | NVARCHAR | Business Key im Klartext, normiert und lesbar — für Prüfungen und Fehlersuche. Aufbau `default\|\|default\|\|<BK 1>\|\|<BK 2>…`, NULL wird `-1` | `default\|\|default\|\|4711` |
 | `dss_create_datetime` | DATETIME2 | Technischer Zeitpunkt, zu dem die Zeile geschrieben wurde | `2026-09-14 02:11:37` |
 
-Ein Hub enthält jeden Business Key **genau einmal** — die erste Sichtung. Er wird nie
-aktualisiert. Details zum Aufbau: [Datenmodell → dss_business_key](../03-system/allgemein/03-datenmodell.md).
+Ein Hub enthält jeden Business Key **genau einmal** — die erste Sichtung. Er wird nie aktualisiert. Details zum Aufbau: [Datenmodell → dss_business_key](../03-system/allgemein/03-datenmodell.md).
 
 ## Satellites (Historie)
 
@@ -51,9 +46,7 @@ aktualisiert. Details zum Aufbau: [Datenmodell → dss_business_key](../03-syste
 | `dss_create_datetime` | DATETIME2 | Technischer Insert-Zeitpunkt | |
 | `dss_version_rank` | INT | Nur in `…_current_v`-Views: Rang der Version (1 = neueste), nicht gespeichert | `1` |
 
-**Aktuellen Stand abfragen:** `WHERE dss_is_current = 'Y'` oder direkt die View
-`sat_<entity>__<quelle>_current_v`. **Stand zu einem Stichtag:**
-`dss_load_date <= @stichtag AND (dss_end_date > @stichtag OR dss_end_date IS NULL)`.
+**Aktuellen Stand abfragen:** `WHERE dss_is_current = 'Y'` oder direkt die View `sat_<entity>__<quelle>_current_v`. **Stand zu einem Stichtag:** `dss_load_date <= @stichtag AND (dss_end_date > @stichtag OR dss_end_date IS NULL)`.
 
 ## Effectivity Satellites (Gültigkeit von Beziehungen)
 
@@ -74,8 +67,7 @@ aktualisiert. Details zum Aufbau: [Datenmodell → dss_business_key](../03-syste
 | `dss_source_feed` | Rohwert der Quelle (z. B. Ordnerpfad) vor der Normierung zu `dss_record_source` |
 | `dss_export_datum` | Exportzeitpunkt aus dem Dateinamen — bei Mehrfachlieferungen gewinnt der letzte Export |
 
-Lineage-Spalten beschreiben die Lieferung, nicht den Inhalt: Sie ändern sich bei jeder Datei,
-lösen aber keine neue Satellite-Version aus.
+Lineage-Spalten beschreiben die Lieferung, nicht den Inhalt: Sie ändern sich bei jeder Datei, lösen aber keine neue Satellite-Version aus.
 
 ## Security
 
@@ -95,8 +87,7 @@ Wie Berechtigungen wirken: [Datenzugriff & Berechtigungen](09-datenzugriff-berec
 | `<dim>_name` | NVARCHAR | Bezeichnung; fehlt sie, der Code bzw. `UNKNOWN` |
 | `datum_key` | INT | Datumsschlüssel `JJJJMMTT` gegen `dim_date` |
 
-Negative Schlüssel (`-1`, `-2` …) sind Platzhalter-Zeilen, z. B. für „unbekannt“ oder
-Zwischensummen in Berichten.
+Negative Schlüssel (`-1`, `-2` …) sind Platzhalter-Zeilen, z. B. für „unbekannt“ oder Zwischensummen in Berichten.
 
 ---
 

@@ -7,9 +7,7 @@ tags:
 
 # External Table
 
-Eine External Table macht eine Parquet-Datei der Landing Zone (ADLS Gen2) in Azure SQL als
-Tabelle lesbar. dbt legt sie mit dem Paket `dbt_external_tables` aus
-`models/staging/sources.yml` an; die Daten bleiben im Storage.
+Eine External Table macht eine Parquet-Datei der Landing Zone (ADLS Gen2) in Azure SQL als Tabelle lesbar. dbt legt sie mit dem Paket `dbt_external_tables` aus `models/staging/sources.yml` an; die Daten bleiben im Storage.
 
 ## Voraussetzungen (einmalig je Datenbank)
 
@@ -33,9 +31,7 @@ dbt run-operation get_parquet_data --args '{"folder_path": "<concept>/<quelle>",
 ```
 
 > [!NOTE]
-> Azure SQL Database kann Ordner **nicht** auflisten (`list_parquet_files` funktioniert nur in
-> Synapse Serverless). Dateinamen im Azure Portal (Storage Account → Container) oder mit
-> `az storage fs file list --account-name <konto> -f <container> --path <ordner>` ermitteln.
+> Azure SQL Database kann Ordner **nicht** auflisten (`list_parquet_files` funktioniert nur in Synapse Serverless). Dateinamen im Azure Portal (Storage Account → Container) oder mit `az storage fs file list --account-name <konto> -f <container> --path <ordner>` ermitteln.
 
 ## 2. In `sources.yml` eintragen
 
@@ -63,12 +59,9 @@ sources:
 **Regeln**
 
 - Spaltennamen exakt wie in der Parquet-Datei (Groß-/Kleinschreibung), Reihenfolge egal.
-- Typen passend zur Datei: Parquet-`string` → `NVARCHAR(n)`, `int64` → `BIGINT`,
-  `double` → `FLOAT`, Dezimal → `DECIMAL(p,s)`, Zeitstempel → `DATETIME2`. Falsche Typen
-  scheitern erst beim Lesen.
+- Typen passend zur Datei: Parquet-`string` → `NVARCHAR(n)`, `int64` → `BIGINT`, `double` → `FLOAT`, Dezimal → `DECIMAL(p,s)`, Zeitstempel → `DATETIME2`. Falsche Typen scheitern erst beim Lesen.
 - `NVARCHAR` statt `VARCHAR` (Umlaute, und Hashes werden über NVARCHAR gebildet).
-- Reservierte Wörter (`TYPE`, `LEVEL`, `PLAN` …) sind als Spaltennamen erlaubt; in der
-  Staging View werden sie über `_escape` behandelt.
+- Reservierte Wörter (`TYPE`, `LEVEL`, `PLAN` …) sind als Spaltennamen erlaubt; in der Staging View werden sie über `_escape` behandelt.
 
 ## 3. Anlegen
 
@@ -80,8 +73,7 @@ dbt run-operation stage_external_sources --args 'select: staging.ext_<concept>_<
 dbt show --inline "SELECT TOP 5 * FROM stg.ext_<concept>_<entity>"
 ```
 
-Die Pipeline führt `stage_external_sources` vor jedem Lauf aus — neue Einträge in
-`sources.yml` werden also in jeder Umgebung automatisch angelegt.
+Die Pipeline führt `stage_external_sources` vor jedem Lauf aus — neue Einträge in `sources.yml` werden also in jeder Umgebung automatisch angelegt.
 
 ## Häufige Fehler
 

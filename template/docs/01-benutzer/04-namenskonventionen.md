@@ -8,11 +8,7 @@ tags:
 
 # Namenskonventionen
 
-Verbindliche Namen für alle Objekte der Plattform. Grundregeln: **Kleinschreibung**,
-Wörter mit `_` getrennt (Datenbank, dbt) bzw. `-` (Dateien der Doku, Branches), fachliche
-Begriffe auf Deutsch, DV-Begriffe (Hub, Satellite, Link, Mart) unübersetzt.
-Platzhalter: `<concept>` = Quellsystem/Domäne (z. B. `crm`), `<entity>` = fachliches Objekt
-(z. B. `kunde`), `<quelle>` = Quellsystem-Kürzel im Satellite-Suffix, `<domain>` = Mart-Domäne.
+Verbindliche Namen für alle Objekte der Plattform. Grundregeln: **Kleinschreibung**, Wörter mit `_` getrennt (Datenbank, dbt) bzw. `-` (Dateien der Doku, Branches), fachliche Begriffe auf Deutsch, DV-Begriffe (Hub, Satellite, Link, Mart) unübersetzt. Platzhalter: `<concept>` = Quellsystem/Domäne (z. B. `crm`), `<entity>` = fachliches Objekt (z. B. `kunde`), `<quelle>` = Quellsystem-Kürzel im Satellite-Suffix, `<domain>` = Mart-Domäne.
 
 ## Schemas
 
@@ -25,9 +21,7 @@ Platzhalter: `<concept>` = Quellsystem/Domäne (z. B. `crm`), `<entity>` = fachl
 | `mart_<domain>` | Dimensionen, Fakten und Business-Vault-Views einer Domäne | Table + View |
 | `sec` | Security: Rechtetabellen, Prüffunktionen (per DDL, nicht dbt) | — |
 
-`generate_schema_name` setzt das Schema **ohne** dbt-Präfix: `+schema: vault` ergibt
-`vault`, nicht `dv_vault`. Datenbanken je Umgebung: `<datenbank>-dev`, `<datenbank>-test`,
-`<datenbank>` (Produktion).
+`generate_schema_name` setzt das Schema **ohne** dbt-Präfix: `+schema: vault` ergibt `vault`, nicht `dv_vault`. Datenbanken je Umgebung: `<datenbank>-dev`, `<datenbank>-test`, `<datenbank>` (Produktion).
 
 ## Datenbankobjekte
 
@@ -56,13 +50,10 @@ Platzhalter: `<concept>` = Quellsystem/Domäne (z. B. `crm`), `<entity>` = fachl
 | | Datumsdimension | `dim_date` | |
 | Seeds | CSV-Referenzdaten | `seed_<thema>` | `seed_konto_pl_zuordnung` |
 
-**BI-Tools lesen ausschließlich `_v`-Views** — nur sie sind berechtigt und tragen die
-Security. `dim_*`/`fakt_*`-Tabellen sind Implementierungsdetail.
+**BI-Tools lesen ausschließlich `_v`-Views** — nur sie sind berechtigt und tragen die Security. `dim_*`/`fakt_*`-Tabellen sind Implementierungsdetail.
 
 > [!NOTE]
-> Ältere Objekte können abweichen (`v_<name>`-Präfix, `dss_source_filename`,
-> Satellites ohne Quell-Suffix). Nicht nachträglich umbenennen — Vault-Tabellen umzubenennen
-> heißt Neuaufbau —, aber für neue Objekte nur die Muster oben verwenden.
+> Ältere Objekte können abweichen (`v_<name>`-Präfix, `dss_source_filename`, Satellites ohne Quell-Suffix). Nicht nachträglich umbenennen — Vault-Tabellen umzubenennen heißt Neuaufbau —, aber für neue Objekte nur die Muster oben verwenden.
 
 ## Spalten
 

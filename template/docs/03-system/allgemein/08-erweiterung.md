@@ -27,11 +27,9 @@ tags:
      schema: dv
      # Authentifizierung wie bei den bestehenden Targets
    ```
-   Das Macro `tenant_key()` leitet den Mandantenschlüssel aus dem Target-Namen ab — neue
-   Mandanten dort ergänzen oder über `var('tenant_key')` setzen.
+   Das Macro `tenant_key()` leitet den Mandantenschlüssel aus dem Target-Namen ab — neue Mandanten dort ergänzen oder über `var('tenant_key')` setzen.
 
-3. **Security-Fundament deployen:** Skripte aus `security/` (Schema `sec`, Funktionen,
-   Rechtetabellen, Service-User-Exemption) einmalig pro Datenbank ausführen.
+3. **Security-Fundament deployen:** Skripte aus `security/` (Schema `sec`, Funktionen, Rechtetabellen, Service-User-Exemption) einmalig pro Datenbank ausführen.
 
 4. **Infrastruktur und Daten aufbauen:**
    ```bash

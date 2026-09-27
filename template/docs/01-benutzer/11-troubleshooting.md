@@ -8,8 +8,7 @@ tags:
 
 # Troubleshooting
 
-Symptom suchen, Ursache prüfen, Lösung anwenden. Entwicklerspezifische Fehler (Hashes,
-Modellierung, CI): [Troubleshooting Entwicklung](../02-entwickler/07-troubleshooting.md).
+Symptom suchen, Ursache prüfen, Lösung anwenden. Entwicklerspezifische Fehler (Hashes, Modellierung, CI): [Troubleshooting Entwicklung](../02-entwickler/07-troubleshooting.md).
 
 ## Verbindung und Anmeldung
 

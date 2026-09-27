@@ -6,6 +6,9 @@
    ========================================================================== */
 
 body {
+  /* Lesbare Zeilenlaenge bleibt an, aber breiter als Obsidian-Standard (700px) fuer Tabellen/Diagramme */
+  --file-line-width: 1000px;
+
   --dv-benutzer:    #3987e5;
   --dv-entwickler:  #008300;
   --dv-system:      #c98500;

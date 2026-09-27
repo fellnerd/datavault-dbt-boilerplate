@@ -39,8 +39,7 @@ dbt debug
 dbt run-operation log_row_counts
 ```
 
-> Weitere Diagnosewege (Ladeprotokoll `vault.load_status_pending_v`, RLS-Overhead messen)
-> stehen in der [Systemdokumentation, Kapitel 9](../03-system/allgemein/09-monitoring-troubleshooting.md).
+> Weitere Diagnosewege (Ladeprotokoll `vault.load_status_pending_v`, RLS-Overhead messen) stehen in der [Systemdokumentation, Kapitel 9](../03-system/allgemein/09-monitoring-troubleshooting.md).
 
 ---
 

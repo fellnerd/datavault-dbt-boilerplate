@@ -26,13 +26,9 @@ Empfohlene Gliederung (je Handout ein Unterordner mit eigenem `README.md` als In
 
 ## Empfohlene Reihenfolge
 
-1. Grundlagen & Architektur — gemeinsames Vokabular und Gesamtbild
-   (Basis: [Benutzerhandbuch](../01-benutzer/00-benutzerhandbuch.md), [Systemübersicht](../03-system/allgemein/01-uebersicht.md))
-2. Neues Business-Objekt erstellen — praktische Umsetzung Schritt für Schritt
-   (Basis: [Neue Entity erstellen](../02-entwickler/04-objekte-anlegen/00-objekte-anlegen.md))
+1. Grundlagen & Architektur — gemeinsames Vokabular und Gesamtbild (Basis: [Benutzerhandbuch](../01-benutzer/00-benutzerhandbuch.md), [Systemübersicht](../03-system/allgemein/01-uebersicht.md))
+2. Neues Business-Objekt erstellen — praktische Umsetzung Schritt für Schritt (Basis: [Neue Entity erstellen](../02-entwickler/04-objekte-anlegen/00-objekte-anlegen.md))
 3. Use Cases — Anwendung auf die Quellen des Projekts
 
 > [!TIP]
-> Handouts und Kapitel über *Vorlage einfügen* mit den Vorlagen aus `vorlagen/` anlegen und
-> Tags `schulung/<handout>` vergeben — dann erscheinen sie in der Base
-> [Dokumentation](../uebersichten/dokumentation.base) und in der Graph-Farbe der Schulung.
+> Handouts und Kapitel über *Vorlage einfügen* mit den Vorlagen aus `vorlagen/` anlegen und Tags `schulung/<handout>` vergeben — dann erscheinen sie in der Base [Dokumentation](../uebersichten/dokumentation.base) und in der Graph-Farbe der Schulung.

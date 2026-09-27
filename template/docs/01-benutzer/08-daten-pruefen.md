@@ -8,9 +8,7 @@ tags:
 
 # Daten prüfen
 
-Prüfabfragen für neue oder geänderte Objekte und für die Fehlersuche. Jede Abfrage liefert
-im Sollfall **0 Zeilen** bzw. gleiche Zahlen — sonst steht der Befund in der Ergebnismenge.
-Platzhalter ersetzen; Satellites heißen `sat_<entity>__<quelle>`.
+Prüfabfragen für neue oder geänderte Objekte und für die Fehlersuche. Jede Abfrage liefert im Sollfall **0 Zeilen** bzw. gleiche Zahlen — sonst steht der Befund in der Ergebnismenge. Platzhalter ersetzen; Satellites heißen `sat_<entity>__<quelle>`.
 
 ## Abfragen absetzen
 
@@ -31,16 +29,11 @@ UNION ALL SELECT 'sat',  COUNT(*) FROM vault.sat_<entity>__<quelle>
 UNION ALL SELECT 'sat aktuell', COUNT(*) FROM vault.sat_<entity>__<quelle> WHERE dss_is_current = 'Y';
 ```
 
-Erwartung: `ext` = `stg`; `hub` = Anzahl **verschiedener** Business Keys der Quelle (bei
-mehreren Quellen: aller Quellen); `sat aktuell` = `hub` (sofern jede Quelle jeden Schlüssel
-liefert); `sat` ≥ `sat aktuell` (Historie). Alle Objekte auf einmal:
-`dbt run-operation log_row_counts`.
+Erwartung: `ext` = `stg`; `hub` = Anzahl **verschiedener** Business Keys der Quelle (bei mehreren Quellen: aller Quellen); `sat aktuell` = `hub` (sofern jede Quelle jeden Schlüssel liefert); `sat` ≥ `sat aktuell` (Historie). Alle Objekte auf einmal: `dbt run-operation log_row_counts`.
 
 ## 2. Eindeutigkeit der Business Keys
 
-**Quelle — ist der gewählte Business Key wirklich eindeutig?** Vor dem Bau des Hubs prüfen;
-Treffer bedeuten, dass der Schlüssel unvollständig ist (Spalte fehlt) oder die Quelle
-Dubletten liefert.
+**Quelle — ist der gewählte Business Key wirklich eindeutig?** Vor dem Bau des Hubs prüfen; Treffer bedeuten, dass der Schlüssel unvollständig ist (Spalte fehlt) oder die Quelle Dubletten liefert.
 
 ```sql
 SELECT <bk_1>, <bk_2>, COUNT(*) AS anzahl
@@ -85,8 +78,7 @@ SELECT COUNT(*) FROM (
 WHERE HASHDIFF = vorher;
 ```
 
-Bei **Multi-Active Satellites** gehört der Unterscheidungsschlüssel (`<child_key>`) mit in
-den Grain: `GROUP BY hk_<entity>, <child_key>, dss_load_date`.
+Bei **Multi-Active Satellites** gehört der Unterscheidungsschlüssel (`<child_key>`) mit in den Grain: `GROUP BY hk_<entity>, <child_key>, dss_load_date`.
 
 **Link — eine Zeile je Schlüsselkombination, Grain passend zur Beziehung:**
 
@@ -111,8 +103,7 @@ SELECT <dim>_key, COUNT(*) FROM mart_<domain>.dim_<entity>
 GROUP BY <dim>_key HAVING COUNT(*) > 1;
 ```
 
-Die Eindeutigkeit von Hub- und Link-Hashes sowie Mart-Keys ist zusätzlich als dbt-Test
-(`unique`) hinterlegt: `dbt test --select <modell>`.
+Die Eindeutigkeit von Hub- und Link-Hashes sowie Mart-Keys ist zusätzlich als dbt-Test (`unique`) hinterlegt: `dbt test --select <modell>`.
 
 ## 3. Referentielle Integrität (Waisen)
 

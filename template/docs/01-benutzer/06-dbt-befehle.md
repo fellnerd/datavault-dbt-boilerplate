@@ -8,9 +8,7 @@ tags:
 
 # dbt-Befehle
 
-Alle Befehle im Projektordner mit aktivierter virtueller Umgebung
-(`source .venv/bin/activate`). Ohne `--target` läuft alles gegen die Entwicklung
-(Standard-Target im Profil).
+Alle Befehle im Projektordner mit aktivierter virtueller Umgebung (`source .venv/bin/activate`). Ohne `--target` läuft alles gegen die Entwicklung (Standard-Target im Profil).
 
 ## Grundbefehle
 
@@ -92,14 +90,11 @@ dbt run  --target <mandant>-test --select <modell>
 dbt test --target <mandant>-test --select <modell>
 ```
 
-Test und Produktion werden regulär von der Pipeline beliefert
-([Deployment Workflow](../02-entwickler/06-deployment-workflow.md)); manuelle Läufe gegen
-Produktion nur im abgestimmten Ausnahmefall.
+Test und Produktion werden regulär von der Pipeline beliefert ([Deployment Workflow](../02-entwickler/06-deployment-workflow.md)); manuelle Läufe gegen Produktion nur im abgestimmten Ausnahmefall.
 
 ## Massendaten-Domänen
 
-Domänen mit eigenem Ladefenster tragen ein Tag (z. B. `cdr`) und sind vom Standardlauf
-ausgeschlossen:
+Domänen mit eigenem Ladefenster tragen ein Tag (z. B. `cdr`) und sind vom Standardlauf ausgeschlossen:
 
 ```bash
 dbt run --select tag:<domain>
@@ -120,18 +115,13 @@ Logs: `logs/dbt.log`, Ergebnisse des letzten Laufs: `target/run_results.json`.
 ## Full Refresh
 
 > [!WARNING]
-> `--full-refresh` löscht eine inkrementelle Tabelle und baut sie aus den aktuell
-> verfügbaren Quelldaten neu. **Bei Hubs, Satellites und Links geht dabei die Historie
-> verloren**, die in der Quelle nicht mehr vorhanden ist. Nur nach Absprache, nie auf
-> Produktion ohne Freigabe, nie „zur Sicherheit“.
+> `--full-refresh` löscht eine inkrementelle Tabelle und baut sie aus den aktuell verfügbaren Quelldaten neu. **Bei Hubs, Satellites und Links geht dabei die Historie verloren**, die in der Quelle nicht mehr vorhanden ist. Nur nach Absprache, nie auf Produktion ohne Freigabe, nie „zur Sicherheit“.
 
 ```bash
 dbt run --full-refresh --select <modell>
 ```
 
-Nötig ist er nur, wenn sich die Berechnung bestehender Zeilen ändert (Hash-Input,
-Datentyp, Business Key). Neue Spalten kommen ohne Full Refresh dazu
-(`on_schema_change: append_new_columns`).
+Nötig ist er nur, wenn sich die Berechnung bestehender Zeilen ändert (Hash-Input, Datentyp, Business Key). Neue Spalten kommen ohne Full Refresh dazu (`on_schema_change: append_new_columns`).
 
 ---
 

@@ -10,10 +10,7 @@ tags:
 
 # Changelog
 
-Alle fachlich oder technisch relevanten Änderungen an Modellen, Macros, Pipeline,
-Security und Dokumentation — neueste zuerst. **Wird von Entwicklern und den Claude-Agents
-(`dv-toolkit`, Skill `dv-docs`) bei jeder Änderung fortgeschrieben**, im selben Commit wie
-die Änderung.
+Alle fachlich oder technisch relevanten Änderungen an Modellen, Macros, Pipeline, Security und Dokumentation — neueste zuerst. **Wird von Entwicklern und den Claude-Agents (`dv-toolkit`, Skill `dv-docs`) bei jeder Änderung fortgeschrieben**, im selben Commit wie die Änderung.
 
 <!-- Format (nicht entfernen, Agents lesen es):
 | JJJJ-MM-TT | Version | Bereich | Änderung (was + Wirkung, Objekte in `code`) | Ticket/Commit |

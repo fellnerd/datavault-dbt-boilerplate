@@ -7,13 +7,9 @@ tags:
 
 # Übersicht
 
-Dieses Projekt implementiert eine **Data Vault 2.1**-Plattform auf Azure SQL mit dbt Core als
-wiederverwendbares Template. Ein Git-Repository bedient alle Mandanten; pro Mandant existiert
-je eine Datenbank für Development, Test und Produktion.
+Dieses Projekt implementiert eine **Data Vault 2.1**-Plattform auf Azure SQL mit dbt Core als wiederverwendbares Template. Ein Git-Repository bedient alle Mandanten; pro Mandant existiert je eine Datenbank für Development, Test und Produktion.
 
-Die konkrete Ausprägung eines Mandanten (Server-, Datenbank- und Quellsystemnamen) ist bewusst
-nicht Teil dieser Dokumentation — sie steht in der jeweiligen Mandanten-Dokumentation,
-für den aktuellen Mandanten unter [`04-mandant-architektur/`](../../04-mandant-architektur/00-mandant-architektur.md).
+Die konkrete Ausprägung eines Mandanten (Server-, Datenbank- und Quellsystemnamen) ist bewusst nicht Teil dieser Dokumentation — sie steht in der jeweiligen Mandanten-Dokumentation, für den aktuellen Mandanten unter [`04-mandant-architektur/`](../../04-mandant-architektur/00-mandant-architektur.md).
 
 ### 1.1 Architektur-Diagramm
 

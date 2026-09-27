@@ -66,8 +66,7 @@ dbt run-operation run_sql --args '{"sql": "SELECT ..."}'   # Ad-hoc-Abfrage
 
 ### dbt Selektoren (Model Selection)
 
-> **Wichtig:** Verwende den **vollständigen Pfad**, da Model-Namen in mehreren Concepts
-> existieren können.
+> **Wichtig:** Verwende den **vollständigen Pfad**, da Model-Namen in mehreren Concepts existieren können.
 
 ```bash
 # ❌ Vermeiden - wählt gleichnamige Models in allen Concepts
@@ -138,8 +137,7 @@ dbt run --select raw_vault.<concept>.hub_*
 
 ### Parquet-Exploration Macros
 
-Für die Analyse von Parquet-Dateien in der Landing Zone (ADLS Gen2). Voraussetzung ist ein
-SAS-Token in der Umgebungsvariablen `STAGE_FS_SAS` (`export STAGE_FS_SAS="se=...&sp=rl&..."`).
+Für die Analyse von Parquet-Dateien in der Landing Zone (ADLS Gen2). Voraussetzung ist ein SAS-Token in der Umgebungsvariablen `STAGE_FS_SAS` (`export STAGE_FS_SAS="se=...&sp=rl&..."`).
 
 | Macro | Zweck |
 |-------|-------|

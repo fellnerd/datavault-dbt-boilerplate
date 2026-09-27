@@ -7,10 +7,7 @@ tags:
 
 # Transaction Link
 
-Für **unveränderliche Ereignisse**: Buchungen, Messwerte, Gesprächsdatensätze, Logeinträge.
-Ein Ereignis wird einmal geschrieben und nie historisiert. Namenskonvention
-`link_<ereignis>_tl`, die Attribute stehen in einem Transaction Satellite
-`sat_<ereignis>_tl__<quelle>`.
+Für **unveränderliche Ereignisse**: Buchungen, Messwerte, Gesprächsdatensätze, Logeinträge. Ein Ereignis wird einmal geschrieben und nie historisiert. Namenskonvention `link_<ereignis>_tl`, die Attribute stehen in einem Transaction Satellite `sat_<ereignis>_tl__<quelle>`.
 
 | | Link | Transaction Link |
 |---|---|---|
@@ -32,8 +29,7 @@ hashed_columns:
     - "<BK_E2>"
 ```
 
-Gibt es keine Ereignis-ID, bildet die kleinste eindeutige Spaltenkombination
-(z. B. Zeitstempel + Zähler + Anschluss) den Schlüssel — vorher auf Eindeutigkeit prüfen.
+Gibt es keine Ereignis-ID, bildet die kleinste eindeutige Spaltenkombination (z. B. Zeitstempel + Zähler + Anschluss) den Schlüssel — vorher auf Eindeutigkeit prüfen.
 
 ## Link
 
@@ -61,24 +57,19 @@ src_source: "dss_record_source"
                     src_source=m["src_source"], source_model=m["source_model"]) }}
 ```
 
-Alternativ `automate_dv.t_link()` mit `src_payload` und `src_eff`, wenn Link und Attribute
-in einer Tabelle liegen sollen.
+Alternativ `automate_dv.t_link()` mit `src_payload` und `src_eff`, wenn Link und Attribute in einer Tabelle liegen sollen.
 
 ## Transaction Satellite
 
 Wie ein [Satellite](02-satellite.md) am Link-Hash, aber:
 
-- Der Hash Diff wird nur zur Pflicht gebildet; neue Zeilen entstehen, weil jedes Ereignis
-  einen eigenen Hash Key hat.
+- Der Hash Diff wird nur zur Pflicht gebildet; neue Zeilen entstehen, weil jedes Ereignis einen eigenen Hash Key hat.
 - **Kein** `update_satellite_current_flag` — jede Zeile ist gültig.
-- Bei großen Mengen den inkrementellen Abgleich auf das Ladefenster begrenzen (nur Keys
-  der letzten Tage mit dem Bestand vergleichen) — sonst liest jeder Lauf die ganze Tabelle.
-  Hintergrund: [Lessons Learned – Transaction Satellite für Messdaten](../../../lessons-learned/15-transaction-satellite-fuer-messdaten.md).
+- Bei großen Mengen den inkrementellen Abgleich auf das Ladefenster begrenzen (nur Keys der letzten Tage mit dem Bestand vergleichen) — sonst liest jeder Lauf die ganze Tabelle. Hintergrund: [Lessons Learned – Transaction Satellite für Messdaten](../../../lessons-learned/15-transaction-satellite-fuer-messdaten.md).
 
 ## Betrieb
 
-- Eigene Domäne mit Tag (`+tags: [<domain>]` in `dbt_project.yml`), damit der Standardlauf
-  nicht wartet; Laden über `dbt run --select tag:<domain>` bzw. eigenen Pipeline-Job.
+- Eigene Domäne mit Tag (`+tags: [<domain>]` in `dbt_project.yml`), damit der Standardlauf nicht wartet; Laden über `dbt run --select tag:<domain>` bzw. eigenen Pipeline-Job.
 - Tests mit vollem Scan (`unique` auf Millionen Zeilen) als `tag:nightly`.
 - Oft mit [PSA](../staging/03-psa.md) davor, damit die Dateien nur einmal gelesen werden.
 

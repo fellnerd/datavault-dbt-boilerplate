@@ -151,8 +151,7 @@ dbt run --select +<concept>_<entity>+
 
 #### VS Code Extension
 
-Die VS Code Extension bietet den Befehl "Create PSA Table" im Kontextmenü der External Tables.
-Dieser erstellt automatisch:
+Die VS Code Extension bietet den Befehl "Create PSA Table" im Kontextmenü der External Tables. Dieser erstellt automatisch:
 - Die PSA SQL-Datei
 - Den sources.yml Eintrag
 - Die Schema YAML Dokumentation

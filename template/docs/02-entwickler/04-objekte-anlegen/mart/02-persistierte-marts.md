@@ -7,8 +7,7 @@ tags:
 
 # Persistierte Marts
 
-Wie ein Mart-Objekt materialisiert wird, entscheidet über die Antwortzeit in Power BI
-(DirectQuery fragt bei jeder Interaktion live ab) und über die Laufzeit des Ladens.
+Wie ein Mart-Objekt materialisiert wird, entscheidet über die Antwortzeit in Power BI (DirectQuery fragt bei jeder Interaktion live ab) und über die Laufzeit des Ladens.
 
 ## Entscheidung
 
@@ -19,9 +18,7 @@ Wie ein Mart-Objekt materialisiert wird, entscheidet über die Antwortzeit in Po
 | Großer Fakt oder Aggregat über Massendaten, Rebuild dauert zu lange | `incremental` mit `delete+insert` und Nachlade-Fenster | Tagesaggregat über Gesprächsdatensätze |
 | Triviale Dimension ohne Joins (Codeliste) | direkt `view` | `dim_buchungsstatus_v` |
 
-Faustregel: erst messen (Laufzeit, logische Reads — Skill `dv-performance`), dann
-materialisieren. Ein Mart-Objekt ist aus dem Vault jederzeit neu baubar; Full Refresh ist
-hier unkritisch.
+Faustregel: erst messen (Laufzeit, logische Reads — Skill `dv-performance`), dann materialisieren. Ein Mart-Objekt ist aus dem Vault jederzeit neu baubar; Full Refresh ist hier unkritisch.
 
 ## Incremental mit Nachlade-Fenster
 
@@ -46,8 +43,7 @@ GROUP BY <dim1>_key, datum_key
 
 - `delete+insert` ersetzt die Schlüssel des Fensters vollständig — richtig für Aggregate.
 - Das Fenster muss die maximale Verspätung der Quelle abdecken.
-- **Clustered Index Pflicht bei `delete+insert`:** Auf einem Heap gibt `DELETE` die Pages
-  nicht frei, die Tabelle wächst mit jedem Lauf (gemessen: 1,6 GB Daten, 27 GB belegt).
+- **Clustered Index Pflicht bei `delete+insert`:** Auf einem Heap gibt `DELETE` die Pages nicht frei, die Tabelle wächst mit jedem Lauf (gemessen: 1,6 GB Daten, 27 GB belegt).
 
 ## Index-Macros
 

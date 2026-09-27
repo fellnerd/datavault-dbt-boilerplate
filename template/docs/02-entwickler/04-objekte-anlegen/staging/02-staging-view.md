@@ -7,9 +7,7 @@ tags:
 
 # Staging View
 
-Die Staging View liest die External Table (oder PSA) und ergänzt Hash Keys, Hash Diffs und
-Metadaten mit `automate_dv.stage()`. Aus ihr laden Hubs, Satellites und Links.
-Datei: `models/staging/<concept>_<entity>.sql`, Materialisierung `view`.
+Die Staging View liest die External Table (oder PSA) und ergänzt Hash Keys, Hash Diffs und Metadaten mit `automate_dv.stage()`. Aus ihr laden Hubs, Satellites und Links. Datei: `models/staging/<concept>_<entity>.sql`, Materialisierung `view`.
 
 ## Template
 
@@ -68,36 +66,24 @@ hashed_columns:
 
 **Business Key**
 - Vor der Modellierung auf Eindeutigkeit prüfen ([Daten prüfen](../../../01-benutzer/08-daten-pruefen.md)).
-- Dieselbe Entität aus mehreren Quellen: Business Key **gleich benennen, gleich casten**
-  (`CAST(x AS BIGINT)` bzw. `NVARCHAR`) — `HASH('4711.00') ≠ HASH('4711')`.
-- Kollidieren Schlüssel verschiedener Quellen (beide nummerieren ab 1), einen Diskriminator
-  (z. B. Quell-Literal) in den Business Key aufnehmen.
+- Dieselbe Entität aus mehreren Quellen: Business Key **gleich benennen, gleich casten** (`CAST(x AS BIGINT)` bzw. `NVARCHAR`) — `HASH('4711.00') ≠ HASH('4711')`.
+- Kollidieren Schlüssel verschiedener Quellen (beide nummerieren ab 1), einen Diskriminator (z. B. Quell-Literal) in den Business Key aufnehmen.
 
 **`dss_business_key`**
-- Genau eine Spalte, gebildet aus **denselben Spalten in derselben Reihenfolge** wie
-  `hk_<entity>` — sie ist die Klartext-Form des Hashes der **Haupt-Entität**.
-- Für jeden Fremdschlüssel-Hub eine eigene FK-Staging-View `<staging>__<fk_entity>`,
-  die `dss_business_key` für diese Entität bildet ([Hub → FK-Hub](../raw-vault/01-hub.md)).
+- Genau eine Spalte, gebildet aus **denselben Spalten in derselben Reihenfolge** wie `hk_<entity>` — sie ist die Klartext-Form des Hashes der **Haupt-Entität**.
+- Für jeden Fremdschlüssel-Hub eine eigene FK-Staging-View `<staging>__<fk_entity>`, die `dss_business_key` für diese Entität bildet ([Hub → FK-Hub](../raw-vault/01-hub.md)).
 
 **Hash Diff**
-- Enthält alle fachlichen Attribute des Satellites — genau die Spalten, die der Satellite
-  als `src_payload` führt.
-- **Nie** im Hash Diff: `dss_*`-Spalten, Lineage (Datei, Run-ID, Export-Zeitstempel),
-  Perioden- oder Ladekennzeichen, die sich ohne fachliche Änderung bewegen.
-- Soll ein Satellite in zwei Satellites geteilt werden (Änderungshäufigkeit, Vertraulichkeit),
-  gibt es zwei Hash Diffs.
+- Enthält alle fachlichen Attribute des Satellites — genau die Spalten, die der Satellite als `src_payload` führt.
+- **Nie** im Hash Diff: `dss_*`-Spalten, Lineage (Datei, Run-ID, Export-Zeitstempel), Perioden- oder Ladekennzeichen, die sich ohne fachliche Änderung bewegen.
+- Soll ein Satellite in zwei Satellites geteilt werden (Änderungshäufigkeit, Vertraulichkeit), gibt es zwei Hash Diffs.
 
 **`dss_load_date`**
-- Ein Wert je Ladelauf (Batch). Liefert die Quelle einen Ladezeitstempel, diesen verwenden,
-  sonst `GETDATE()`. Bei Multi-Active Satellites **muss** er für alle Zeilen eines Schlüssels
-  im Lauf identisch sein ([Multi-Active Satellite](../raw-vault/07-multi-active-satellite.md)).
+- Ein Wert je Ladelauf (Batch). Liefert die Quelle einen Ladezeitstempel, diesen verwenden, sonst `GETDATE()`. Bei Multi-Active Satellites **muss** er für alle Zeilen eines Schlüssels im Lauf identisch sein ([Multi-Active Satellite](../raw-vault/07-multi-active-satellite.md)).
 
 ## Vorbereitungs-View (optional)
 
-Braucht die Quelle vor dem Hashen eine Bereinigung — Dubletten („letzter Export gewinnt“),
-Filter auf gültige Zeilen, Entpacken von JSON —, kommt sie in eine eigene View
-`<concept>_<entity>_dedup`, die dann `source_model` der Staging View ist. So bleibt die
-Staging View reines `stage()`.
+Braucht die Quelle vor dem Hashen eine Bereinigung — Dubletten („letzter Export gewinnt“), Filter auf gültige Zeilen, Entpacken von JSON —, kommt sie in eine eigene View `<concept>_<entity>_dedup`, die dann `source_model` der Staging View ist. So bleibt die Staging View reines `stage()`.
 
 ```sql
 {{ config(materialized='view') }}

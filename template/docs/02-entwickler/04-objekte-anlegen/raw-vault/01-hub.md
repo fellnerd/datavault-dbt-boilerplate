@@ -7,8 +7,7 @@ tags:
 
 # Hub erstellen
 
-Ein Hub hält die eindeutigen Business Keys einer Entität — einmal pro Schlüssel,
-nie aktualisiert.
+Ein Hub hält die eindeutigen Business Keys einer Entität — einmal pro Schlüssel, nie aktualisiert.
 
 ## Template
 
@@ -57,26 +56,20 @@ src_source: "dss_record_source"
 | `dss_create_datetime` | `derived_columns` im Staging |
 | `dss_load_date`, `dss_record_source` | `derived_columns` im Staging |
 
-> **`src_extra_columns` muss auch an `automate_dv.hub()` übergeben werden.** Steht es
-> nur im YAML-Block, fehlen die Spalten in der Tabelle — ohne Fehlermeldung.
+> **`src_extra_columns` muss auch an `automate_dv.hub()` übergeben werden.** Steht es nur im YAML-Block, fehlen die Spalten in der Tabelle — ohne Fehlermeldung.
 
 Aufbau des `dss_business_key`: [Datenmodell → dss_business_key im Detail](../../../03-system/allgemein/03-datenmodell.md#34-dss_business_key-im-detail).
 
 ## Primär-Hub oder FK-Hub?
 
-Ein Staging-Model speist oft mehrere Hubs: den seiner Haupt-Entität und zusätzlich
-die seiner Fremdschlüssel.
+Ein Staging-Model speist oft mehrere Hubs: den seiner Haupt-Entität und zusätzlich die seiner Fremdschlüssel.
 
 | | Beispiel | `source_model` |
 |---|---|---|
 | **Primär-Hub** | `hub_hauptbuch` aus dem Hauptbuch-Staging | das Staging selbst |
 | **FK-Hub** | `hub_konto` aus dem Hauptbuch-Staging | eigene FK-Staging-View |
 
-**Der `dss_business_key` eines Stagings gehört seiner Haupt-Entität.** In einem FK-Hub
-stünde sonst der falsche Schlüssel — in `hub_konto` die Hauptbuch-Zeilennummer.
-Umbenennen im Hub geht nicht, `automate_dv.hub()` übernimmt Zusatzspalten nur unter ihrem
-Namen. Deshalb liest jeder FK-Hub aus einer schlanken View, die den Schlüssel *seiner*
-Entität bildet:
+**Der `dss_business_key` eines Stagings gehört seiner Haupt-Entität.** In einem FK-Hub stünde sonst der falsche Schlüssel — in `hub_konto` die Hauptbuch-Zeilennummer. Umbenennen im Hub geht nicht, `automate_dv.hub()` übernimmt Zusatzspalten nur unter ihrem Namen. Deshalb liest jeder FK-Hub aus einer schlanken View, die den Schlüssel *seiner* Entität bildet:
 
 ```sql
 -- models/staging/<staging>__<entity>.sql   (View, reine Projektion)
@@ -91,8 +84,7 @@ SELECT
 FROM {{ ref('<staging>') }}
 ```
 
-Im FK-Hub dann `source_model: "<staging>__<entity>"`. Die Deduplizierung je Hash-Key
-übernimmt `automate_dv.hub()`.
+Im FK-Hub dann `source_model: "<staging>__<entity>"`. Die Deduplizierung je Hash-Key übernimmt `automate_dv.hub()`.
 
 ## Multi-Source-Hub
 
@@ -104,9 +96,7 @@ source_model:
   - "<staging_model_b>"
 ```
 
-Der Business Key muss in allen Staging-Views **gleich heißen und gleich normalisiert**
-sein. Typ-Cast beachten: `HASH("44402.00") ≠ HASH("44402")` — vor dem Hashen einheitlich
-nach `BIGINT` bzw. `NVARCHAR` casten.
+Der Business Key muss in allen Staging-Views **gleich heißen und gleich normalisiert** sein. Typ-Cast beachten: `HASH("44402.00") ≠ HASH("44402")` — vor dem Hashen einheitlich nach `BIGINT` bzw. `NVARCHAR` casten.
 
 ## Häufige Fehler
 
