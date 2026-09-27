@@ -60,11 +60,12 @@ flowchart LR
 3. **Zähler/Übersicht** in `overview.md` aktualisieren (Objektlisten, offene Fragen abhaken)
 4. **`source_mapping.md`**: neue Quelltabelle → Staging-View → Vault-Objekt Zeile eintragen
 5. Konsistenz prüfen: Objekte in `models/raw_vault/**` ⇔ Einträge im Diagramm (beide Richtungen — der PostToolUse-Hook meldet Drift automatisch)
-6. **Obsidian-Vault spiegeln** (nur wenn `design/vault-sync.json` existiert): `python3 scripts/sync_design_to_vault.py` ausführen — erzeugt je Diagramm eine `.md` mit Mermaid-Block im Vault (Obsidian rendert keine `.mmd`). Die Vault-Dateien nie von Hand ändern. Neues Diagramm → Eintrag in `design/vault-sync.json` ergänzen. `--check` meldet veraltete Kopien (für CI).
+6. **Obsidian-Vault spiegeln** (nur wenn `design/vault-sync.json` existiert): `python3 scripts/sync_design_to_vault.py` ausführen — erzeugt je Eintrag eine `.md` im Vault: aus `.mmd` einen Mermaid-Block (Obsidian rendert keine `.mmd`), aus `.md`-Entwürfen den Inhalt mit umgerechneten Links. Ziel ist einheitlich `04-<mandant>-architektur/raw-vault/`, `business-vault/` bzw. `information-mart/` (Index je Ordner `00-<ordner>.md`, in `groups` als `index` eingetragen). Die Vault-Dateien nie von Hand ändern. Neues Diagramm → Eintrag in `design/vault-sync.json` ergänzen und im Index des Zielordners verlinken. `--check` meldet veraltete Kopien (für CI).
+7. **Changelog** (Skill `dv-docs`): Zeile in `docs/changelog.md`.
 
 ## Obsidian-Vault einrichten (einmalig)
 
-Liegt die Projektdoku als Obsidian-Vault vor, [`scripts/sync_design_to_vault.py`](scripts/sync_design_to_vault.py) nach `scripts/` im Projekt kopieren und `design/vault-sync.json` anlegen (Format im Kopf des Skripts: Vault-Pfad, Breadcrumb, Tags, Gruppen, Liste `source → target`). `design/` bleibt die einzige Quelle; die Vault-Notizen tragen einen „generiert“-Kommentar und verweisen auf ihre Quelle.
+Liegt die Projektdoku als Obsidian-Vault vor, [`scripts/sync_design_to_vault.py`](scripts/sync_design_to_vault.py) nach `scripts/` im Projekt kopieren und `design/vault-sync.json` anlegen (Format im Kopf des Skripts: Vault-Pfad, Breadcrumb, Tags, Gruppen mit `title`/`tag`/`index`, Liste `source → target`). Gruppen-Tags: `architektur/raw-vault`, `architektur/business-vault`, `architektur/information-mart`. Struktur und Konventionen des Vaults: Skill `dv-docs`. `design/` bleibt die einzige Quelle; die Vault-Notizen tragen einen „generiert“-Kommentar und verweisen auf ihre Quelle.
 
 ## Diagramm-Validierung
 

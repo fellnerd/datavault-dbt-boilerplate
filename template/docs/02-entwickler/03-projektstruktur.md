@@ -3,9 +3,9 @@ title: "Projektstruktur"
 tags:
   - entwickler
 ---
-[Dokumentation](../README.md) › [Data Vault 2.1 - Developer Guide](README.md)
+[Dokumentation](../README.md) › [Data Vault 2.1 – Developer Guide](00-entwicklerhandbuch.md)
 
-# 📁 Projektstruktur
+# Projektstruktur
 
 ```
 datavault-dbt/
@@ -49,26 +49,27 @@ datavault-dbt/
 │   │   │   ├── links/
 │   │   │   └── refs/
 │   │   └── <concept>/          #    Schema: vault_<concept> (je Quellsystem/Domäne)
-│   │       ├── hubs/
-│   │       ├── satellites/
-│   │       └── links/
+│   │   ├── hubs/
+│   │   ├── satellites/
+│   │   └── links/
 │   │
 │   ├── business_vault/         # 📊 Soft Rules — Schema: mart_<domain>
 │   │
 │   └── mart/                   # 📈 Mart Layer (für BI)
-│       ├── _common/            #    Schema: mart (geteilte Dimensionen)
-│       └── <domain>/           #    Schema: mart_<domain> (dim_*, fakt_*, *_v)
+│   ├── _common/            #    Schema: mart (geteilte Dimensionen)
+│   └── <domain>/           #    Schema: mart_<domain> (dim_*, fakt_*, *_v)
 │
-├── docs/                       # 📚 Dokumentation
-│   ├── README.md               #    Obsidian-Vault (Ordner docs/ als Vault öffnen), Startseite
-│   ├── 01-benutzer/            #    Benutzerhandbuch
-│   ├── 02-entwickler/          #    Entwicklerhandbuch ← Diese Datei
-│   ├── 03-system/              #    Systemdokumentation inkl. security/
-│   ├── lessons-learned/        #    Entscheidungen, Fallstricke, Messwerte
-│   ├── projekt/                #    Projektspezifisch: Umgebungen, Quellsysteme, Projektstand
-│   ├── schulung/               #    Schulungsunterlagen
-│   ├── uebersichten/           #    Obsidian-Bases (Dokumentübersichten)
-│   └── vorlagen/               #    Notiz-Vorlagen für neue Kapitel
+├── docs/                       # 📚 Dokumentation = Obsidian-Vault (Ordner als Vault öffnen), Start: README.md
+│   ├── changelog.md        #    Änderungen an Plattform und Doku (von Agents gepflegt)
+│   ├── 01-benutzer/        #    Benutzerhandbuch
+│   ├── 02-entwickler/      #    Entwicklerhandbuch ← Diese Datei
+│   │   └── 04-objekte-anlegen/   staging/ raw-vault/ business-vault/ mart/
+│   ├── 03-system/          #    Systemdokumentation: allgemein/, security/
+│   ├── 04-mandant-architektur/ #    Projektspezifisch: Projektdoku, raw-vault/, business-vault/, information-mart/
+│   ├── lessons-learned/    #    Entscheidungen, Fallstricke mit Messwerten
+│   ├── schulung/           #    Schulungsunterlagen
+│   ├── uebersichten/       #    Obsidian-Bases über den ganzen Vault
+│   └── vorlagen/           #    Notiz-Vorlagen (Kapitel, Inhaltsverzeichnis)
 │
 ├── logs/                        # 📝 dbt-Logs (nicht versioniert)
 └── target/                      # 🎯 Kompilierte Artefakte
@@ -86,4 +87,4 @@ datavault-dbt/
 
 ---
 
-◀ [Quick Reference](02-quick-reference.md) · [Übersicht](README.md) · [Neues Attribut hinzufügen](04-neues-attribut-hinzufuegen.md) ▶
+◀ [Quick Reference](02-quick-reference.md) · [Übersicht](00-entwicklerhandbuch.md) · [Tests](05-tests.md) ▶

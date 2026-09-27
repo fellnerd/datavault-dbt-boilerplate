@@ -3,7 +3,7 @@ title: "Entscheidungen & Begründungen"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # Entscheidungen & Begründungen
 
@@ -68,4 +68,4 @@ tags:
 
 ---
 
-◀ [Business-Vault-Architektur (kurz)](07-business-vault-architektur-kurz.md) · [Übersicht](README.md) · [Probleme & Lösungen](09-probleme-loesungen.md) ▶
+◀ [Business-Vault-Architektur (kurz)](07-business-vault-architektur-kurz.md) · [Übersicht](00-lessons-learned.md) · [Probleme & Lösungen](09-probleme-loesungen.md) ▶

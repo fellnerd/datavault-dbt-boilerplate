@@ -103,9 +103,9 @@ two plugins:
 
 - [`dv-toolkit`](plugins/dv-toolkit/) — generic dbt / Data Vault 2.1 skills
   (`dv-patterns`, `dv-staging`, `dv-marts`, `dv-design-sync`, `dv-er-diagram`,
-  `dv-performance`, `dv-security`), five specialized agents (vault-architect, staging-engineer,
-  mart-architect, db-monitor, performance-optimizer), and a deterministic DV
-  lint hook running on every model edit.
+  `dv-performance`, `dv-security`, `dv-docs`), five specialized agents (vault-architect, staging-engineer,
+  mart-architect, db-monitor, performance-optimizer) that also maintain the Obsidian docs vault and
+  `docs/changelog.md`, and a deterministic DV lint hook running on every model edit.
 - [`masterdata-api`](plugins/masterdata-api/) — a single skill for talking to
   any deployed Master Data Services (MDS) instance over its token-authenticated
   REST API (`/api/v1/*`): manage models/entities/attributes, stage records

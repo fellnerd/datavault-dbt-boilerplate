@@ -3,7 +3,7 @@ title: "Best Practices (gelernt)"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # Best Practices (gelernt)
 
@@ -60,4 +60,4 @@ Statt: Timestamp-basierter Vergleich
 
 ---
 
-◀ [Probleme & Lösungen](09-probleme-loesungen.md) · [Übersicht](README.md) · [CI/CD-Pipeline](12-ci-cd-pipeline-github-actions.md) ▶
+◀ [Probleme & Lösungen](09-probleme-loesungen.md) · [Übersicht](00-lessons-learned.md) · [CI/CD Pipeline (GitHub Actions)](12-ci-cd-pipeline-github-actions.md) ▶

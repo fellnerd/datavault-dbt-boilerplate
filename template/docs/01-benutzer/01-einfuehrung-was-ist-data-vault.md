@@ -3,7 +3,7 @@ title: "Einführung: Was ist Data Vault?"
 tags:
   - benutzer
 ---
-[Dokumentation](../README.md) › [Data Vault 2.1 - Benutzer-Dokumentation](README.md)
+[Dokumentation](../README.md) › [Data Vault 2.1 – Benutzer-Dokumentation](00-benutzerhandbuch.md)
 
 # Einführung: Was ist Data Vault?
 
@@ -37,4 +37,4 @@ Stellen Sie sich das Data Vault wie ein **intelligentes Archiv** vor:
 
 ---
 
-[Übersicht](README.md) · [Grundkonzepte (einfach erklärt)](02-grundkonzepte-einfach-erklaert.md) ▶
+[Übersicht](00-benutzerhandbuch.md) · [Grundkonzepte](02-grundkonzepte.md) ▶

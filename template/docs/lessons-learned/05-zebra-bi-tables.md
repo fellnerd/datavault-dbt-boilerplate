@@ -3,7 +3,7 @@ title: "Zebra BI Tables"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # 4. Zebra BI Tables
 
@@ -43,4 +43,4 @@ Projektdokumentation als "geplant" auftaucht.**
 
 ---
 
-◀ [DAX-Fallstricke](04-dax-fallstricke.md) · [Übersicht](README.md) · [Diagnose-Werkzeuge / Vorgehen](06-diagnose-werkzeuge-vorgehen.md) ▶
+◀ [DAX-Fallstricke](04-dax-fallstricke.md) · [Übersicht](00-lessons-learned.md) · [Diagnose-Werkzeuge / Vorgehen](06-diagnose-werkzeuge-vorgehen.md) ▶

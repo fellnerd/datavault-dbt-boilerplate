@@ -3,9 +3,9 @@ title: "Datenmodell"
 tags:
   - system
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md)
 
-# 3. Datenmodell
+# Datenmodell
 
 ### 3.1 Data Vault Objekte
 
@@ -195,7 +195,3 @@ Deduplizierung je Hash-Key übernimmt `automate_dv.hub()` selbst.
 > Keine Datenfehler — der Klartext-Schlüssel steht jeweils in der `src_nk`-Spalte bzw.
 > der Suffix-Spalte. Die Angleichung ist eine Modelländerung am Vault (Spalte ergänzen
 > bzw. umbenennen, bestehende Zeilen nachbefüllen) und bewusst noch nicht erfolgt.
-
----
-
-◀ [Komponenten](02-komponenten.md) · [Übersicht](../README.md) · [Umgebungen & Targets](04-umgebungen-targets.md) ▶

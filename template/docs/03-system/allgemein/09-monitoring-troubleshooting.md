@@ -4,9 +4,9 @@ tags:
   - system
   - typ/troubleshooting
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md)
 
-# 9. Monitoring & Troubleshooting
+# Monitoring & Troubleshooting
 
 ### 9.1 Logs und Laufprotokolle
 
@@ -29,7 +29,3 @@ tags:
 | `External table error` / `location does not exist` | Parquet-Datei fehlt oder wird gerade geschrieben | Landing Zone prüfen, `stage_external_sources` erneut ausführen |
 | `Invalid column name` nach Quelländerung | External Table veraltet | `stage_external_sources` mit `--vars 'ext_full_refresh: true'` |
 | Hash Diff ändert sich unerwartet | Hash-Input geändert (Spalte, Typ, Casing) | betroffene Modelle mit `--full-refresh` neu bauen |
-
----
-
-◀ [Erweiterung](08-erweiterung.md) · [Übersicht](../README.md) · [CI/CD Pipeline](10-ci-cd-pipeline.md) ▶

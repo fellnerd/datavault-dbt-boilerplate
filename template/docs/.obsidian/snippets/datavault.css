@@ -9,7 +9,7 @@ body {
   --dv-benutzer:    #3987e5;
   --dv-entwickler:  #008300;
   --dv-system:      #c98500;
-  --dv-projekt:     #e34948;
+  --dv-architektur: #e34948;
   --dv-schulung:    #1baf7a;
   --dv-lessons:     #8e5fd6;
 
@@ -28,14 +28,14 @@ body {
 .nav-folder-title[data-path^="01-benutzer"] { --dv-dot: var(--dv-benutzer); }
 .nav-folder-title[data-path^="02-entwickler"] { --dv-dot: var(--dv-entwickler); }
 .nav-folder-title[data-path^="03-system"] { --dv-dot: var(--dv-system); }
-.nav-folder-title[data-path^="projekt"] { --dv-dot: var(--dv-projekt); }
+.nav-folder-title[data-path^="04-mandant-architektur"] { --dv-dot: var(--dv-architektur); }
 .nav-folder-title[data-path^="schulung"] { --dv-dot: var(--dv-schulung); }
 .nav-folder-title[data-path^="lessons-learned"] { --dv-dot: var(--dv-lessons); }
 
 .nav-folder-title[data-path^="01-benutzer"] .nav-folder-title-content::before,
 .nav-folder-title[data-path^="02-entwickler"] .nav-folder-title-content::before,
 .nav-folder-title[data-path^="03-system"] .nav-folder-title-content::before,
-.nav-folder-title[data-path^="projekt"] .nav-folder-title-content::before,
+.nav-folder-title[data-path^="04-mandant-architektur"] .nav-folder-title-content::before,
 .nav-folder-title[data-path^="schulung"] .nav-folder-title-content::before,
 .nav-folder-title[data-path^="lessons-learned"] .nav-folder-title-content::before {
   content: "";
@@ -48,14 +48,15 @@ body {
   vertical-align: 0.05em;
 }
 
-/* Hauptbereiche etwas kraeftiger, Startseite hervorheben, Vorlagen zuruecknehmen */
+/* Hauptbereiche kraeftiger, Startseite/Inhaltsverzeichnisse hervorheben, Vorlagen zuruecknehmen */
 .nav-folder-title[data-path="01-benutzer"],
 .nav-folder-title[data-path="02-entwickler"],
 .nav-folder-title[data-path="03-system"],
-.nav-folder-title[data-path="projekt"],
+.nav-folder-title[data-path="04-mandant-architektur"],
 .nav-folder-title[data-path="schulung"],
 .nav-folder-title[data-path="lessons-learned"],
-.nav-file-title[data-path="README.md"] {
+.nav-file-title[data-path="README.md"],
+.nav-file-title[data-path*="/00-"] {
   font-weight: var(--font-semibold);
 }
 .nav-folder-title[data-path="vorlagen"] { opacity: 0.6; }

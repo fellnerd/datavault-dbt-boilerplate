@@ -43,9 +43,9 @@ Azure SQL / SQL Server with dbt Core.
 
 ## Conventions
 
-- **Naming:** `hub_<entity>`, `sat_<entity>`, `link_<e1>_<e2>`, `stg_<entity>`, mart views `v_<name>`
+- **Naming:** `hub_<entity>`, `sat_<entity>__<quelle>`, `link_<e1>_<e2>`, staging `<concept>_<entity>`, marts `dim_*`/`fakt_*` + published `*_v` views — full list: `docs/01-benutzer/04-namenskonventionen.md`
 - **Schemas:** `{{ staging_schema }}.*` (Staging), `{{ schema_prefix }}.*` / `{{ schema_prefix }}_<source>` (Raw Vault), `{{ mart_schema }}_*` (Business Views)
-- **Hash:** {{ hash_algorithm }} -> `CHAR(64)` via `HASHBYTES()`; composite separator `'^^'`
+- **Hash:** {{ hash_algorithm }} -> `CHAR(64)` via `HASHBYTES()`; composite separator `'||'` (automate_dv `concat_string`)
 - **Raw Vault physical, Business Vault virtual** (views)
 - **Azure SQL Basic Tier:** no columnstore (`+as_columnstore: false`), incremental `append`
 
@@ -55,7 +55,14 @@ Azure SQL / SQL Server with dbt Core.
 - **Confirm destructive actions:** `dbt run --full-refresh` (loses history!), deleting models, ALTER/DROP.
 - **Never** `--full-refresh` on historized satellites.
 - **DB tools read-only** — writes only via dbt commands.
-- Details: [docs/CLAUDE.md](docs/CLAUDE.md), [docs/02-entwickler/](docs/02-entwickler/README.md)
+- Details: [docs/CLAUDE.md](docs/CLAUDE.md), [docs/02-entwickler/](docs/02-entwickler/00-entwicklerhandbuch.md)
+
+## Dokumentation
+
+- Obsidian-Vault: `docs/` (Start `docs/README.md`), Struktur und Regeln: Skill `dv-docs` (Plugin `dv-toolkit`)
+- Bei jeder Änderung an models/, macros/, seeds/, security/ oder der Pipeline: Zeile in `docs/changelog.md` (neueste oben)
+- Projektspezifisches nur in `docs/04-mandant-architektur/`; Handbücher 01–03 bleiben mandantenneutral
+- Design first (`design/`, Skill `dv-design-sync`), Diagramme per `python3 scripts/sync_design_to_vault.py` in den Vault spiegeln
 
 ## Infrastructure
 

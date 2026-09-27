@@ -3,9 +3,9 @@ title: "CI/CD Pipeline"
 tags:
   - system
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md)
 
-# 10. CI/CD Pipeline
+# CI/CD Pipeline
 
 Das Projekt wird über zwei parallel gepflegte Pipelines deployed:
 
@@ -57,7 +57,3 @@ Job läuft mit `resource_group`, damit sich zwei Läufe nicht überholen.
 |------|--------|-------|
 | Nightly Tests | `dev` | langsame Tests ausserhalb der Merge-Request-Validierung |
 | ADF-Trigger | `test` | alle 30 Minuten prüfen, ob ein neuer Quell-Load vorliegt |
-
----
-
-◀ [Monitoring & Troubleshooting](09-monitoring-troubleshooting.md) · [Übersicht](../README.md) · [Changelog](11-changelog.md) ▶

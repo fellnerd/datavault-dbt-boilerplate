@@ -1,6 +1,6 @@
 {
   "collapse-filter": false,
-  "search": "-path:/^README/",
+  "search": "-path:/^README/ -file:changelog",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": true,
@@ -29,7 +29,7 @@
       }
     },
     {
-      "query": "path:\"projekt/\"",
+      "query": "path:\"04-mandant-architektur/\"",
       "color": {
         "a": 1,
         "rgb": 14895432

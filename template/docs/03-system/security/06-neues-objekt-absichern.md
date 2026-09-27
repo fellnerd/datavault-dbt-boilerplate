@@ -3,9 +3,9 @@ title: "Neues Mart-Objekt absichern"
 tags:
   - system/security
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md) › [Security](README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md) › [Security](00-security.md)
 
-# 6. Neues Mart-Objekt absichern
+# Neues Mart-Objekt absichern
 
 Für Modellentwickler. Die Frage ist immer dieselbe: **Trägt das Objekt den Filter, oder
 erbt es ihn?**
@@ -139,4 +139,4 @@ Und mit einem echten Test-Login gegenprüfen — [07 – Verifizieren](07-verifi
 
 ---
 
-◀ [Berechtigung vergeben](05-berechtigung-vergeben.md) · [Verifizieren](07-verifizieren.md) ▶
+◀ [Berechtigung vergeben](05-berechtigung-vergeben.md) · [Übersicht](00-security.md) · [Verifizieren](07-verifizieren.md) ▶

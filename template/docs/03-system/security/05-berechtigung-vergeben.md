@@ -3,9 +3,9 @@ title: "Berechtigung vergeben"
 tags:
   - system/security
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md) › [Security](README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md) › [Security](00-security.md)
 
-# 5. Berechtigung vergeben
+# Berechtigung vergeben
 
 Der Arbeitsablauf, wenn jemand Zugriff bekommen soll.
 
@@ -156,4 +156,4 @@ bewusst mitlöschen.
 
 ---
 
-◀ [RLS – Zeilenfilter](04-rls-dimensional.md) · [Neues Objekt absichern](06-neues-objekt-absichern.md) ▶
+◀ [Überblick](01-ueberblick.md) · [Übersicht](00-security.md) · [Neues Mart-Objekt absichern](06-neues-objekt-absichern.md) ▶

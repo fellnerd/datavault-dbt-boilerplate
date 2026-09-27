@@ -3,9 +3,9 @@ title: "Übersicht"
 tags:
   - system
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md)
 
-# 1. Übersicht
+# Übersicht
 
 Dieses Projekt implementiert eine **Data Vault 2.1**-Plattform auf Azure SQL mit dbt Core als
 wiederverwendbares Template. Ein Git-Repository bedient alle Mandanten; pro Mandant existiert
@@ -13,7 +13,7 @@ je eine Datenbank für Development, Test und Produktion.
 
 Die konkrete Ausprägung eines Mandanten (Server-, Datenbank- und Quellsystemnamen) ist bewusst
 nicht Teil dieser Dokumentation — sie steht in der jeweiligen Mandanten-Dokumentation,
-für den aktuellen Mandanten unter [`projekt/`](../../projekt/README.md).
+für den aktuellen Mandanten unter [`04-mandant-architektur/`](../../04-mandant-architektur/00-mandant-architektur.md).
 
 ### 1.1 Architektur-Diagramm
 
@@ -60,7 +60,3 @@ für den aktuellen Mandanten unter [`projekt/`](../../projekt/README.md).
 | Raw Vault | `vault`, `vault_<concept>` | Historisierte Hubs, Satellites, Links — 1:1 zur Quelle, keine Geschäftslogik |
 | Business Vault | `mart_<domain>` | Abgeleitete Regeln, Hierarchien, Berechnungen (Soft Rules) |
 | Mart | `mart`, `mart_<domain>` | Dimensionen, Fakten und publizierte `_v`-Views für BI — einzige Schicht mit Business-Grants |
-
----
-
-[Übersicht](../README.md) · [Komponenten](02-komponenten.md) ▶

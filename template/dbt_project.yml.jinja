@@ -4,6 +4,13 @@ config-version: 2
 
 profile: '{{ profile_name }}'
 
+# OLS: SELECT-Grants auf mart*-Views nach jedem Lauf neu setzen (macros/security/grant_select_on_views.sql).
+# Ohne Eintraege in var ols_view_grants ein No-op. Ladeprotokoll optional aktivieren:
+#   einmalig `dbt run-operation create_load_status_table`, dann hier
+#   - "{% raw %}{{ log_load_status(results) }}{% endraw %}" ergaenzen.
+on-run-end:
+  - "{% raw %}{{ grant_select_on_views() }}{% endraw %}"
+
 # automate_dv dispatch: Eigene Macros (z. B. hash_override.sql) haben Vorrang
 dispatch:
   - macro_namespace: automate_dv
@@ -25,6 +32,14 @@ seeds:
     +schema: seed
 
 vars:
+  # Mandantenschluessel fuer dss_sec_value_key (macros/security/tenant_key.sql)
+  tenant_key: '{{ project_name }}'
+
+  # OLS: Principal (Entra-Gruppe/User) -> Mart-Schemas, deren _v-Views er lesen darf.
+  # Beispiel:
+  #   <gruppen-prefix>-finance-ro: ['mart', 'mart_finance']
+  ols_view_grants: {}
+
   # Hash algorithm: MD5 (16 byte) or SHA (32 byte)
   hash: '{{ hash_algorithm }}'
 

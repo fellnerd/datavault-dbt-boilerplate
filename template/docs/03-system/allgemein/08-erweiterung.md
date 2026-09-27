@@ -3,9 +3,9 @@ title: "Erweiterung"
 tags:
   - system
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md)
 
-# 8. Erweiterung
+# Erweiterung
 
 ### 8.1 Neuen Mandanten hinzufügen
 
@@ -50,8 +50,4 @@ tags:
 5. **Link erstellen (falls nötig):** `.../links/link_<entity1>_<entity2>.sql`
 6. **Tests und YAML-Dokumentation ergänzen**
 
-Ausführlich im [Entwicklerhandbuch](../../02-entwickler/05-neue-entity-erstellen-komplett.md).
-
----
-
-◀ [Sicherheit](07-sicherheit.md) · [Übersicht](../README.md) · [Monitoring & Troubleshooting](09-monitoring-troubleshooting.md) ▶
+Ausführlich im [Entwicklerhandbuch](../../02-entwickler/04-objekte-anlegen/00-objekte-anlegen.md).

@@ -3,7 +3,7 @@ title: "Multi-Active Satellite: Load Date muss ein BATCH-Wert sein (2026-08-17)"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # Multi-Active Satellite: Load Date muss ein BATCH-Wert sein (2026-08-17)
 
@@ -62,4 +62,4 @@ zeilenweise Load Date ist wieder zulässig und sogar präziser. Siehe nächsten 
 
 ---
 
-◀ [Technische Referenz](13-technische-referenz.md) · [Übersicht](README.md) · [Transaction Satellite für Messdaten: Anti-Join über den Zeitraum begrenzen (2026-08-17)](15-transaction-satellite-fuer-messdaten.md) ▶
+◀ [Technische Referenz](13-technische-referenz.md) · [Übersicht](00-lessons-learned.md) · [Transaction Satellite für Messdaten: Anti-Join über den Zeitraum begrenzen (2026-08-17)](15-transaction-satellite-fuer-messdaten.md) ▶

@@ -3,14 +3,14 @@ title: "Das sec-Schema"
 tags:
   - system/security
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md) › [Security](README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md) › [Security](00-security.md)
 
-# 2. Das `sec`-Schema
+# Das `sec`-Schema
 
 Hier liegen die Berechtigungen. Drei Tabellen und zwei Prüffunktionen, mehr nicht.
 
 > Das Schema wird **manuell in SSMS** deployed, nicht über dbt
-> (`security/DEPLOYMENT.md`). Grund: ein dbt-Seed oder
+> ([security/DEPLOYMENT.md](../../../security/DEPLOYMENT.md)). Grund: ein dbt-Seed oder
 > -Model würde produktive Berechtigungszeilen bei jedem Run überschreiben.
 
 ## Die drei Tabellen
@@ -99,4 +99,4 @@ Fehlt diese Zeile, liefern dbt-Läufe und Tests **leere Ergebnisse ohne Fehlerme
 
 ---
 
-◀ [Überblick](01-ueberblick.md) · [OLS – Objektzugriff](03-ols-view-grants.md) ▶
+◀ [Betrieb & Rollout](09-betrieb-rollout.md) · [Übersicht](00-security.md) · [OLS – Objektzugriff](03-ols-view-grants.md) ▶

@@ -3,9 +3,9 @@ title: "Umgebungen & Targets"
 tags:
   - system
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md)
 
-# 4. Umgebungen & Targets
+# Umgebungen & Targets
 
 ### 4.1 Multi-Mandanten-Architektur
 
@@ -38,7 +38,3 @@ Macro `tenant_key()` aus dem Target-Namen (siehe [Sicherheit](07-sicherheit.md))
 Die Verbindung wird über `profiles.yml` definiert (Profil `datavault`, Adapter `sqlserver`);
 in der Pipeline wird die Datei aus CI-Variablen erzeugt. Lokal liegt sie in `~/.dbt/`
 ausserhalb des Repositories. Welche Targets ein Mandant hat, steht in seiner Dokumentation.
-
----
-
-◀ [Datenmodell](03-datenmodell.md) · [Übersicht](../README.md) · [Dateistruktur](05-dateistruktur.md) ▶

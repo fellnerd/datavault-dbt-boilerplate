@@ -3,9 +3,9 @@ title: "Überblick"
 tags:
   - system/security
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md) › [Security](README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md) › [Security](00-security.md)
 
-# 1. Überblick
+# Überblick
 
 ## Die drei Schichten
 
@@ -97,4 +97,4 @@ von dieser Dimension nichts erben.
 
 ---
 
-◀ [Übersicht](README.md) · [Das sec-Schema](02-sec-schema.md) ▶
+[Übersicht](00-security.md) · [Berechtigung vergeben](05-berechtigung-vergeben.md) ▶

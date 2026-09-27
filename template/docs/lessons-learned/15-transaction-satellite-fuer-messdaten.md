@@ -3,7 +3,7 @@ title: "Transaction Satellite für Messdaten: Anti-Join über den Zeitraum begre
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # Transaction Satellite für Messdaten: Anti-Join über den Zeitraum begrenzen (2026-08-17)
 
@@ -64,4 +64,4 @@ Betroffene Objekte: `models/staging/ise_lastgang_dedup.sql`,
 
 ---
 
-◀ [Multi-Active Satellite: Load Date muss ein BATCH-Wert sein (2026-08-17)](14-multi-active-satellite-load-date.md) · [Übersicht](README.md)
+◀ [Multi-Active Satellite: Load Date muss ein BATCH-Wert sein (2026-08-17)](14-multi-active-satellite-load-date.md) · [Übersicht](00-lessons-learned.md)

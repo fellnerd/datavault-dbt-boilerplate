@@ -3,9 +3,9 @@ title: "Fallstricke"
 tags:
   - system/security
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md) › [Security](README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md) › [Security](00-security.md)
 
-# 10. Fallstricke
+# Fallstricke
 
 Das Gemeinsame an fast allen: **Security-Fehler zeigen sich nicht als Absturz, sondern als
 zu wenig oder zu viel Daten.** Deshalb muss jede Änderung gegen einen Sollwert geprüft
@@ -140,4 +140,4 @@ Ausgangsmatrix verglichen wurde. Anzahl Werte je Achse und Nutzer muss übereins
 
 ---
 
-◀ [Betrieb & Rollout](09-betrieb-rollout.md) · [Übersicht](README.md) ▶
+◀ [Verifizieren](07-verifizieren.md) · [Übersicht](00-security.md) · [Betrieb & Rollout](09-betrieb-rollout.md) ▶

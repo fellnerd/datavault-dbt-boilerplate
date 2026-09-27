@@ -3,135 +3,130 @@ title: "Neue Entity hinzufügen"
 tags:
   - benutzer
 ---
-[Dokumentation](../README.md) › [Data Vault 2.1 - Benutzer-Dokumentation](README.md)
+[Dokumentation](../README.md) › [Data Vault 2.1 – Benutzer-Dokumentation](00-benutzerhandbuch.md)
 
-# 4. Neue Entity hinzufügen
+# Neue Entity hinzufügen
 
-> Kurzfassung für den Überblick. Der vollständige Weg inklusive Analyse, Namenskonventionen,
-> Tests und YAML-Dokumentation steht im
-> [Entwicklerhandbuch](../02-entwickler/05-neue-entity-erstellen-komplett.md).
->
-> Die folgenden Vorlagen zeigen das Muster an einem Beispielquellsystem.
+Kurzablauf, um eine neue Quelltabelle bis in den Raw Vault zu bringen: External Table →
+Staging View → Hub → Satellite → Link. Jeder Schritt verweist auf die ausführliche
+Anleitung unter [Objekte anlegen](../02-entwickler/04-objekte-anlegen/00-objekte-anlegen.md).
+Beispiel: Quelle `crm`, Entität `auftrag` mit Fremdschlüssel auf `kunde`.
 
-### Schritt 1: External Table definieren
+```
+sources.yml ─► ext_crm_auftrag ─► crm_auftrag (Staging View, Hashes)
+                                     ├─► hub_auftrag
+                                     ├─► sat_auftrag__crm
+                                     ├─► crm_auftrag__kunde ─► hub_kunde (FK-Hub)
+                                     └─► link_auftrag_kunde
+```
 
-Bearbeite `models/staging/sources.yml`:
+## 1. External Table — `models/staging/sources.yml`
 
 ```yaml
-- name: ext_neue_entity
-  external:
-    location: "jira/postgres/public.wp_neue_entity.parquet"
-    file_format: ParquetFormat
-  columns:
-    - name: id
-      data_type: BIGINT
-    - name: name
-      data_type: NVARCHAR(255)
-    # ... weitere Spalten
+      - name: ext_crm_auftrag
+        external:
+          location: "crm/<pfad>/auftrag.parquet"
+          file_format: ParquetFormat
+          data_source: StageFileSystem
+        columns:
+          - name: AUFTRAGNR
+            data_type: BIGINT
+          - name: KUNDENNR
+            data_type: BIGINT
+          - name: STATUS
+            data_type: NVARCHAR(50)
+          - name: BETRAG
+            data_type: DECIMAL(18,2)
 ```
 
-### Schritt 2: Staging View erstellen
+Spalten nicht abtippen: `get_parquet_schema` erzeugt den Block ([External Table](../02-entwickler/04-objekte-anlegen/staging/01-external-table.md)).
 
-Erstelle `models/staging/jira_neue_entity.sql`:
+## 2. Staging View — `models/staging/crm_auftrag.sql`
 
 ```sql
-{{- config(
-    materialized='view'
-) -}}
-
 {%- set yaml_metadata -%}
 source_model:
-    jira_data: 'ext_neue_entity'
+  staging: "ext_crm_auftrag"
 derived_columns:
-    dss_record_source: "!jira.wp_neue_entity"
-    dss_load_date: "GETDATE()"
+  dss_record_source: "!crm"
+  dss_load_date: "GETDATE()"
+  dss_create_datetime: "GETDATE()"
+  dss_business_key: "CONCAT_WS('||', 'default', 'default', ISNULL(LTRIM(RTRIM(CAST(AUFTRAGNR AS NVARCHAR(MAX)))), '-1'))"
 hashed_columns:
-    hk_neue_entity: 'id'
-    hd_neue_entity:
-        is_hashdiff: true
-        columns:
-            - name
-            - description
+  hk_auftrag: "AUFTRAGNR"
+  hk_kunde: "KUNDENNR"
+  hk_link_auftrag_kunde: ["AUFTRAGNR", "KUNDENNR"]
+  hd_auftrag__crm:
+    is_hashdiff: true
+    columns: ["BETRAG", "STATUS"]
 {%- endset -%}
-
-{% set metadata = fromyaml(yaml_metadata) %}
-
-{{ automate_dv.stage(
-    include_source_columns=true,
-    source_model=metadata['source_model'],
-    derived_columns=metadata['derived_columns'],
-    hashed_columns=metadata['hashed_columns']
-) }}
+{% set m = fromyaml(yaml_metadata) %}
+{{ automate_dv.stage(include_source_columns=true, source_model=m['source_model'],
+                     derived_columns=m['derived_columns'], hashed_columns=m['hashed_columns']) }}
 ```
 
-### Schritt 3: Hub erstellen
+Ausführlich: [Staging View](../02-entwickler/04-objekte-anlegen/staging/02-staging-view.md).
 
-Erstelle `models/raw_vault/hubs/hub_neue_entity.sql`:
+## 3. Hub — `models/raw_vault/_common/hubs/hub_auftrag.sql`
 
 ```sql
-{{- config(
-    materialized='incremental',
-    incremental_strategy='append',
-    as_columnstore=false
-) -}}
-
-{%- set source_model = "jira_neue_entity" -%}
-{%- set src_pk = "hk_neue_entity" -%}
-{%- set src_nk = "id" -%}
-{%- set src_ldts = "dss_load_date" -%}
-{%- set src_source = "dss_record_source" -%}
-
-{{ automate_dv.hub(
-    src_pk=src_pk, 
-    src_nk=src_nk, 
-    src_ldts=src_ldts, 
-    src_source=src_source, 
-    source_model=source_model
-) }}
+{{ config(materialized='incremental', as_columnstore=false,
+          post_hook=["{{ create_hash_index('hk_auftrag') }}"]) }}
+{{ automate_dv.hub(src_pk="hk_auftrag", src_nk="AUFTRAGNR",
+                   src_extra_columns=["dss_business_key", "dss_create_datetime"],
+                   src_ldts="dss_load_date", src_source="dss_record_source",
+                   source_model="crm_auftrag") }}
 ```
 
-### Schritt 4: Satellite erstellen
+Für `hub_kunde` (Fremdschlüssel) liest der Hub aus einer eigenen FK-Staging-View
+`crm_auftrag__kunde`, damit sein `dss_business_key` die Kundennummer enthält —
+[Hub → Primär- oder FK-Hub](../02-entwickler/04-objekte-anlegen/raw-vault/01-hub.md).
 
-Erstelle `models/raw_vault/satellites/sat_neue_entity.sql`:
+## 4. Satellite — `models/raw_vault/_common/satellites/sat_auftrag__crm.sql`
 
 ```sql
-{{- config(
-    materialized='incremental',
-    incremental_strategy='append',
-    as_columnstore=false
-) -}}
-
-{%- set source_model = "jira_neue_entity" -%}
-{%- set src_pk = "hk_neue_entity" -%}
-{%- set src_hashdiff = "hd_neue_entity" -%}
-{%- set src_ldts = "dss_load_date" -%}
-{%- set src_source = "dss_record_source" -%}
-{%- set src_payload = ["name", "description"] -%}
-
-{{ automate_dv.sat(
-    src_pk=src_pk, 
-    src_hashdiff=src_hashdiff,
-    src_payload=src_payload,
-    src_ldts=src_ldts, 
-    src_source=src_source, 
-    source_model=source_model
-) }}
+{{ config(materialized='incremental', as_columnstore=false,
+          post_hook=["{{ create_hash_index('hk_auftrag') }}",
+                     "{{ update_satellite_current_flag(this, 'hk_auftrag') }}"]) }}
+{{ automate_dv.sat(src_pk="hk_auftrag",
+                   src_hashdiff={"source_column": "hd_auftrag__crm", "alias": "HASHDIFF"},
+                   src_payload=["BETRAG", "STATUS"],
+                   src_extra_columns=["dss_create_datetime"],
+                   src_ldts="dss_load_date", src_source="dss_record_source",
+                   source_model="crm_auftrag") }}
 ```
 
-### Schritt 5: Deployment
+Payload = exakt die Hashdiff-Spalten. [Satellite](../02-entwickler/04-objekte-anlegen/raw-vault/02-satellite.md).
 
-```bash
-# External Table erstellen (Development)
-dbt run-operation stage_external_sources
+## 5. Link — `models/raw_vault/_common/links/link_auftrag_kunde.sql`
 
-# Models bauen (Development)
-dbt run --select <concept>_neue_entity hub_neue_entity sat_neue_entity
-
-# Andere Umgebung (Test/Produktion in der Regel über die Pipeline)
-dbt run-operation stage_external_sources --target <mandant>-test
-dbt run --select <concept>_neue_entity hub_neue_entity sat_neue_entity --target <mandant>-test
+```sql
+{{ config(materialized='incremental', as_columnstore=false,
+          post_hook=["{{ create_hash_index('hk_link_auftrag_kunde') }}"]) }}
+{{ automate_dv.link(src_pk="hk_link_auftrag_kunde",
+                    src_fk=["hk_auftrag", "hk_kunde"],
+                    src_ldts="dss_load_date", src_source="dss_record_source",
+                    source_model="crm_auftrag") }}
 ```
+
+Der Link-Hash besteht aus den Business Keys **beider** Hubs in der Reihenfolge von `src_fk`.
+[Link](../02-entwickler/04-objekte-anlegen/raw-vault/03-link.md).
+
+## 6. Dokumentieren, bauen, prüfen
+
+1. Modelle mit Spalten und Tests in `_staging__models.yml` bzw. `_<ordner>__models.yml`
+   eintragen (Hub: `unique` + `not_null` auf `hk_auftrag`, Satellite: `relationships` zum Hub).
+2. Bauen und testen:
+
+   ```bash
+   dbt run-operation stage_external_sources --args 'select: staging.ext_crm_auftrag'
+   dbt build --select +link_auftrag_kunde +sat_auftrag__crm
+   ```
+
+3. Ergebnis prüfen: [Daten prüfen](08-daten-pruefen.md) (Eindeutigkeit, Waisen, Zeilenzahlen).
+4. Design-Diagramm unter `design/` und den [Changelog](../changelog.md) nachziehen,
+   Merge Request stellen ([Deployment Workflow](../02-entwickler/06-deployment-workflow.md)).
 
 ---
 
-◀ [Verfügbare Targets](06-verfuegbare-targets.md) · [Übersicht](README.md) · [Useful dbt Commands](08-useful-dbt-commands.md) ▶
+◀ [dbt-Befehle](06-dbt-befehle.md) · [Übersicht](00-benutzerhandbuch.md) · [Daten prüfen](08-daten-pruefen.md) ▶

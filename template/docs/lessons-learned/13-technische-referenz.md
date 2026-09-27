@@ -3,7 +3,7 @@ title: "Technische Referenz"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # Technische Referenz
 
@@ -64,4 +64,4 @@ journalctl -u actions.runner.fellnerd-datavault-dbt.dbt-runner-vm -f
 
 ---
 
-◀ [CI/CD Pipeline (GitHub Actions)](12-ci-cd-pipeline-github-actions.md) · [Übersicht](README.md) · [Multi-Active Satellite: Load Date muss ein BATCH-Wert sein (2026-08-17)](14-multi-active-satellite-load-date.md) ▶
+◀ [CI/CD Pipeline (GitHub Actions)](12-ci-cd-pipeline-github-actions.md) · [Übersicht](00-lessons-learned.md) · [Multi-Active Satellite: Load Date muss ein BATCH-Wert sein (2026-08-17)](14-multi-active-satellite-load-date.md) ▶

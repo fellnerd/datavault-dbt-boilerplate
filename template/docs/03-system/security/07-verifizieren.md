@@ -3,9 +3,9 @@ title: "Verifizieren"
 tags:
   - system/security
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md) › [Security](README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md) › [Security](00-security.md)
 
-# 7. Verifizieren
+# Verifizieren
 
 Eine Berechtigung gilt erst als umgesetzt, wenn sie **mit einem echten Login** geprüft
 wurde.
@@ -163,4 +163,4 @@ Power-BI-Traffic landet in denselben Einträgen. Ersten Lauf beim Vergleich ausk
 
 ---
 
-◀ [Neues Objekt absichern](06-neues-objekt-absichern.md) · [CLS & Verschlüsselung](08-cls-und-verschluesselung.md) ▶
+◀ [Neues Mart-Objekt absichern](06-neues-objekt-absichern.md) · [Übersicht](00-security.md) · [Fallstricke](10-fallstricke.md) ▶

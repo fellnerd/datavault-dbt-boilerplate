@@ -3,9 +3,9 @@ title: "Quick Reference"
 tags:
   - entwickler
 ---
-[Dokumentation](../README.md) › [Data Vault 2.1 - Developer Guide](README.md)
+[Dokumentation](../README.md) › [Data Vault 2.1 – Developer Guide](00-entwicklerhandbuch.md)
 
-# 🚀 Quick Reference
+# Quick Reference
 
 ### Häufigste Befehle
 
@@ -40,7 +40,6 @@ dbt run-operation create_external_table \
   --args 'table_name: ext_<concept>_<entity>'
 
 ## Option 3: Explorieren (ohne zu erstellen) — benötigt STAGE_FS_SAS
-dbt run-operation list_parquet_files --args '{"folder_path": "<concept>/<quelle>"}'
 dbt run-operation get_parquet_schema --args '{"folder_path": "<concept>/<quelle>", "file_name": "<Datei>.parquet"}'
 dbt run-operation get_parquet_data   --args '{"folder_path": "<concept>/<quelle>", "file_name": "<Datei>.parquet", "limit": 5}'
 
@@ -134,8 +133,8 @@ dbt run --select raw_vault.<concept>.hub_*
 | `macros/satellite_current_flag.sql` | `dss_is_current`, End-Dating | [öffnen](../../macros/satellite_current_flag.sql) |
 | `macros/create_hash_index.sql` | Indizes auf Hash Keys | [öffnen](../../macros/create_hash_index.sql) |
 | `macros/ghost_records.sql` | Ghost Records | [öffnen](../../macros/ghost_records.sql) |
-| `macros/security/` | `tenant_key`, `rls_filter`, `cls_mask`, Security Policies, View-Grants | `macros/security` |
-| `security/DEPLOYMENT.md` | Runbook für das Security-Fundament | `security/DEPLOYMENT.md` |
+| `macros/security/` | `tenant_key`, `rls_filter`, `cls_mask`, Security Policies, View-Grants | [öffnen](../../macros/security) |
+| `security/DEPLOYMENT.md` | Runbook für das Security-Fundament | [öffnen](../../security/DEPLOYMENT.md) |
 
 ### Parquet-Exploration Macros
 
@@ -144,7 +143,7 @@ SAS-Token in der Umgebungsvariablen `STAGE_FS_SAS` (`export STAGE_FS_SAS="se=...
 
 | Macro | Zweck |
 |-------|-------|
-| `list_parquet_files` | Alle Dateien eines Ordners auflisten |
+| `list_parquet_files` | Ordner auflisten — nur Synapse Serverless, in Azure SQL Database nicht ausführbar |
 | `get_parquet_schema` | Schema einer Datei als YAML für `sources.yml` ausgeben |
 | `get_parquet_data` | Beispieldaten einer Datei anzeigen |
 
@@ -157,8 +156,7 @@ SAS-Token in der Umgebungsvariablen `STAGE_FS_SAS` (`export STAGE_FS_SAS="se=...
 
 **Typischer Workflow für eine neue Datenquelle:**
 ```bash
-# 1. Verfügbare Dateien anzeigen
-dbt run-operation list_parquet_files --args '{"folder_path": "<concept>/<quelle>"}'
+# 1. Verfügbare Dateien anzeigen (Azure Portal bzw. az storage fs file list)
 
 # 2. Schema als YAML generieren (direkt in sources.yml kopierbar)
 dbt run-operation get_parquet_schema --args '{"folder_path": "<concept>/<quelle>", "file_name": "<Datei>.parquet"}'
@@ -173,4 +171,4 @@ dbt run-operation get_parquet_data --args '{"folder_path": "<concept>/<quelle>",
 
 ---
 
-◀ [Data Vault 2.0 Leitfaden](01-data-vault-2-0-leitfaden.md) · [Übersicht](README.md) · [Projektstruktur](03-projektstruktur.md) ▶
+◀ [Data Vault 2.1 Leitfaden](01-data-vault-leitfaden.md) · [Übersicht](00-entwicklerhandbuch.md) · [Projektstruktur](03-projektstruktur.md) ▶

@@ -3,7 +3,7 @@ title: "Diagnose-Werkzeuge / Vorgehen"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # 5. Diagnose-Werkzeuge / Vorgehen
 
@@ -23,4 +23,4 @@ tags:
 
 ---
 
-◀ [Zebra BI Tables](05-zebra-bi-tables.md) · [Übersicht](README.md) · [Business-Vault-Architektur (kurz)](07-business-vault-architektur-kurz.md) ▶
+◀ [Zebra BI Tables](05-zebra-bi-tables.md) · [Übersicht](00-lessons-learned.md) · [Business-Vault-Architektur (kurz)](07-business-vault-architektur-kurz.md) ▶

@@ -3,9 +3,9 @@ title: "CLS & Verschlüsselung"
 tags:
   - system/security
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md) › [Security](README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md) › [Security](00-security.md)
 
-# 8. CLS & Verschlüsselung
+# CLS & Verschlüsselung
 
 Während OLS und RLS regeln, *welche Objekte und Zeilen* jemand sieht, geht es hier um
 *einzelne Spalten*.
@@ -108,4 +108,4 @@ DDM ersetzt **keine** Zugriffskontrolle — es ist eine zweite Verteidigungslini
 
 ---
 
-◀ [Verifizieren](07-verifizieren.md) · [Betrieb & Rollout](09-betrieb-rollout.md) ▶
+◀ [RLS – Zeilenfilter über Dimensionen](04-rls-dimensional.md) · [Übersicht](00-security.md)

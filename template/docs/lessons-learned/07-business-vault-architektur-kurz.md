@@ -3,7 +3,7 @@ title: "Business-Vault-Architektur (kurz)"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # 6. Business-Vault-Architektur (kurz)
 
@@ -18,4 +18,4 @@ tags:
 
 ---
 
-◀ [Diagnose-Werkzeuge / Vorgehen](06-diagnose-werkzeuge-vorgehen.md) · [Übersicht](README.md) · [Entscheidungen & Begründungen](08-entscheidungen-begruendungen.md) ▶
+◀ [Diagnose-Werkzeuge / Vorgehen](06-diagnose-werkzeuge-vorgehen.md) · [Übersicht](00-lessons-learned.md) · [Entscheidungen & Begründungen](08-entscheidungen-begruendungen.md) ▶

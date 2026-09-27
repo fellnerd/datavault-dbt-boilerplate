@@ -3,7 +3,7 @@ title: "DAX-Fallstricke"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # 3. DAX-Fallstricke
 
@@ -35,4 +35,4 @@ Calculation Group im Modell existiert.**
 
 ---
 
-◀ [Row-Level Security (native Security Policy)](03-row-level-security-native-security-policy.md) · [Übersicht](README.md) · [Zebra BI Tables](05-zebra-bi-tables.md) ▶
+◀ [Row-Level Security](03-row-level-security-native-security-policy.md) · [Übersicht](00-lessons-learned.md) · [Zebra BI Tables](05-zebra-bi-tables.md) ▶

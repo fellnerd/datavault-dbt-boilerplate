@@ -3,9 +3,9 @@ title: "Betrieb & Rollout"
 tags:
   - system/security
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md) › [Security](README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md) › [Security](00-security.md)
 
-# 9. Betrieb & Rollout
+# Betrieb & Rollout
 
 ## Wer deployt was
 
@@ -24,7 +24,7 @@ tags:
 
 ## Reihenfolge beim Erst-Rollout
 
-Vollständiges Runbook: `security/DEPLOYMENT.md`.
+Vollständiges Runbook: [security/DEPLOYMENT.md](../../../security/DEPLOYMENT.md).
 
 ```
 1. ddl/01_schema_sec.sql          Schema + drei Tabellen
@@ -113,4 +113,4 @@ Wird der Bereich im Sharepoint umbenannt, greifen bestehende Rechte nicht mehr �
 
 ---
 
-◀ [CLS & Verschlüsselung](08-cls-und-verschluesselung.md) · [Fallstricke](10-fallstricke.md) ▶
+◀ [Fallstricke](10-fallstricke.md) · [Übersicht](00-security.md) · [Das sec-Schema](02-sec-schema.md) ▶

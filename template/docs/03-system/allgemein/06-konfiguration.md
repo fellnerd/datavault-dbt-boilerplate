@@ -3,9 +3,9 @@ title: "Konfiguration"
 tags:
   - system
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md)
 
-# 6. Konfiguration
+# Konfiguration
 
 ### 6.1 dbt_project.yml
 
@@ -77,7 +77,3 @@ Wichtige Punkte:
 - ✅ Native Row-Level- und Column-Level-Security (siehe [Sicherheit](07-sicherheit.md))
 - ⚠️ Inkrementelle Modelle laufen mit `incremental_strategy: append`; Schemaänderungen werden
   über `on_schema_change: append_new_columns` ergänzt, geänderte Hash-Inputs erfordern `--full-refresh`
-
----
-
-◀ [Dateistruktur](05-dateistruktur.md) · [Übersicht](../README.md) · [Sicherheit](07-sicherheit.md) ▶

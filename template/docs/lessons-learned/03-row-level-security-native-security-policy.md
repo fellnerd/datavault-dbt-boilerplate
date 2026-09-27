@@ -3,11 +3,11 @@ title: "Row-Level Security"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # 2. Row-Level Security
 
-> Aktueller Stand und Anleitung: **[docs/security/](../03-system/security/README.md)**.
+> Aktueller Stand und Anleitung: **[Security](../03-system/security/00-security.md)**.
 > Dieses Kapitel hält fest, *warum* es so gebaut ist und was gemessen wurde.
 
 ### RLS wertet pro Basiszeile aus, auch für global exemptierte User
@@ -125,4 +125,4 @@ kein Bug. **Solche Schritte muss der User selbst ausführen; nicht versuchen zu 
 
 ---
 
-◀ [dbt-Modellierung / Materialisierung](02-dbt-modellierung-materialisierung.md) · [Übersicht](README.md) · [DAX-Fallstricke](04-dax-fallstricke.md) ▶
+◀ [dbt-Modellierung / Materialisierung](02-dbt-modellierung-materialisierung.md) · [Übersicht](00-lessons-learned.md) · [DAX-Fallstricke](04-dax-fallstricke.md) ▶

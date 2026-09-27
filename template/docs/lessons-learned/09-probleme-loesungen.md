@@ -3,7 +3,7 @@ title: "Probleme & Lösungen"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # Probleme & Lösungen
 
@@ -117,4 +117,4 @@ const tableName = entity.code.toLowerCase()
 
 ---
 
-◀ [Entscheidungen & Begründungen](08-entscheidungen-begruendungen.md) · [Übersicht](README.md) · [Best Practices (gelernt)](10-best-practices-gelernt.md) ▶
+◀ [Entscheidungen & Begründungen](08-entscheidungen-begruendungen.md) · [Übersicht](00-lessons-learned.md) · [Best Practices (gelernt)](10-best-practices-gelernt.md) ▶

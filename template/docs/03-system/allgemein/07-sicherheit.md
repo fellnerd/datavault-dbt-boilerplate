@@ -3,9 +3,9 @@ title: "Sicherheit"
 tags:
   - system
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md)
 
-# 7. Sicherheit
+# Sicherheit
 
 ### 7.1 Authentifizierung
 
@@ -31,7 +31,7 @@ tags:
 
 ### 7.4 Datenzugriffs-Security (OLS / RLS / CLS / CLE)
 
-> Vollständige Referenz: **[03-system/security/](../security/README.md)**
+> Vollständige Referenz: **[03-system/security/](../security/00-security.md)**
 
 Vier Schichten, Enforcement an der Mart-Grenze — Business-User erreichen ausschliesslich `mart*`-Schemas:
 
@@ -51,8 +51,4 @@ Admin-/Service-User-Bypass (`no_sec` 1/2). Der dbt-Service-User benötigt zwinge
 Das Security-Fundament (`sec`-Schema, Funktionen, Rechtetabellen) wird **nicht** über dbt
 deployed, sondern einmalig pro Datenbank über die Skripte in `security/`.
 
-Details: `security/DEPLOYMENT.md`
-
----
-
-◀ [Konfiguration](06-konfiguration.md) · [Übersicht](../README.md) · [Erweiterung](08-erweiterung.md) ▶
+Details: [Deployment-Runbook](../../../security/DEPLOYMENT.md)

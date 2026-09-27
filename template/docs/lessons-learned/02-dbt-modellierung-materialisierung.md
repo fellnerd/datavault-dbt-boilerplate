@@ -3,7 +3,7 @@ title: "dbt-Modellierung / Materialisierung"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # 1. dbt-Modellierung / Materialisierung
 
@@ -55,4 +55,4 @@ es auffiel (kein Fehler, nur leere Ergebnisse). **Bei Join-Keys zwischen Quellen
 
 ---
 
-[Übersicht](README.md) · [Row-Level Security (native Security Policy)](03-row-level-security-native-security-policy.md) ▶
+[Übersicht](00-lessons-learned.md) · [Row-Level Security](03-row-level-security-native-security-policy.md) ▶

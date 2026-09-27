@@ -3,14 +3,20 @@
     Liest das Schema einer Parquet-Datei und gibt es als YAML für sources.yml aus.
     
     Verwendung:
-        dbt run-operation get_parquet_schema --args '{"folder_path": "adventureworks/sqlserver", "file_name": "SalesLT.Customer.parquet"}'
-
+        dbt run-operation get_parquet_schema --args '{folder_path: "jira/sql", file_name: "Platform.Api_Project.parquet", data_source: "StageFileSystem", file_format: "ParquetFormat"}'
+    
+    Parameter:
+        folder_path  - Ordnerpfad relativ zur Data Source (z.B. "<concept>/<quelle>")
+        file_name    - Dateiname inkl. .parquet Extension
+        data_source  - Name der SQL External Data Source (Default: StageFileSystem)
+        file_format  - Name des SQL External File Format (Default: ParquetFormat)
+    
     Output:
         YAML-Format für dbt-external-tables sources.yml
-
+    
     Namenskonvention:
         ext_<concept>_<entity>
-        - concept: Erster Ordner im Pfad (z.B. "adventureworks" aus "adventureworks/sqlserver")
+        - concept: Erster Ordner im Pfad (z.B. "jira" aus "jira/sql")
         - entity: Bereinigter Dateiname ohne Extension
 #}
 
@@ -56,8 +62,8 @@
     {{ log('        description: "Auto-generated from ' ~ file_name ~ '"', info=True) }}
     {{ log("        external:", info=True) }}
     {{ log('          location: "' ~ file_path ~ '"', info=True) }}
-    {{ log("          file_format: " ~ file_format, info=True) }}
-    {{ log("          data_source: " ~ data_source, info=True) }}
+    {{ log('          file_format: ' ~ file_format, info=True) }}
+    {{ log('          data_source: ' ~ data_source, info=True) }}
     {{ log("        columns:", info=True) }}
     
     {% for row in results %}

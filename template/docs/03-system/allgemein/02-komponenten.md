@@ -3,9 +3,9 @@ title: "Komponenten"
 tags:
   - system
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md)
 
-# 2. Komponenten
+# Komponenten
 
 ### 2.1 Azure Ressourcen
 
@@ -47,7 +47,3 @@ Macro `generate_schema_name`, das den dbt-Standard-Prefix unterdrückt.
 Massgeblich sind `packages.yml` und `package-lock.yml`. Eigene Macros haben Vorrang vor denen
 des Packages — geregelt über `dispatch` in `dbt_project.yml`
 (`search_order: ['datavault', 'automate_dv']`).
-
----
-
-◀ [Übersicht](01-uebersicht.md) · [Übersicht](../README.md) · [Datenmodell](03-datenmodell.md) ▶

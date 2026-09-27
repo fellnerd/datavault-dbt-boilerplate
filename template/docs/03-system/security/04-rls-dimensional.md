@@ -3,9 +3,9 @@ title: "RLS – Zeilenfilter über Dimensionen"
 tags:
   - system/security
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md) › [Security](README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md) › [Security](00-security.md)
 
-# 4. RLS – Zeilenfilter über Dimensionen
+# RLS – Zeilenfilter über Dimensionen
 
 **Regel: Der Filter liegt auf der Dimension. Die Fakten erben ihn über den `INNER JOIN`.**
 
@@ -128,4 +128,4 @@ Sie tragen keine Kennzahlen — durchlassen leakt nichts.
 
 ---
 
-◀ [OLS – Objektzugriff](03-ols-view-grants.md) · [Berechtigung vergeben](05-berechtigung-vergeben.md) ▶
+◀ [OLS – Objektzugriff](03-ols-view-grants.md) · [Übersicht](00-security.md) · [CLS & Verschlüsselung](08-cls-und-verschluesselung.md) ▶

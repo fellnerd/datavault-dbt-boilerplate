@@ -3,7 +3,7 @@ title: "CI/CD Pipeline (GitHub Actions)"
 tags:
   - lessons-learned
 ---
-[Dokumentation](../README.md) › [Lessons Learned - Data Vault 2.1 mit dbt auf Azure](README.md)
+[Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
 # CI/CD Pipeline (GitHub Actions)
 
@@ -47,4 +47,4 @@ Workflows werden **nur** bei Änderungen an folgenden Pfaden getriggert:
 
 ---
 
-◀ [Best Practices](10-best-practices-gelernt.md) · [Übersicht](README.md) · [Technische Referenz](13-technische-referenz.md) ▶
+◀ [Best Practices (gelernt)](10-best-practices-gelernt.md) · [Übersicht](00-lessons-learned.md) · [Technische Referenz](13-technische-referenz.md) ▶

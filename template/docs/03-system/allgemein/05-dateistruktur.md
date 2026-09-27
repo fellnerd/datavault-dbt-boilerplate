@@ -3,9 +3,9 @@ title: "Dateistruktur"
 tags:
   - system
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md)
 
-# 5. Dateistruktur
+# Dateistruktur
 
 ```
 datavault-dbt/
@@ -47,7 +47,3 @@ datavault-dbt/
 ├── logs/                        # dbt-Logs (nicht versioniert)
 └── target/                      # Kompilierte Artefakte (nicht versioniert)
 ```
-
----
-
-◀ [Umgebungen & Targets](04-umgebungen-targets.md) · [Übersicht](../README.md) · [Konfiguration](06-konfiguration.md) ▶

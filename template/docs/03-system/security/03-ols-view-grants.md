@@ -3,9 +3,9 @@ title: "OLS – Objektzugriff"
 tags:
   - system/security
 ---
-[Dokumentation](../../README.md) › [Data Vault 2.1 - Systemdokumentation](../README.md) › [Security](README.md)
+[Dokumentation](../../README.md) › [Data Vault 2.1 – Systemdokumentation](../00-systemdokumentation.md) › [Security](00-security.md)
 
-# 3. OLS – Objektzugriff
+# OLS – Objektzugriff
 
 **Regel: Endnutzer bekommen `SELECT` ausschließlich auf `_v`-Views.**
 
@@ -46,7 +46,7 @@ vars:
     rls_test:                ['mart', 'mart_finance']   # Dev-Testuser
 ```
 
-Das Macro `grant_select_on_views()`
+Das Macro [`grant_select_on_views()`](../../../macros/security/grant_select_on_views.sql)
 iteriert über **`sys.views`**. Das ist der entscheidende Punkt:
 
 > Eine physische Tabelle kann gar keinen Grant bekommen — nicht weil jemand daran denkt,
@@ -113,4 +113,4 @@ physischen Tabelle. Ohne ihn driftet die Konvention zurück.
 
 ---
 
-◀ [Das sec-Schema](02-sec-schema.md) · [RLS – Zeilenfilter](04-rls-dimensional.md) ▶
+◀ [Das sec-Schema](02-sec-schema.md) · [Übersicht](00-security.md) · [RLS – Zeilenfilter über Dimensionen](04-rls-dimensional.md) ▶

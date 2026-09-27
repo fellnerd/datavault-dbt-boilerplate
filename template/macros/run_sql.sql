@@ -1,6 +1,6 @@
 {% macro run_sql(sql) %}
 {# Ad-hoc SQL Runner für Exploration. Verwendung:
-   dbt run-operation run_sql --args '{"sql": "SELECT TOP 5 * FROM stg.ext_ewb_fibu_gl_e25"}' --target ewb-dev
+   dbt run-operation run_sql --args '{"sql": "SELECT TOP 5 * FROM stg.ext_<concept>_<entity>"}' --target dev
 #}
 {% set results = run_query(sql) %}
 {% if execute %}
