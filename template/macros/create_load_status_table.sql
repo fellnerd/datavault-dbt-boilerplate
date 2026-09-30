@@ -28,7 +28,7 @@
 
     Nur vollständige Läufe zählen (dbt run / dbt build ohne --select; --exclude zählt
     als vollständig). Vorher hat jeder Aufruf mit on-run-end geloggt — auch dbt test und
-    selektive Läufe wie cdr-load / ise-fastload. Endete ein ADF-Load während eines solchen
+    selektive Läufe (z. B. Massendaten-Jobs mit --select tag:<domain>). Endete ein ADF-Load während eines solchen
     Laufs, galt er danach als verarbeitet und der ADF-getriggerte Lauf wurde still übersprungen.
 
     started_at = Start des dbt-Laufs (UTC, wie GETDATE() auf Azure SQL): ein ADF-Load,

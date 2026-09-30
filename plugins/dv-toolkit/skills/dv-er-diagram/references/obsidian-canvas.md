@@ -1,6 +1,6 @@
 # Ausgabe als Obsidian-Canvas
 
-Für Projekte, deren Doku ein Obsidian-Vault ist. Ergebnis: `<concept>/er-<concept>.canvas` im Vault (z. B. `datavault-design/mart_finance/er-finance.canvas`), bearbeitbar in Obsidian, gleiche Farben und Key-Notation wie das HTML-Artboard.
+Für Projekte, deren Doku ein Obsidian-Vault ist. Ergebnis: `<concept>/er-<concept>.canvas` im Vault (z. B. `datavault-design/vertrieb/er-vertrieb.canvas`), bearbeitbar in Obsidian, gleiche Farben und Key-Notation wie das HTML-Artboard.
 
 ## Voraussetzungen im Vault
 
@@ -22,22 +22,22 @@ Für Projekte, deren Doku ein Obsidian-Vault ist. Ergebnis: `<concept>/er-<conce
 
 ```json
 {
-  "title": "Finance — Gesamtmodell",
+  "title": "Vertrieb — Gesamtmodell",
   "kicker": "Data Vault 2.1 · Raw Vault · Business Concept „_common" · Schema vault",
-  "sub": "Quellsystem … · Branch dev · Stand 2026-09-26 · Grundlage: design/… + dbt-Code",
+  "sub": "Quellsystem … · Branch dev · Stand <JJJJ-MM-TT> · Grundlage: design/… + dbt-Code",
   "conventions": ["`dss_*`-Spalten nicht dargestellt", "SHA-256 · Trenner `||` · NULL → `-1`"],
   "decisions": ["…"],
   "open": ["…"],
   "objects": [
-    {"name": "hub_projekt", "kind": "hub", "src": "ext_ewb_proj_npo_main", "col": 3, "row": 1,
-     "rows": [["PK", "hk_projekt", "← PROJNR"]], "badges": ["im Branch", "zentraler Hub"]},
-    {"name": "sat_projekt__abacus", "kind": "sat", "col": 3, "row": 2,
-     "rows": [["PK", "hk_projekt", ""], ["HD", "hd_projekt", "← Payload"], ["ATT", "status", "→ ref_projektstatus_v"]]},
-    {"name": "hub_hauptbuch", "kind": "hub", "foreign": true, "col": 3, "row": 0, "src": "siehe er-finance",
-     "rows": [["PK", "hk_hauptbuch", "← RECNUM, dss_source_file_name"]], "badges": ["bestehend (Finance)"]}
+    {"name": "hub_bestellung", "kind": "hub", "src": "ext_shop_bestellung", "col": 3, "row": 1,
+     "rows": [["PK", "hk_bestellung", "← bestell_nr"]], "badges": ["im Branch", "zentraler Hub"]},
+    {"name": "sat_bestellung__shop", "kind": "sat", "col": 3, "row": 2,
+     "rows": [["PK", "hk_bestellung", ""], ["HD", "hd_bestellung", "← Payload"], ["ATT", "status", "→ ref_bestellstatus_v"]]},
+    {"name": "hub_kunde", "kind": "hub", "foreign": true, "col": 3, "row": 0, "src": "siehe er-crm",
+     "rows": [["PK", "hk_kunde", "← kunden_nr"]], "badges": ["bestehend (CRM)"]}
   ],
-  "edges": [["hub_projekt", "sat_projekt__abacus"], ["sat_projekt__abacus", "ref_projektstatus_v", {"label": "status"}]],
-  "groups": [{"label": "FIBU · Hauptbuch", "members": ["hub_hauptbuch", "…"]}]
+  "edges": [["hub_bestellung", "sat_bestellung__shop"], ["sat_bestellung__shop", "ref_bestellstatus_v", {"label": "status"}]],
+  "groups": [{"label": "CRM · Kunde", "members": ["hub_kunde", "…"]}]
 }
 ```
 

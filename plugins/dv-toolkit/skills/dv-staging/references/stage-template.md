@@ -12,7 +12,7 @@ Vollständig kommentiertes Muster. Header-Kommentar dokumentiert Quelle, BK, Has
  * Business Key: <BK> (Normalisierung dokumentieren, z. B. DECIMAL → BIGINT-String)
  * Hash Key: hk_<entity>
  * Links: hk_link_<e1>_<e2> (<bk_e1>, <bk_e2>)
- * Hash Diffs: hd_<entity> (Payload), ggf. Splits: hd_<entity>_stamm, hd_<entity>_kontakt
+ * Hash Diffs: hd_<entity>__<source> (Payload), ggf. Splits: hd_<entity>_stamm__<source>, hd_<entity>_kontakt__<source>
  *
  * Uses automate_dv.stage() macro for standardized staging.
  */
@@ -57,7 +57,7 @@ hashed_columns:
     - "<bk_e1>"
     - "<bk_e2>"
 
-  hd_<entity>:
+  hd_<entity>__<source>:
     is_hashdiff: true
     columns:            # exakt die Payload des späteren Satellites — nicht mehr, nicht weniger
       - "SPALTE_1"
@@ -123,7 +123,7 @@ Erkennbar an direktem `HASHBYTES` im SQL — in Bestandsprojekten und älteren B
 ```sql
 /*
  * Staging Model: <quelle>_<entity>
- * Source: ext_<quelle>_<entity> | Business Key: <bk> | Hash Diff: hd_<entity>
+ * Source: ext_<quelle>_<entity> | Business Key: <bk> | Hash Diff: hd_<entity>__<source>
  */
 
 {%- set hashdiff_columns = ['SPALTE_1', 'SPALTE_2'] -%}
@@ -152,7 +152,7 @@ staged AS (
                 ISNULL(CAST({{ col }} AS NVARCHAR(MAX)), ''){{ ",'^^'," if not loop.last }}
                 {%- endfor %}
             )
-        ), 2) AS hd_<entity>,
+        ), 2) AS hd_<entity>__<source>,
 
         <bk>,
         SPALTE_1,

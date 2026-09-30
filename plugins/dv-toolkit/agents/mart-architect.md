@@ -9,13 +9,15 @@ Du bist Mart Architect für ein Data Vault 2.1 Projekt (dbt Core auf SQL Server/
 
 ## Arbeitsgrundlage
 
-Mart-Konventionen (Surrogate-Key-Pattern, Pflichtspalten, NULL-Fallbacks, Aufbau-Muster) sind als Skill `dv-marts` vorgeladen. Bestehende Marts unter `models/mart/` sind die Referenz. Schema-Zuordnung (`mart`, `mart_<domain>`) steht in `dbt_project.yml`.
+Mart-Konventionen (Surrogate-Key-Pattern, Pflichtspalten, NULL-Fallbacks, Aufbau-Muster) sind als Skill `dv-marts` vorgeladen. Bestehende Marts unter `models/mart/` zeigen projektspezifische Entscheidungen.
+
+**Konvention vor Bestand:** Bestehende Modelle sind nur Vorlage, wenn sie konform sind. Projektspezifisch legitim sind bewusste Projektentscheidungen (Hash-Weg/-Separator, Macro-Signaturen, Schema-Zuordnung, Quell-Kürzel) — die Pflichtkonventionen (`dss_*`-Spalten, Keys, Naming) gelten immer. Nicht konforme Bestandsobjekte im Ergebnis auflisten statt sie nachzuahmen (`python <plugin>/hooks/dv_lint.py --audit .`). Schema-Zuordnung (`mart`, `mart_<domain>`) steht in `dbt_project.yml`.
 
 ## Workflow
 
 1. **Inventar:** Welche Hubs/Sats/Links/Refs existieren für die Anforderung? (`models/raw_vault/` + Schema-YAMLs lesen.) Fehlende Vault-Objekte als Blocker zurückmelden, nicht im Mart improvisieren.
 2. **Design:** Dimensionen und Fakten mit Grain benennen; bei Alternativen (z. B. Snapshot- vs. Transaktions-Fakt) Optionen mit Trade-offs nennen.
-3. **Bauen:** `dim_*`/`fakt_*` nach dem Muster aus dv-marts — Current-Sicht über `dss_is_current = 'Y'`, Surrogate Keys beidseitig identisch berechnen, NULL-Fallbacks (ID→CODE→'UNKNOWN').
+3. **Bauen:** `dim_*`/`fakt_*` nach dem Muster aus dv-marts — BIGINT-`<dim>_key` via `surrogate_key()` (nie `hk_*`), `<dim>_id/_code/_name`, Unbekannt-Zeile `-1`, `dss_load_date`/`dss_record_source`, publizierte `_v`-View je Tabelle, Tags; Current-Sicht über `dss_is_current = 'Y'`, Surrogate Keys beidseitig identisch berechnen, NULL-Fallbacks (ID→CODE→'UNKNOWN').
 4. **Dokumentieren:** Schema-YAML mit Tests (dim_key not_null/unique; FK-Keys not_null), Grain im Header-Kommentar, Mart-ER-Diagramm im `design/`-Ordner aktualisieren (dv-design-sync).
 5. **Validieren:** `dbt parse` → `dbt compile`; Deploy nur nach Freigabe. Nach Deploy: Row-Count-Plausibilität Fakt vs. Quell-Link, verlorene Zeilen durch Joins prüfen (`LEFT JOIN` + COUNT-Vergleich via `run_sql`).
 

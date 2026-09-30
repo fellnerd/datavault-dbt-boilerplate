@@ -73,7 +73,7 @@ dbt run-operation stage_external_sources  # Create/update external tables
 | PSA Table | `{{ staging_schema }}.psa_<concept>_<entity>` | `{{ staging_schema }}.psa_adventureworks_saleslt_address` |
 | Staging View | `{{ staging_schema }}.<concept>_<entity>` | `{{ staging_schema }}.adworks_kunde` |
 | Hub | `{{ schema_prefix }}_<concept>.hub_<entity>` | `{{ schema_prefix }}_adworks.hub_kunde` |
-| Satellite | `{{ schema_prefix }}_<concept>.sat_<entity>` | `{{ schema_prefix }}_adworks.sat_kunde` |
+| Satellite | `{{ schema_prefix }}_<concept>.sat_<entity>__<source>` | `{{ schema_prefix }}_adworks.sat_kunde__adworks` |
 | Link | `{{ schema_prefix }}_<concept>.link_<e1>_<e2>` | `{{ schema_prefix }}_adworks.link_kunde_adresse` |
 | DC Link | `{{ schema_prefix }}_<concept>.link_<dc>_<parent>` | `{{ schema_prefix }}_<concept>.link_contact_contractor` |
 | DC Satellite | `{{ schema_prefix }}_<concept>.sat_<dc>_<parent>_dc` | `{{ schema_prefix }}_<concept>.sat_contact_contractor_dc` |
@@ -119,7 +119,7 @@ src_source: "dss_record_source"
 src_pk: "hk_link_contact_contractor"  # References Link, not Hub
 src_hashdiff:
   source_column: "hd_contact_contractor_dc"
-  alias: "HASHDIFF"
+  alias: "hashdiff"
 src_payload:
   - "name"       # DCK Column
   - "email1"     # DCK Column
@@ -146,7 +146,7 @@ src_cdk:                            # Child Dependent Keys (distinguishes record
   - "phone_type"
 src_hashdiff:
   source_column: "hd_employee_ma"
-  alias: "HASHDIFF"
+  alias: "hashdiff"
 src_payload:
   - "phone_number"
   - "is_primary"

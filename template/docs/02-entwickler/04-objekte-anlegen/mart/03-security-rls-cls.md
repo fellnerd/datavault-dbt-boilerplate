@@ -116,7 +116,7 @@ dbt test -s <models> tests/security --target <mandant>-dev
 
 Und mit einem echten Test-Login gegenprüfen — [Verifizieren](../../../03-system/security/07-verifizieren.md). `EXECUTE AS` taugt dafür **nicht**.
 
-> **Keine Security Policies mehr.** Das frühere Hook-Paar `drop_security_policy` / `apply_security_policy` auf physischen Fakt-Tabellen wurde am 13.09.2026 entfernt: Seit nur noch Views berechtigt werden, sind die Tabellen ohnehin unerreichbar — und die Policy kostete 2 logische Reads pro Basiszeile. Die Macros bleiben im Projekt, falls je eine physische Tabelle direkt berechtigt werden muss.
+> **Keine Security Policies mehr.** Das frühere Hook-Paar `drop_security_policy` / `apply_security_policy` auf physischen Fakt-Tabellen wurde entfernt: Seit nur noch Views berechtigt werden, sind die Tabellen ohnehin unerreichbar — und die Policy kostete 2 logische Reads pro Basiszeile. Die Macros bleiben im Projekt, falls je eine physische Tabelle direkt berechtigt werden muss.
 
 ---
 

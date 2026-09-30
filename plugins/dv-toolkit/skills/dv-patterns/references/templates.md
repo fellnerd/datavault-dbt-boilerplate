@@ -2,7 +2,7 @@
 
 Platzhalter: `<entity>`, `<source>`, `<staging_model>`, `<business_key>` ersetzen. Header-Kommentar mit Zweck, Quelle, BK und Versionshistorie ist Pflicht — er ist die einzige Doku direkt am Modell.
 
-> **Hash-Separator — vor dem ersten Objekt klären:** Kanonisch (Boilerplate ≥ v1.2 / EWB) läuft alles Hashing über automate_dv mit den Projekt-Overrides in `hash_override.sql` (`sqlserver__cast_binary` → `CHAR(64)` hex, `sqlserver__type_string` → `NVARCHAR`) und den Vars `concat_string: '||'`, `null_placeholder_string: '-1'`. Ältere Projekte/Beispiele berechnen Hashes manuell mit `'^^'` — beide Wege erzeugen für dieselben Spalten **unterschiedliche Hashes**. Innerhalb einer Entity (Staging ↔ Vault ↔ Multi-Source) nie mischen; maßgeblich ist das bestehende Projektmuster.
+> **Hash-Separator — vor dem ersten Objekt klären:** Kanonisch (Boilerplate ≥ v1.2) läuft alles Hashing über automate_dv mit den Projekt-Overrides in `hash_override.sql` (`sqlserver__cast_binary` → `CHAR(64)` hex, `sqlserver__type_string` → `NVARCHAR`) und den Vars `concat_string: '||'`, `null_placeholder_string: '-1'`. Ältere Projekte/Beispiele berechnen Hashes manuell mit `'^^'` — beide Wege erzeugen für dieselben Spalten **unterschiedliche Hashes**. Innerhalb einer Entity (Staging ↔ Vault ↔ Multi-Source) nie mischen; maßgeblich ist das bestehende Projektmuster.
 
 Weiterführende Objekt-Leitlinien (Wann/Warum je Objekttyp, DC/MA/Eff-Sat/PSA/PIT im Detail, Checklisten): [developer-guide.md](developer-guide.md)
 
@@ -49,9 +49,9 @@ sonst landen sie nicht in der Tabelle. **Genau eine** Spalte `dss_business_key` 
 immer unter diesem Namen, **ohne Suffix**.
 
 **Primär-Hub vs. FK-Hub:** Ein Staging hat eine Haupt-Entität, speist aber oft zusätzlich
-Hubs für seine Fremdschlüssel (z.B. Hauptbuch-Staging → `hub_konto`). Sein
+Hubs für seine Fremdschlüssel (z.B. Bestellungs-Staging `stg_bestellung` → `hub_kunde`). Sein
 `dss_business_key` gehört der Haupt-Entität und darf **nie** in einen FK-Hub — dort stünde
-sonst die Hauptbuch-Zeilennummer.
+sonst die Bestellnummer statt der Kundennummer.
 
 Umbenennen im Hub geht nicht: `automate_dv.hub()` übernimmt Zusatzspalten nur unter ihrem
 Namen. Deshalb bekommt jeder FK-Hub eine eigene, schlanke **FK-Staging-View**, die den
@@ -116,7 +116,7 @@ source_model:
 source_model: "<staging_model>"
 src_pk: "hk_<entity>"
 src_hashdiff:
-  source_column: "hd_<entity>"
+  source_column: "hd_<entity>__<source>"
   alias: "hashdiff"
 src_payload:
   - SPALTE_1
@@ -144,7 +144,7 @@ Stolperfallen: `dss_create_datetime` in `src_extra_columns` — **nicht** in `sr
 
 ## Multi-Active Satellite
 
-Wie Satellite, zusätzlich Child Dependent Key und `_ma`-Naming (`sat_<entity>_ma__<source>`, Hash Diff `hd_<entity>_ma`):
+Wie Satellite, zusätzlich Child Dependent Key und `_ma`-Naming (`sat_<entity>_ma__<source>`, Hash Diff `hd_<entity>_ma__<source>`):
 
 ```yaml
 src_cdk:

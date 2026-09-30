@@ -28,7 +28,7 @@ erDiagram
         string dss_record_source
     }
 
-    SAT_KUNDE {
+    SAT_KUNDE__ADWORKS {
         string hk_kunde FK
         string hashdiff
         string namestyle
@@ -46,7 +46,7 @@ erDiagram
         string dss_record_source
     }
 
-    SAT_ADRESSE {
+    SAT_ADRESSE__ADWORKS {
         string hk_adresse FK
         string hashdiff
         string addressline1
@@ -60,7 +60,7 @@ erDiagram
         string dss_record_source
     }
 
-    SAT_PRODUKT {
+    SAT_PRODUKT__ADWORKS {
         string hk_produkt FK
         string hashdiff
         string name
@@ -73,7 +73,7 @@ erDiagram
         string dss_record_source
     }
 
-    SAT_PRODUKT_PREIS {
+    SAT_PRODUKT_PREIS__ADWORKS {
         string hk_produkt FK
         string hashdiff
         decimal standardcost
@@ -83,7 +83,7 @@ erDiagram
         string dss_record_source
     }
 
-    SAT_VERKAUF {
+    SAT_VERKAUF__ADWORKS {
         string hk_verkauf FK
         string hashdiff
         int revisionnumber
@@ -143,7 +143,7 @@ erDiagram
         string dss_record_source
     }
 
-    SAT_KUNDE_ADRESSE {
+    SAT_KUNDE_ADRESSE__ADWORKS {
         string hk_link_kunde_adresse FK
         string hashdiff
         string addresstype
@@ -152,7 +152,7 @@ erDiagram
         string dss_record_source
     }
 
-    SAT_VERKAUF_DETAIL_DC {
+    SAT_VERKAUF_DETAIL_DC__ADWORKS {
         string hk_link_verkauf_detail FK
         string hashdiff
         int salesorderdetailid
@@ -165,11 +165,11 @@ erDiagram
         string dss_record_source
     }
 
-    HUB_KUNDE ||--o{ SAT_KUNDE : has
-    HUB_ADRESSE ||--o{ SAT_ADRESSE : has
-    HUB_PRODUKT ||--o{ SAT_PRODUKT : has
-    HUB_PRODUKT ||--o{ SAT_PRODUKT_PREIS : has
-    HUB_VERKAUF ||--o{ SAT_VERKAUF : has
+    HUB_KUNDE ||--o{ SAT_KUNDE__ADWORKS : has
+    HUB_ADRESSE ||--o{ SAT_ADRESSE__ADWORKS : has
+    HUB_PRODUKT ||--o{ SAT_PRODUKT__ADWORKS : has
+    HUB_PRODUKT ||--o{ SAT_PRODUKT_PREIS__ADWORKS : has
+    HUB_VERKAUF ||--o{ SAT_VERKAUF__ADWORKS : has
 
     HUB_KUNDE ||--o{ LINK_KUNDE_ADRESSE : links
     HUB_ADRESSE ||--o{ LINK_KUNDE_ADRESSE : links
@@ -186,5 +186,5 @@ erDiagram
     HUB_VERKAUF ||--o{ LINK_VERKAUF_DETAIL : contains
     HUB_PRODUKT ||--o{ LINK_VERKAUF_DETAIL : contains
 
-    LINK_KUNDE_ADRESSE ||--o{ SAT_KUNDE_ADRESSE : has
-    LINK_VERKAUF_DETAIL ||--o{ SAT_VERKAUF_DETAIL_DC : has
+    LINK_KUNDE_ADRESSE ||--o{ SAT_KUNDE_ADRESSE__ADWORKS : has
+    LINK_VERKAUF_DETAIL ||--o{ SAT_VERKAUF_DETAIL_DC__ADWORKS : has

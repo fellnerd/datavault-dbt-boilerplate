@@ -41,9 +41,9 @@ Schritt 4 ist der kritische: Fehlt die Service-User-Ausnahme, liefern alle folge
 
 ## Umgebungen
 
-| Target | Datenbank | Stand |
+| Target | Datenbank | Stand (je Projekt pflegen) |
 |---|---|---|
-| `<mandant>-dev` | `datavault-dev` | ✅ produktiv |
+| `<mandant>-dev` | `datavault-dev` | ⬜ ausstehend |
 | `<mandant>-test` | `datavault-test` | ⬜ ausstehend |
 | `<mandant>` | `datavault` | ⬜ ausstehend |
 

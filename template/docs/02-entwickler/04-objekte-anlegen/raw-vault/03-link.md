@@ -86,7 +86,7 @@ Bei einer 1:n-Beziehung (ein `<e1>` zu vielen `<e2>`) müssen beide Zahlen gleic
 
 ## Transaction Link
 
-Für Ereignisse ohne Historisierung (Buchungen, Gesprächsdatensätze): `_tl`-Suffix, siehe Skill `dv-patterns` im Plugin.
+Für Ereignisse ohne Historisierung (Buchungen, Messwerte, Log-Einträge): `_tl`-Suffix, siehe Skill `dv-patterns` im Plugin.
 
 ## Häufige Fehler
 

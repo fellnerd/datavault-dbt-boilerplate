@@ -16,7 +16,7 @@ Jede Vault-Tabelle hat neben den fachlichen Spalten der Quelle technische Spalte
 | `hk_<entity>` | Hub (PK), Satellite (FK/PK), Link (FK) | Hash Key: SHA2-256 über den Business Key, 64 Hex-Zeichen (`CHAR(64)`). Verbindet Hub, Satellites und Links |
 | `hk_link_<e1>_<e2>` | Link (PK), Link-Satellite | Hash über die Business Keys aller beteiligten Hubs |
 | `hd_<entity>__<quelle>` | Staging View | Hash Diff: Fingerabdruck aller beschreibenden Attribute. Ändert sich ein Attribut, ändert sich der Hash |
-| `HASHDIFF` | Satellite | Derselbe Hash Diff, im Satellite unter diesem Namen gespeichert (automate_dv-Alias) |
+| `hashdiff` | Satellite | Derselbe Hash Diff, im Satellite unter diesem Namen gespeichert (automate_dv-Alias) |
 | `<business_key>` | Hub, Staging | Der fachliche Schlüssel im Original, z. B. `BELNR`, `LOHNNR` |
 
 Hash Keys sind deterministisch: gleicher Business Key → gleicher Hash, in jeder Umgebung. Zwei Sonderwerte kennzeichnen [Ghost Records](02-grundkonzepte.md): `0000…0000` (64 × `0`, unbekannt) und `FFFF…FFFF` (64 × `F`, fehlerhaft).

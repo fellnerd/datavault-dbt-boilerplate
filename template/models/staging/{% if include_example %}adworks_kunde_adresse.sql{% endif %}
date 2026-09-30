@@ -12,7 +12,7 @@
  *   - hk_link_kunde_adresse (Combined Link Hash Key)
  *   - hk_kunde (FK Hash Key for adworks.hub_kunde)
  *   - hk_adresse (FK Hash Key for adworks.hub_adresse)
- *   - hd_kunde_adresse (Link Satellite Hash Diff)
+ *   - hd_kunde_adresse__adworks (Link Satellite Hash Diff)
  */
 
 {%- set hashdiff_columns = [
@@ -51,7 +51,7 @@ staged AS (
                 {%- endfor %}
                 {%- if hashdiff_columns | length == 1 %}, ''{%- endif %}
             )
-        ), 2) AS hd_kunde_adresse,
+        ), 2) AS hd_kunde_adresse__adworks,
 
         -- ===========================================
         -- PAYLOAD

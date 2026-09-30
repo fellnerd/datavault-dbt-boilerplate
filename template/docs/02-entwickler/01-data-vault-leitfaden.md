@@ -88,7 +88,7 @@ dss_record_source   -- Quelle
 -- Struktur
 hk_<entity>         -- Hash Key (FK zum Hub)
 dss_load_date       -- Ladezeitpunkt (Teil des PK)
-hd_<entity>         -- Hash Diff (Änderungserkennung)
+hd_<entity>__<quelle>         -- Hash Diff (Änderungserkennung)
 <attribute_1>       -- Fachliche Attribute
 <attribute_n>       
 dss_create_datetime -- Erstellungszeitpunkt
@@ -153,7 +153,7 @@ src_source: "dss_record_source"
 src_pk: "hk_link_contact_contractor"  # Referenziert Link, nicht Hub
 src_hashdiff: 
   source_column: "hd_contact_contractor_dc"
-  alias: "HASHDIFF"
+  alias: "hashdiff"
 src_payload:
   - "name"       # DCK Column
   - "email1"     # DCK Column

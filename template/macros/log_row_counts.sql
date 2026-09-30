@@ -1,22 +1,21 @@
 {% macro log_row_counts() %}
   {#
-    Gibt Row Counts aller CDR/Vertrag-Tabellen aus.
+    Gibt Row Counts der unten gelisteten Tabellen aus (Beispielliste — je Projekt anpassen).
     Aufruf: dbt run-operation log_row_counts --target <mandant>-dev
   #}
   {% set tables = [
-    ('stg',          'psa_rsn_mobile_cdr_main'),
+    ('stg',          'psa_iot_sensor_messung'),
     ('vault',        'hub_vertrag'),
     ('vault',        'hub_kunde'),
     ('vault',        'link_vertrag_kunde'),
-    ('vault',        'sat_kunde__compax'),
-    ('vault',        'sat_vertrag_eff__compax'),
-    ('vault',        'sat_vertrag_optionen_ma__compax'),
-    ('vault_telecom','hub_sim'),
-    ('vault_telecom','hub_msisdn'),
-    ('vault_telecom','link_vertrag_sim'),
-    ('vault_telecom','link_vertrag_msisdn'),
-    ('vault_telecom','link_cdr_event_tl'),
-    ('vault_telecom','sat_cdr_event__compax'),
+    ('vault',        'sat_kunde__crm'),
+    ('vault',        'sat_vertrag_eff__crm'),
+    ('vault',        'sat_vertrag_optionen_ma__crm'),
+    ('vault_iot',    'hub_sensor'),
+    ('vault_iot',    'hub_maschine'),
+    ('vault_iot',    'link_sensor_maschine'),
+    ('vault_iot',    'link_sensor_messung_tl'),
+    ('vault_iot',    'sat_sensor_messung__iot'),
   ] %}
 
   {% do log('', info=true) %}

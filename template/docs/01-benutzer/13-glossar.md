@@ -19,7 +19,7 @@ tags:
 | **Hub** | Liste der eindeutigen Business Keys einer Entität |
 | **Satellite** | Beschreibende Attribute eines Hubs oder Links mit vollständiger Historie |
 | **Link** | Beziehung zwischen zwei oder mehr Hubs |
-| **Transaction Link** | Link für unveränderliche Ereignisse (Buchung, Messwert, Gesprächsdatensatz) |
+| **Transaction Link** | Link für unveränderliche Ereignisse (Buchung, Messwert, Log-Eintrag) |
 | **Link Satellite** | Satellite mit Attributen einer Beziehung |
 | **Effectivity Satellite** | Satellite, der festhält, von wann bis wann eine Beziehung gültig war |
 | **Multi-Active Satellite** | Satellite mit mehreren gleichzeitig gültigen Zeilen je Schlüssel (z. B. mehrere Telefonnummern) |
@@ -37,7 +37,7 @@ tags:
 |---------|-----------|
 | **Business Key (BK)** | Fachlicher Schlüssel aus der Quelle (Kundennummer, Belegnummer) |
 | **Hash Key (`hk_`)** | SHA2-256 des Business Keys, 64 Hex-Zeichen — technischer Primärschlüssel im Vault |
-| **Hash Diff (`hd_`, `HASHDIFF`)** | Hash aller beschreibenden Attribute; ändert er sich, entsteht eine neue Satellite-Version |
+| **Hash Diff (`hd_`, `hashdiff`)** | Hash aller beschreibenden Attribute; ändert er sich, entsteht eine neue Satellite-Version |
 | **Composite Key** | Business Key aus mehreren Spalten, im Hash mit `\|\|` verkettet |
 | **`dss_business_key`** | Lesbare Klartext-Form des Business Keys im Hub |
 | **Driving Key** | Schlüssel, der in einem Effectivity Satellite bestimmt, welche Beziehung endet, wenn eine neue beginnt |

@@ -15,7 +15,7 @@ Wie ein Mart-Objekt materialisiert wird, entscheidet über die Antwortzeit in Po
 |-----------|------------------|----------|
 | Publizierte Schnittstelle | `view` (`_v`), nur `SELECT *` + Security | `fakt_buchungen_v` |
 | Dimension oder Fakt mit Joins/Berechnungen, bis einige Mio. Zeilen | `table` (**Standard**, Voreinstellung für `mart`) | `dim_konto`, `fakt_buchungen` |
-| Großer Fakt oder Aggregat über Massendaten, Rebuild dauert zu lange | `incremental` mit `delete+insert` und Nachlade-Fenster | Tagesaggregat über Gesprächsdatensätze |
+| Großer Fakt oder Aggregat über Massendaten, Rebuild dauert zu lange | `incremental` mit `delete+insert` und Nachlade-Fenster | Tagesaggregat über Sensor-Messwerte |
 | Triviale Dimension ohne Joins (Codeliste) | direkt `view` | `dim_buchungsstatus_v` |
 
 Faustregel: erst messen (Laufzeit, logische Reads — Skill `dv-performance`), dann materialisieren. Ein Mart-Objekt ist aus dem Vault jederzeit neu baubar; Full Refresh ist hier unkritisch.

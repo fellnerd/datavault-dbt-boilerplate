@@ -46,7 +46,7 @@
 |--------|--------|----------------------------|---------|
 | **salesorderdetail** | salesorderheader | SalesOrderDetailID (Line Number) | DC über Link oder Transaction Link |
 
-**Warum DC?** SalesOrderDetailID ist nur ein Zeilenzähler innerhalb einer Order, kein eigenständiger Business Key.
+**Warum DC?** SalesOrderDetailID ist nur eine laufende Positionsnummer innerhalb einer Order, kein eigenständiger Business Key.
 
 ---
 

@@ -74,7 +74,7 @@ source_model: "jira_order_item"
 src_pk: "hk_link_order_product"
 src_hashdiff: 
   source_column: "hd_order_product_dc"
-  alias: "HASHDIFF"
+  alias: "hashdiff"
 src_payload:
     - "line_item_no"
     - "quantity"

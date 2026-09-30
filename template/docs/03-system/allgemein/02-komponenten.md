@@ -28,7 +28,7 @@ Pro Mandant werden dieselben Bausteine verwendet; die Namen stehen in der Mandan
 |--------|--------|--------------|
 | `stg` | `ext_<concept>_<entity>`, `<concept>_<entity>`, `psa_*` | External Tables, Staging Views, optionale PSA; hier entstehen Hash Keys und Hash Diffs |
 | `vault` | `hub_*`, `sat_*`, `link_*`, `ref_*` | Quellübergreifende Raw-Vault-Objekte (`models/raw_vault/_common`) |
-| `vault_<concept>` | `hub_*`, `sat_*`, `link_*` | Raw Vault je Quellsystem/Domäne (z. B. Telecom, Energiedaten) |
+| `vault_<concept>` | `hub_*`, `sat_*`, `link_*` | Raw Vault je Quellsystem/Domäne (z. B. CRM, ERP, Sensordaten) |
 | `dv` | Default-Schema der Verbindung | Wird als Default-Schema im Profil geführt; Modelle setzen ihr Schema explizit |
 | `mart`, `mart_<domain>` | Dimensionen, Fakten, `_v`-Views | Publizierte Konsumenten-Schicht (einzige Schemas mit Business-Grants) |
 | `sec` | `sec_user_privilege`, `sec_group_privilege`, `sec_special_user_privilege`, `fn_check_rls`, `fn_check_cls` | Security-Fundament für RLS/CLS (manuell via `security/`-Skripte deployed) |
@@ -43,4 +43,4 @@ Das Schema eines Modells kommt aus `dbt_project.yml` (Ordner → Schema) in Verb
 | `dbt_external_tables` | 0.12.0 | Deklarative External-Table-Verwaltung aus `sources.yml` |
 | `dbt_utils` | 1.3.3 | Allgemeine Utility-Macros (transitive Abhängigkeit) |
 
-Massgeblich sind `packages.yml` und `package-lock.yml`. Eigene Macros haben Vorrang vor denen des Packages — geregelt über `dispatch` in `dbt_project.yml` (`search_order: ['datavault', 'automate_dv']`).
+Maßgeblich sind `packages.yml` und `package-lock.yml`. Eigene Macros haben Vorrang vor denen des Packages — geregelt über `dispatch` in `dbt_project.yml` (`search_order: ['datavault', 'automate_dv']`).

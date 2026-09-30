@@ -19,7 +19,7 @@ request shape live against the real server.
 
 You need two things, provided by the user (never generate or guess these):
 
-1. **Base URL** of the target instance, e.g. `https://masterdata-ppmc.westeurope.cloudapp.azure.com`
+1. **Base URL** of the target instance, e.g. `https://mds.example.com`
 2. **API token** (starts with `mds_`), issued by an admin via the running
    instance's UI at `Settings -> Users -> [user] -> API Tokens`. Tokens are
    only ever shown once at creation time - if the user doesn't have one

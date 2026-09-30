@@ -9,15 +9,15 @@ tags:
 
 ### Nicht-materialisierte View-Ketten sind ein Performance- UND Stabilitätsrisiko
 
-`dim_konto_v` war eine VIEW mit 3× UNION ALL + TRY_CAST/HASHBYTES — wurde bei **jedem** Power-BI-DirectQuery-Aufruf komplett neu berechnet (~2.3–2.6s Zusatzkosten bei nur 449 Zeilen). Fix: Logik nach `dim_konto` (TABLE) auslagern, `dim_konto_v` wird dünner Wrapper (`SELECT * FROM {{ ref('dim_konto') }}`) — analog zum bestehenden `fakt_buchungen`/`fakt_buchungen_v`-Muster in diesem Projekt. **Diese Aufteilung (Tabelle + Wrapper-View) ist das Standardmuster hier, wende es proaktiv an, sobald eine mart-View mehr als triviale Joins/Berechnungen enthält und von Power BI DirectQuery konsumiert wird.**
+`dim_konto_v` war eine VIEW mit 3× UNION ALL + TRY_CAST/HASHBYTES — wurde bei **jedem** Power-BI-DirectQuery-Aufruf komplett neu berechnet (~2.3–2.6s Zusatzkosten bei nur 449 Zeilen). Fix: Logik nach `dim_konto` (TABLE) auslagern, `dim_konto_v` wird dünner Wrapper (`SELECT * FROM {{ ref('dim_konto') }}`) — analog zum Muster `fakt_buchungen`/`fakt_buchungen_v`. **Diese Aufteilung (Tabelle + Wrapper-View) ist das Standardmuster hier, wende es proaktiv an, sobald eine mart-View mehr als triviale Joins/Berechnungen enthält und von Power BI DirectQuery konsumiert wird.**
 
 ### Noch fragiler: View-Ketten, die bis zu einer External Table (Parquet) reichen
 
-`dim_person_v` → `<mandant>_publ_adr_main` (Staging-VIEW) → `stg.ext_<mandant>_publ_adr_main` (External Table auf rohe ADLS-Parquet-Datei) — alle drei Ebenen nicht materialisiert. Jede Power-BI-Abfrage liest dadurch live die Parquet-Datei, was bei gleichzeitigem Synapse-Ladejob transient fehlschlagen kann ("location does not exist or is used by another process"). **Bei jeder Kette, die auf eine External Table zurückführt: prüfen, ob mindestens die Staging-Ebene materialisiert werden sollte.**
+`dim_person_v` → `<quelle>_person` (Staging-VIEW) → `stg.ext_<quelle>_person` (External Table auf rohe ADLS-Parquet-Datei) — alle drei Ebenen nicht materialisiert. Jede Power-BI-Abfrage liest dadurch live die Parquet-Datei, was bei gleichzeitigem Synapse-Ladejob transient fehlschlagen kann ("location does not exist or is used by another process"). **Bei jeder Kette, die auf eine External Table zurückführt: prüfen, ob mindestens die Staging-Ebene materialisiert werden sollte.**
 
 ### Fehlende Vault-Attribute führen zu Mart-Layer-Workarounds, die die Vault umgehen
 
-`dim_person_v` liest für den "aktive Mitarbeiter"-Filter (`LOHNJN`, `GESPERRT`) direkt aus der rohen Staging-View statt aus einer Satellite — weil `sat_person_adresse__<quelle>` diese Spalten nie im Payload hatte (dokumentierte Lücke: `docs/synapse-validation-report.md`, Gap **M1**). **Wenn ein Mart-Modell `{{ ref('<staging_model>') }}` statt eines Hub/Sat/Link referenziert, ist das ein Signal für eine unvollständige Raw-Vault-Modellierung — nicht nur ein Stilproblem, sondern ein Performance-/Stabilitätsrisiko (reicht bis zur Quelle durch).**
+`dim_person_v` liest für den "aktive Mitarbeiter"-Filter (`LOHNJN`, `GESPERRT`) direkt aus der rohen Staging-View statt aus einer Satellite — weil `sat_person_adresse__<quelle>` diese Spalten nie im Payload hatte (dokumentierte Lücke im Validierungsbericht). **Wenn ein Mart-Modell `{{ ref('<staging_model>') }}` statt eines Hub/Sat/Link referenziert, ist das ein Signal für eine unvollständige Raw-Vault-Modellierung — nicht nur ein Stilproblem, sondern ein Performance-/Stabilitätsrisiko (reicht bis zur Quelle durch).**
 
 ### CTEs können nicht in einer anderen CTE oder einer Subquery genestet werden (T-SQL)
 

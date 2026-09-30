@@ -62,7 +62,7 @@ FROM {{ ref('hub_<entity>') }} h
 JOIN {{ ref('sat_<entity>__<quelle>') }} s ON s.hk_<entity> = h.hk_<entity>
 ```
 
-Der Fakt wählt die Version über das Ereignisdatum: `JOIN dim_<entity> d ON d.<dim>_id = f.<bk> AND f.<datum> >= d.gueltig_von AND f.<datum> < d.gueltig_bis`. Fachliche Gültigkeiten der Quelle (z. B. `gueltig_von` einer Zeitreihe) haben Vorrang vor Ladezeitpunkten, wenn sie vorhanden sind.
+Der Fakt wählt die Version über das Ereignisdatum: `JOIN dim_<entity> d ON d.<dim>_id = f.<bk> AND f.<datum> >= d.gueltig_von AND f.<datum> < d.gueltig_bis`. Fachliche Gültigkeiten der Quelle (z. B. `gueltig_von` einer Preisliste) haben Vorrang vor Ladezeitpunkten, wenn sie vorhanden sind.
 
 ## Pflichtspalten
 

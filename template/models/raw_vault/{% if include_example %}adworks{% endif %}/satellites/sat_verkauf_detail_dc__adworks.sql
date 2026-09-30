@@ -1,5 +1,5 @@
 {#
-    Dependent Child Satellite: sat_verkauf_detail_dc
+    Dependent Child Satellite: sat_verkauf_detail_dc__adworks
     Parent Link: link_verkauf_detail
     DCK Columns: SalesOrderDetailID
     Payload: SalesOrderDetailID, OrderQty, UnitPrice, UnitPriceDiscount, LineTotal, ModifiedDate
@@ -26,7 +26,7 @@
 source_model: "adworks_verkauf_detail"
 src_pk: "hk_link_verkauf_detail"
 src_hashdiff: 
-  source_column: "hd_verkauf_detail_dc"
+  source_column: "hd_verkauf_detail_dc__adworks"
   alias: "hashdiff"
 src_payload: 
     - "salesorderdetailid"

@@ -142,14 +142,14 @@ hashed_columns:
 
 **Jeder Hub hat genau eine Spalte `dss_business_key` — immer unter diesem Namen, ohne Suffix.**
 
-Ein Staging-Model hat eine Haupt-Entität, speist aber oft mehrere Hubs — etwa das Hauptbuch-Staging den Hub des Hauptbuchs *und* die Hubs von Konto und Kostenstelle (Fremdschlüssel). Sein `dss_business_key` gehört der Haupt-Entität.
+Ein Staging-Model hat eine Haupt-Entität, speist aber oft mehrere Hubs — etwa `stg_bestellung` (Haupt-Entität Bestellung, BK `bestell_nr`) den Hub der Bestellung *und* den Hub des Kunden (Fremdschlüssel, BK `kunden_nr`). Sein `dss_business_key` gehört der Haupt-Entität.
 
 | Hub-Typ | Beispiel | Quelle des `dss_business_key` |
 |---|---|---|
-| **Primär-Hub** — Haupt-Entität des Stagings | `hub_hauptbuch` | direkt aus dem Staging |
-| **FK-Hub** — Fremdschlüssel im Staging | `hub_konto` aus dem Hauptbuch-Staging | aus einer **eigenen FK-Staging-View** |
+| **Primär-Hub** — Haupt-Entität des Stagings | `hub_bestellung` aus `stg_bestellung` | direkt aus dem Staging |
+| **FK-Hub** — Fremdschlüssel im Staging | `hub_kunde` aus `stg_bestellung` | aus einer **eigenen FK-Staging-View** `stg_bestellung__kunde` |
 
-**Der `dss_business_key` des Stagings darf nie in einen FK-Hub.** In `hub_konto` stünde sonst die Hauptbuch-Zeilennummer.
+**Der `dss_business_key` des Stagings darf nie in einen FK-Hub.** In `hub_kunde` stünde sonst die Bestellnummer.
 
 Umbenennen im Hub geht nicht — `automate_dv.hub()` übernimmt Zusatzspalten nur unter ihrem Namen. Deshalb bekommt jeder FK-Hub eine schlanke Staging-View, die den Schlüssel *seiner* Entität unter dem Namen `dss_business_key` bildet:
 
@@ -167,12 +167,3 @@ FROM {{ ref('<staging>') }}
 ```
 
 Der FK-Hub liest dann aus dieser View (`source_model: "<staging>__<entity>"`). Die Deduplizierung je Hash-Key übernimmt `automate_dv.hub()` selbst.
-
-> **Stand im Projekt — acht FK-Hubs weichen ab:**
->
-> | Hubs | Abweichung |
-> |---|---|
-> | `hub_konto`, `hub_kostenstelle`, `hub_kreditor`, `hub_zeitreihegruppe` | kein `dss_business_key` |
-> | `hub_sim`, `hub_msisdn`, `hub_vertrag`, `hub_kunde` | Spalte heißt `dss_business_key_<entität>` |
->
-> Keine Datenfehler — der Klartext-Schlüssel steht jeweils in der `src_nk`-Spalte bzw. der Suffix-Spalte. Die Angleichung ist eine Modelländerung am Vault (Spalte ergänzen bzw. umbenennen, bestehende Zeilen nachbefüllen) und bewusst noch nicht erfolgt.

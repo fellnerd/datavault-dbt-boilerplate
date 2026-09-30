@@ -73,9 +73,9 @@ GROUP BY hk_<entity> HAVING SUM(CASE WHEN dss_is_current = 'Y' THEN 1 ELSE 0 END
 
 -- aufeinanderfolgende Versionen mit identischem Inhalt (Dauer-Deltas: Payload ≠ Hashdiff)
 SELECT COUNT(*) FROM (
-    SELECT HASHDIFF, LAG(HASHDIFF) OVER (PARTITION BY hk_<entity> ORDER BY dss_load_date) AS vorher
+    SELECT hashdiff, LAG(hashdiff) OVER (PARTITION BY hk_<entity> ORDER BY dss_load_date) AS vorher
     FROM vault.sat_<entity>__<quelle>) x
-WHERE HASHDIFF = vorher;
+WHERE hashdiff = vorher;
 ```
 
 Bei **Multi-Active Satellites** gehört der Unterscheidungsschlüssel (`<child_key>`) mit in den Grain: `GROUP BY hk_<entity>, <child_key>, dss_load_date`.

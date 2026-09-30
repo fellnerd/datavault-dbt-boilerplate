@@ -37,7 +37,7 @@ Verbindliche Namen für alle Objekte der Plattform. Grundregeln: **Kleinschreibu
 | | Multi-Active Satellite | `sat_<entity>_<gruppe>_ma__<quelle>` | `sat_vertrag_optionen_ma__crm` |
 | | Effectivity Satellite | `sat_<entity>_eff__<quelle>` | `sat_vertrag_eff__crm` |
 | | Dependent-Child Satellite | `sat_<entity>_<child>__<quelle>` | `sat_kontakt_telefon__crm` |
-| | Transaction Satellite | `sat_<ereignis>_tl__<quelle>` | `sat_messwert_tl__edm` |
+| | Transaction Satellite | `sat_<ereignis>_tl__<quelle>` | `sat_sensor_messung_tl__iot` |
 | | Link | `link_<entity1>_<entity2>` (ohne Quelle) | `link_auftrag_kunde` |
 | | Transaction Link | `link_<ereignis>_tl` | `link_zahlung_tl` |
 | | Reference Table | `ref_<thema>` | `ref_status` |
@@ -61,11 +61,11 @@ Verbindliche Namen für alle Objekte der Plattform. Grundregeln: **Kleinschreibu
 |--------|--------|-------|
 | Hash Key | `hk_<entity>` | in Hub, Satellite und Link identisch benannt |
 | Link-Hash | `hk_link_<e1>_<e2>` | Name des Links ohne `link_`-Präfix |
-| Hash Diff | `hd_<entity>__<quelle>` (Staging), `HASHDIFF` (Satellite) | ein Hashdiff je Satellite; ältere Objekte `hd_<entity>` ohne Quell-Suffix |
+| Hash Diff | `hd_<entity>__<quelle>` (Staging), `hashdiff` (Satellite) | ein Hashdiff je Satellite; ältere Objekte `hd_<entity>` ohne Quell-Suffix |
 | Metadaten | `dss_<name>` | nur die in [Wichtige Spalten](03-wichtige-spalten-verstehen.md) definierten |
 | Business Keys, Payload | Name wie in der Quelle | Quellspalten nicht umbenennen (Nachvollziehbarkeit) |
 | Mart-Schlüssel | `<dim>_key`, `<dim>_id`, `<dim>_code`, `<dim>_name` | Pflichtspalten jeder Dimension |
-| Measures | fachlich, `snake_case`, Einheit im Namen wenn nötig | `betrag_chf`, `menge_kwh` |
+| Measures | fachlich, `snake_case`, Einheit im Namen wenn nötig | `betrag_eur`, `menge_stueck` |
 | Flags | `ist_<zustand>` bzw. `dss_is_<zustand>` | Werte `Y`/`N` |
 
 ## Dateien im Repository
@@ -86,7 +86,7 @@ Verbindliche Namen für alle Objekte der Plattform. Grundregeln: **Kleinschreibu
 | Tag | Wirkung |
 |-----|---------|
 | `dimension`, `fact` | Kennzeichnung im Mart (Selektion, Doku) |
-| `<domain>` (z. B. `cdr`) | Massendaten-Domäne: läuft **nicht** im Standardlauf, sondern über eigene Jobs (`--select tag:<domain>`) |
+| `<domain>` (z. B. `iot`) | Massendaten-Domäne (z. B. Logs, Events, Sensordaten): läuft **nicht** im Standardlauf, sondern über eigene Jobs (`--select tag:<domain>`) |
 | `nightly` | Langlaufende Tests, nur im nächtlichen Testlauf |
 
 ## Umgebungen, Git, Security
@@ -94,7 +94,7 @@ Verbindliche Namen für alle Objekte der Plattform. Grundregeln: **Kleinschreibu
 | Was | Muster | Beispiel |
 |-----|--------|----------|
 | dbt-Target | `<mandant>-dev`, `<mandant>-test`, `<mandant>` (Produktion) | `crm-dev` |
-| Branches | `main` (Produktion), `test` (Abnahme), `dev` (Integration), `feat/<thema>`, `fix/<thema>` | `feat/telecom-abos` |
+| Branches | `main` (Produktion), `test` (Abnahme), `dev` (Integration), `feat/<thema>`, `fix/<thema>` | `feat/crm-vertraege` |
 | Release-Tag | `vMAJOR.MINOR.PATCH` | `v1.4.0` |
 | Commit | Conventional Commits: `<typ>(<bereich>): <was>` mit `feat`, `fix`, `docs`, `refactor`, `chore`, `test` | `feat(crm): hub_kunde und sat_kunde__crm` |
 | Entra-Gruppe (Lesen) | `<gruppen-prefix>-<bereich>-ro`, Vollzugriff `<gruppen-prefix>-<bereich>-full-ro` | |

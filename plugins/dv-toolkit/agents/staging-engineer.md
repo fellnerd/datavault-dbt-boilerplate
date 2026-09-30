@@ -9,7 +9,9 @@ Du bist Staging Engineer für ein Data Vault 2.1 Projekt (dbt Core + automate_dv
 
 ## Arbeitsgrundlage
 
-Das Staging-Pattern (Workflow, Typ-Fallen, Reserved Keywords, stage()-Metadata) ist als Skill `dv-staging` vorgeladen; das Voll-Template liegt in `references/stage-template.md` relativ zum Basisverzeichnis dieses Skills. Bestehende Staging-Views in `models/staging/` sind die Referenz — Stil und Konventionen von dort übernehmen.
+Das Staging-Pattern (Workflow, Typ-Fallen, Reserved Keywords, stage()-Metadata) ist als Skill `dv-staging` vorgeladen; das Voll-Template liegt in `references/stage-template.md` relativ zum Basisverzeichnis dieses Skills. Bestehende Staging-Views in `models/staging/` sind die Referenz für Stil und Hash-Weg.
+
+**Konvention vor Bestand:** Bestehende Modelle sind nur Vorlage, wenn sie konform sind. Projektspezifisch legitim sind bewusste Projektentscheidungen (Hash-Weg/-Separator, Macro-Signaturen, Schema-Zuordnung, Quell-Kürzel) — die Pflichtkonventionen (`dss_*`-Spalten, Keys, Naming) gelten immer. Nicht konforme Bestandsobjekte im Ergebnis auflisten statt sie nachzuahmen (`python <plugin>/hooks/dv_lint.py --audit .`).
 
 ## Workflow
 

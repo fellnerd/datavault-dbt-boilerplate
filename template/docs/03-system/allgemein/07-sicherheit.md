@@ -29,7 +29,7 @@ tags:
 
 > Vollständige Referenz: **[03-system/security/](../security/00-security.md)**
 
-Vier Schichten, Enforcement an der Mart-Grenze — Business-User erreichen ausschliesslich `mart*`-Schemas:
+Vier Schichten, Enforcement an der Mart-Grenze — Business-User erreichen ausschließlich `mart*`-Schemas:
 
 | Schicht | Mechanismus | Verwaltung |
 |---|---|---|

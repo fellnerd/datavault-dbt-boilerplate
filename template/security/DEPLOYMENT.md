@@ -1,7 +1,7 @@
 # Security-Deployment — Runbook
 
 > [!NOTE]
-> Referenz-Runbook aus dem Referenzprojekt. Die OLS- und Rechte-Skripte unter
+> Beispiel-Runbook (Projektstandard). Die OLS- und Rechte-Skripte unter
 > `security/ols/` und `security/privileges/` sind je Projekt anzulegen (Gruppen, Kontexte, Mandant).
 
 > Schritt-für-Schritt-Anleitung für den Erst-Rollout von OLS/RLS/CLS.
@@ -17,7 +17,7 @@ Die dbt-Models `fakt_buchungen`, `fakt_buchungen_v` und `dim_person_v` referenzi
 
 ## Vorbereitung (einmalig, vor dev)
 
-- [ ] **Entra-Gruppen beantragen** (IT/Entra-Admin): `<gruppen-prefix>-finance-employees-ro`, `<gruppen-prefix>-project-ro`, `<gruppen-prefix>-telecom-ro` — plus mindestens einen Test-User pro Gruppe als Mitglied
+- [ ] **Entra-Gruppen beantragen** (IT/Entra-Admin): `<gruppen-prefix>-finance-employees-ro`, `<gruppen-prefix>-project-ro`, `<gruppen-prefix>-sales-ro` — plus mindestens einen Test-User pro Gruppe als Mitglied
 - [ ] **Directory Readers**: Server-Identität des logischen SQL-Servers erhält die Entra-Rolle „Directory Readers" (für zuverlässiges `IS_MEMBER`)
 - [ ] **dbt-Service-Login ermitteln**: als dbt-Service-User verbinden und `SELECT ORIGINAL_LOGIN();` ausführen — der Wert kommt in Schritt 2 in die Exemption
 - [ ] Aktuellen Branch mergen/auschecken, sodass `macros/security/`, die Model-Änderungen und `tests/security/` im Deploy-Stand sind
@@ -52,7 +52,7 @@ SELECT * FROM sec.sec_special_user_privilege WHERE no_sec = 1;
 ```
 security/ols/ols_<gruppen-prefix>-finance-employees-ro.sql
 security/ols/ols_<gruppen-prefix>-project-ro.sql
-security/ols/ols_<gruppen-prefix>-telecom-ro.sql
+security/ols/ols_<gruppen-prefix>-sales-ro.sql
 security/privileges/insert_sec_group_privilege.sql   -- z.B. finance-Gruppe -> Kontext 'finance' -> '<mandant>'
 ```
 
@@ -113,7 +113,7 @@ SELECT COUNT(*) FROM mart_finance.fakt_buchungen_v;  -- > 0 (Gruppe hat '<mandan
 SELECT TOP 5 * FROM mart_finance.dim_konto_v;        -- OK (View berechtigt)
 SELECT TOP 5 * FROM mart_finance.dim_konto;          -- FEHLER erwartet (Tabelle, kein Grant)
 SELECT TOP 5 * FROM mart_finance.fakt_buchungen;     -- FEHLER erwartet (Tabelle, kein Grant)
-SELECT TOP 5 * FROM stg.stg_hauptbuch;               -- FEHLER erwartet (kein Grant)
+SELECT TOP 5 * FROM stg.stg_<entity>;                -- FEHLER erwartet (kein Grant)
 ```
 Danach die Gruppen-Row in `sec_group_privilege` testweise löschen → `COUNT(*)` muss `0` liefern (RLS!), Objektzugriff bleibt (OLS). Row wieder einfügen.
 

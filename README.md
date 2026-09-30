@@ -105,7 +105,19 @@ two plugins:
   (`dv-patterns`, `dv-staging`, `dv-marts`, `dv-design-sync`, `dv-er-diagram`,
   `dv-performance`, `dv-security`, `dv-docs`), five specialized agents (vault-architect, staging-engineer,
   mart-architect, db-monitor, performance-optimizer) that also maintain the Obsidian docs vault and
-  `docs/changelog.md`, and a deterministic DV lint hook running on every model edit.
+  `docs/changelog.md`, and two hooks:
+  - **SessionStart** (dbt + automate_dv projects only): loads the mandatory conventions
+    into the session and lists existing models that violate them, so non-compliant
+    code is not copied as a template.
+  - **PostToolUse** lint on every edit of `models/**` (staging `dss_*` derived columns,
+    hub/satellite `src_extra_columns`, FK-hub trap, hashdiff alias, mart surrogate keys,
+    `_id`/`_code`/`_name`, `fakt_` naming, published `_v` views) and `design/**/*.mmd` drift.
+    Full project audit: `python plugins/dv-toolkit/hooks/dv_lint.py --audit <project>`.
+
+  Hooks need Python 3 and a POSIX `sh` (on Windows: Git for Windows, which Claude Code
+  requires anyway). `hooks/pyrun.sh` picks the first interpreter (`python3`, `python`,
+  `py`) that can actually read the plugin files — the Microsoft Store `python3` alias
+  cannot, and is skipped.
 - [`masterdata-api`](plugins/masterdata-api/) — a single skill for talking to
   any deployed Master Data Services (MDS) instance over its token-authenticated
   REST API (`/api/v1/*`): manage models/entities/attributes, stage records
@@ -128,7 +140,14 @@ first start. Manual installation in any other project:
 The marketplace and the copier template are versioned together (git tags), so
 the conventions the template generates and the conventions the plugin's lint
 hook enforces always match. Update installed plugins with
-`/plugin marketplace update datavault-dbt`.
+
+```shell
+/plugin marketplace update datavault-dbt
+/plugin update dv-toolkit@datavault-dbt
+```
+
+(or from a terminal: `claude plugin marketplace update datavault-dbt` and
+`claude plugin update dv-toolkit@datavault-dbt`), then start a new session.
 
 ## What's included
 

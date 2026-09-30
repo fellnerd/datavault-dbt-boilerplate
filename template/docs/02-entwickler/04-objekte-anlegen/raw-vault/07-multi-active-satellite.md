@@ -71,7 +71,7 @@ src_cdk:
     - "phone_type"
 src_hashdiff: 
   source_column: "hd_employee_ma"
-  alias: "HASHDIFF"
+  alias: "hashdiff"
 src_payload:
     - "phone_number"
     - "is_primary"

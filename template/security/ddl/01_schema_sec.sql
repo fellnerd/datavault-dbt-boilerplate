@@ -1,8 +1,8 @@
 /*
  * Security-Fundament: Schema sec + Berechtigungstabellen
  *
- * Ausfuehrung: einmalig pro Tenant-Datenbank (datavault, datavault-dev,
- * datavault-test, Vault_Jira, ...) durch einen DB-Admin in SSMS.
+ * Ausfuehrung: einmalig pro Tenant-Datenbank (z. B. datavault, datavault-dev,
+ * datavault-test, ...) durch einen DB-Admin in SSMS.
  * Reihenfolge: 01 -> 02 -> 03, danach security/privileges/insert_sec_special_user_privilege.sql
  * (dbt-Service-User-Exemption) VOR der ersten Security Policy!
  *

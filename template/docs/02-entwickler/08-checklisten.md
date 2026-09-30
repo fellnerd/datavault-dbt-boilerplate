@@ -23,7 +23,7 @@ Zum Kopieren in den Merge Request. Obsidian: Kästchen direkt abhaken.
   - [ ] reservierte Wörter in `_escape`
 - [ ] FK-Staging-View je Fremdschlüssel-Hub
 - [ ] Hub(s): `src_extra_columns` mit `dss_business_key`, `dss_create_datetime`; `create_hash_index`
-- [ ] Satellite(s): Payload = Hash-Diff-Spalten, `alias: "HASHDIFF"`, beide Post-Hooks
+- [ ] Satellite(s): Payload = Hash-Diff-Spalten, `alias: "hashdiff"`, beide Post-Hooks
 - [ ] Link(s): richtige `src_fk`-Reihenfolge, Grain geprüft
 - [ ] Current View je Satellite
 - [ ] Richtiges Schema/Ordner (`_common` oder `<concept>`), Tag bei Massendaten
