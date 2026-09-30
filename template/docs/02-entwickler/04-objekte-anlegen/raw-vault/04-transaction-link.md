@@ -7,7 +7,7 @@ tags:
 
 # Transaction Link
 
-Für **unveränderliche Ereignisse**: Buchungen, Messwerte, Gesprächsdatensätze, Logeinträge. Ein Ereignis wird einmal geschrieben und nie historisiert. Namenskonvention `link_<ereignis>_tl`, die Attribute stehen in einem Transaction Satellite `sat_<ereignis>_tl__<quelle>`.
+Für **unveränderliche Ereignisse**: Buchungen, Sensor-Messwerte, Logeinträge. Ein Ereignis wird einmal geschrieben und nie historisiert. Namenskonvention `link_<ereignis>_tl`, die Attribute stehen in einem Transaction Satellite `sat_<ereignis>_tl__<quelle>`.
 
 | | Link | Transaction Link |
 |---|---|---|
@@ -29,7 +29,7 @@ hashed_columns:
     - "<BK_E2>"
 ```
 
-Gibt es keine Ereignis-ID, bildet die kleinste eindeutige Spaltenkombination (z. B. Zeitstempel + Zähler + Anschluss) den Schlüssel — vorher auf Eindeutigkeit prüfen.
+Gibt es keine Ereignis-ID, bildet die kleinste eindeutige Spaltenkombination (z. B. Zeitstempel + Sensor + Messgröße) den Schlüssel — vorher auf Eindeutigkeit prüfen.
 
 ## Link
 

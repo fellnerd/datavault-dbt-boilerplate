@@ -1,6 +1,6 @@
 # Security-Skripte (manuelle Ausführung in SSMS)
 
-Versionierte DB-Security-Artefakte für die Tenant-Datenbanken (`datavault`, `datavault-dev`, `datavault-test`, `Vault_Jira`, …).
+Versionierte DB-Security-Artefakte für die Tenant-Datenbanken (z. B. `datavault`, `datavault-dev`, `datavault-test`, …).
 Vollständige Architektur: [docs/03-system/security/](../docs/03-system/security/00-security.md)
 **Deployment-Anleitung (Schritt für Schritt): [DEPLOYMENT.md](DEPLOYMENT.md)**
 

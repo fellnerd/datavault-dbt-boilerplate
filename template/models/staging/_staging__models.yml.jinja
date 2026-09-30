@@ -17,7 +17,7 @@ models:
         tests:
           - not_null
           - unique
-      - name: hd_adresse
+      - name: hd_adresse__adworks
         description: Hash Diff for change detection
         data_type: char(64)
         tests:
@@ -68,7 +68,7 @@ models:
         tests:
           - not_null
           - unique
-      - name: hd_kunde
+      - name: hd_kunde__adworks
         description: Hash Diff for change detection
         data_type: char(64)
         tests:
@@ -146,7 +146,7 @@ models:
         data_type: char(64)
         tests:
           - not_null
-      - name: hd_kunde_adresse
+      - name: hd_kunde_adresse__adworks
         description: Hash Diff for Link Satellite change detection
         data_type: char(64)
         tests:
@@ -192,7 +192,7 @@ models:
         tests:
           - not_null
           - unique
-      - name: hd_produkt
+      - name: hd_produkt__adworks
         description: Hash Diff for change detection
         data_type: char(64)
         tests:
@@ -242,7 +242,7 @@ models:
         tests:
           - not_null
           - unique
-      - name: hd_produkt_preis
+      - name: hd_produkt_preis__adworks
         description: Hash Diff for change detection
         data_type: char(64)
         tests:
@@ -310,7 +310,7 @@ models:
         data_type: char(64)
         tests:
           - not_null
-      - name: hd_verkauf
+      - name: hd_verkauf__adworks
         description: Hash Diff for change detection
         data_type: char(64)
         tests:

@@ -18,7 +18,7 @@ Tests stehen als **Generic Tests** in den `_…__models.yml` (Schlüsselwort `da
 | | Business Key, `dss_business_key` | `not_null` |
 | Satellite | `hk_<entity>` | `not_null`, `relationships` → Hub |
 | | `dss_is_current` | `accepted_values: ['Y','N']` |
-| | `HASHDIFF`, `dss_load_date` | `not_null` |
+| | `hashdiff`, `dss_load_date` | `not_null` |
 | Link | `hk_link_<…>` | `unique`, `not_null` |
 | | jeder `hk_<hub>` | `not_null`, `relationships` → Hub |
 | Effectivity Satellite | `dss_is_active` | `accepted_values: ['Y','N']` |

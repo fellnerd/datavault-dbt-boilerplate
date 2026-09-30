@@ -75,7 +75,7 @@ Nicht abgedeckt: `fakt_belege_v` — Kreditorenbelege haben keine Kostenstelle u
 
 ## Was es NICHT (mehr) gibt
 
-- **Keine Security Policies.** Die native `SECURITY POLICY` auf `fakt_buchungen` wurde am 13.09.2026 entfernt: Seit nur noch Views berechtigt werden, ist die Tabelle für Endnutzer ohnehin unerreichbar — und die Policy kostete 2 logische Reads pro Basiszeile.
+- **Keine Security Policies.** Die native `SECURITY POLICY` auf `fakt_buchungen` wurde entfernt: Seit nur noch Views berechtigt werden, ist die Tabelle für Endnutzer ohnehin unerreichbar — und die Policy kostete 2 logische Reads pro Basiszeile.
 - **Keine Schema-Grants.** Ein Test schlägt an, sobald einer auftaucht.
 - **Keine invertierte Logik.** Bewusst verworfen: Die Prüffunktion verknüpft ihre Zweige mit `ODER`, ein pauschales Recht würde jede Einzeleinschränkung aufheben.
 

@@ -66,10 +66,10 @@ Ein Staging-Model speist oft mehrere Hubs: den seiner Haupt-Entität und zusätz
 
 | | Beispiel | `source_model` |
 |---|---|---|
-| **Primär-Hub** | `hub_hauptbuch` aus dem Hauptbuch-Staging | das Staging selbst |
-| **FK-Hub** | `hub_konto` aus dem Hauptbuch-Staging | eigene FK-Staging-View |
+| **Primär-Hub** | `hub_bestellung` aus `stg_bestellung` (Haupt-Entität Bestellung, BK `bestell_nr`) | das Staging selbst |
+| **FK-Hub** | `hub_kunde` aus `stg_bestellung` (Fremdschlüssel, BK `kunden_nr`) | eigene FK-Staging-View `stg_bestellung__kunde` |
 
-**Der `dss_business_key` eines Stagings gehört seiner Haupt-Entität.** In einem FK-Hub stünde sonst der falsche Schlüssel — in `hub_konto` die Hauptbuch-Zeilennummer. Umbenennen im Hub geht nicht, `automate_dv.hub()` übernimmt Zusatzspalten nur unter ihrem Namen. Deshalb liest jeder FK-Hub aus einer schlanken View, die den Schlüssel *seiner* Entität bildet:
+**Der `dss_business_key` eines Stagings gehört seiner Haupt-Entität.** In einem FK-Hub landete sonst der falsche Schlüssel: in `hub_kunde` stünde sonst die Bestellnummer. Umbenennen im Hub geht nicht, `automate_dv.hub()` übernimmt Zusatzspalten nur unter ihrem Namen. Deshalb liest jeder FK-Hub aus einer schlanken View, die den Schlüssel *seiner* Entität bildet:
 
 ```sql
 -- models/staging/<staging>__<entity>.sql   (View, reine Projektion)

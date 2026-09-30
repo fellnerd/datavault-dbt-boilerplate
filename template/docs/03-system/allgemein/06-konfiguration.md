@@ -9,7 +9,7 @@ tags:
 
 ### 6.1 dbt_project.yml
 
-Aufbau (gekürzt, massgeblich ist die Datei selbst):
+Aufbau (gekürzt, maßgeblich ist die Datei selbst):
 
 ```yaml
 name: 'datavault'
@@ -61,8 +61,8 @@ models:
 Wichtige Punkte:
 
 - **Schema-Konvention:** `stg` · `vault` / `vault_<concept>` · `mart` / `mart_<domain>`. Der dbt-Standard-Prefix wird von `generate_schema_name` unterdrückt.
-- **Tags je Domäne:** Domänen mit eigenem Ladefenster (z. B. CDR-Massendaten, Energiedaten) tragen ein Tag und werden über eigene CI-Jobs geladen, nicht im regulären `dbt run`.
-- **Business Vault liegt im Mart-Schema:** Objekte, die Power BI direkt konsumiert, dürfen nicht im `vault`-Schema liegen — Endnutzer sehen ausschliesslich `mart*`.
+- **Tags je Domäne:** Domänen mit eigenem Ladefenster (Massendaten, z. B. Logs, Events, Sensordaten) tragen ein Tag und werden über eigene CI-Jobs geladen, nicht im regulären `dbt run`.
+- **Business Vault liegt im Mart-Schema:** Objekte, die Power BI direkt konsumiert, dürfen nicht im `vault`-Schema liegen — Endnutzer sehen ausschließlich `mart*`.
 - **Seeds:** Standard-Schema `vault`; Seeds mit operativem Charakter (z. B. Berechtigungsmatrizen) werden explizit nach `stg` gelegt und erhalten `+column_types` (NVARCHAR für Umlaute).
 
 ### 6.2 Azure SQL — Einschränkungen und Konventionen

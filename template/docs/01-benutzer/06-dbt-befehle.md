@@ -94,7 +94,7 @@ Test und Produktion werden regulär von der Pipeline beliefert ([Deployment Work
 
 ## Massendaten-Domänen
 
-Domänen mit eigenem Ladefenster tragen ein Tag (z. B. `cdr`) und sind vom Standardlauf ausgeschlossen:
+Domänen mit eigenem Ladefenster (Massendaten, z. B. Logs, Events, Sensordaten) tragen ein Tag (z. B. `iot`) und sind vom Standardlauf ausgeschlossen:
 
 ```bash
 dbt run --select tag:<domain>

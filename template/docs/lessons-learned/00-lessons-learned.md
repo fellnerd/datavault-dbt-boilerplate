@@ -11,9 +11,6 @@ tags:
 
 # Lessons Learned - Data Vault 2.1 mit dbt auf Azure
 
-> **Letzte Aktualisierung:** 2026-07-25
-> **DV 2.1 Compliance:** ~85% (nach Optimierung)
-
 ## Inhalt
 
 
@@ -32,5 +29,5 @@ tags:
 10. [Best Practices (gelernt)](10-best-practices-gelernt.md)
 12. [CI/CD Pipeline (GitHub Actions)](12-ci-cd-pipeline-github-actions.md)
 13. [Technische Referenz](13-technische-referenz.md)
-14. [Multi-Active Satellite: Load Date muss ein BATCH-Wert sein (2026-08-17)](14-multi-active-satellite-load-date.md)
-15. [Transaction Satellite für Messdaten: Anti-Join über den Zeitraum begrenzen (2026-08-17)](15-transaction-satellite-fuer-messdaten.md)
+14. [Multi-Active Satellite: Load Date muss ein BATCH-Wert sein](14-multi-active-satellite-load-date.md)
+15. [Transaction Satellite für Messdaten: Anti-Join über den Zeitraum begrenzen](15-transaction-satellite-fuer-messdaten.md)

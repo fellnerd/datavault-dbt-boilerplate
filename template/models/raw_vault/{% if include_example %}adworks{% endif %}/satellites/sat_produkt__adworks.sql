@@ -1,5 +1,5 @@
 {#
-    Split-Satellite: sat_produkt
+    Split-Satellite: sat_produkt__adworks
     Parent Hub: hub_produkt (existing hub in adworks)
     Source: adworks_produkt
     Payload: Name, ProductNumber, Size, Weight, ProductModelID, ModifiedDate
@@ -24,7 +24,7 @@
 source_model: "adworks_produkt"
 src_pk: "hk_produkt"
 src_hashdiff: 
-  source_column: "hd_produkt"
+  source_column: "hd_produkt__adworks"
   alias: "hashdiff"
 src_payload: 
     - "name"

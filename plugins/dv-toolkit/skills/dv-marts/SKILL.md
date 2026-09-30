@@ -1,73 +1,114 @@
 ---
 name: dv-marts
-description: Erstellt Information-Mart-Objekte (Star Schema) auf dem Raw Vault — Dimensionen und Faktentabellen mit deterministischen Surrogate Keys, NULL-Fallbacks und BI-tauglichen Konventionen (Power BI/Qlik/Tableau). Immer verwenden bei "Dimension erstellen", "Faktentabelle", "Mart bauen", "Star Schema", "Reporting-View", "dim_" oder "fakt_"-Objekten oder wenn Vault-Daten für BI-Tools aufbereitet werden sollen.
+description: Erstellt Information-Mart-Objekte (Star Schema) auf dem Raw Vault — Dimensionen und Faktentabellen mit deterministischen BIGINT-Surrogate-Keys, Unbekannt-Zeile, NULL-Fallbacks, publizierten _v-Views und BI-tauglichen Konventionen (Power BI/Qlik/Tableau). Immer verwenden bei "Dimension erstellen", "Faktentabelle", "Mart bauen", "Star Schema", "Reporting-View", "Information Mart", "dim_" oder "fakt_"-Objekten oder wenn Vault-Daten für BI-Tools aufbereitet werden sollen — auch für schnelle erste Entwürfe.
 ---
 
 # Information Marts auf Data Vault (Star Schema)
 
-Marts sind die BI-Schicht über dem Raw Vault: Kimball-Star-Schema, idealerweise als Views (Business Vault virtuell). Der Vault bleibt die einzige Wahrheit — Marts enthalten keine eigene Historisierungslogik, sondern lesen den aktuellen Stand (`dss_is_current = 'Y'`) oder gezielt Historie über PIT-Tabellen.
+Marts sind die BI-Schicht über dem Raw Vault: Kimball-Star-Schema. Der Vault bleibt die einzige Wahrheit — Marts enthalten keine eigene Historisierungslogik, sondern lesen den aktuellen Stand (`dss_is_current = 'Y'` bzw. `_current_v`) oder gezielt Historie über PIT-Tabellen.
 
-## Surrogate-Key-Pattern
+**Konvention vor Bestand:** Bestehende Marts sind nur Vorlage, wenn sie diesem Muster folgen. Auch ein „schneller erster Entwurf“ folgt dem Muster — ein Mart mit `hk_*`-Keys oder ohne `_code`/`_name` muss sonst komplett umgebaut werden.
 
-Alle Dimension Keys über das projektweite `surrogate_key()`-Macro — deterministisch, view-kompatibel, BI-freundlich:
+## Hausmuster: Tabelle + publizierte View
+
+| Objekt | Materialisierung | Inhalt | Zugriff |
+|--------|------------------|--------|---------|
+| `dim_<entity>`, `fakt_<inhalt>` | `table`, `as_columnstore=false`, `tags=['dimension']` bzw. `['fact']` | gesamte Logik, Joins, Berechnungen | Entwickler |
+| `dim_<entity>_v`, `fakt_<inhalt>_v` | `view` | `SELECT *` aus der Tabelle, später + RLS/CLS | BI-Tools |
+
+Naming: Fakten heißen **`fakt_`** (nicht `fact_`). Triviale Dimensionen ohne nennenswerte Joins dürfen direkt als `_v`-View gebaut werden.
+
+## Surrogate Keys
 
 ```sql
-{{ surrogate_key('business_key_column') }} AS <dim>_key
--- erzeugt: ABS(CONVERT(BIGINT, HASHBYTES('MD5', CAST(col AS NVARCHAR(MAX)))))
+{{ surrogate_key('<bk_spalte>') }} AS <dim>_key
+-- = ABS(CONVERT(BIGINT, HASHBYTES('MD5', CAST(<bk_spalte> AS NVARCHAR(MAX)))))
 ```
 
-Fakten-FKs verwenden **denselben** `surrogate_key()`-Aufruf auf derselben Spalte — nur so matchen die Joins. Nie `ROW_NUMBER()` oder Identity-Spalten (nicht deterministisch über Rebuilds).
+- Dimension (PK) und Fakt (FK) rufen `surrogate_key()` auf **demselben Ausdruck** auf — nur so matchen die Joins. Nie `hk_*`-Hashes als Key, nie `ROW_NUMBER()` oder Identity (ändern sich bei Rebuilds).
+- Zusammengesetzter Schlüssel: vorher verketten, z. B. `{{ surrogate_key("CONCAT_WS('||', h.kunde_bk, h.quelle)") }}`.
+- **Unbekannt-Zeile:** jede Dimension enthält per `UNION ALL` eine Zeile `<dim>_key = -1` (`<dim>_id`/`_code` `'-1'`, `<dim>_name` `'Unbekannt'`). Fakten lenken fehlende Bezüge per `ISNULL(<key>, -1)` / `CASE` darauf, statt Zeilen zu verlieren.
+- Datum: `CONVERT(INT, FORMAT(<datum>, 'yyyyMMdd')) AS datum_key` gegen `dim_date` (`dim_date` wiederverwenden, keine eigene Datumslogik).
 
 ## Pflichtspalten
 
-### Dimension (`dim_<name>`)
+### Dimension (`dim_<entity>`)
 
 | Spalte | Typ | Regel |
 |--------|-----|-------|
-| `<dim>_key` | BIGINT | Surrogate Key (PK) via `surrogate_key()` |
-| `<dim>_id` | NVARCHAR(255) | Technische ID aus dem Vorsystem |
-| `<dim>_code` | NVARCHAR(255) | Sprechender Business-Schlüssel; Fallback = ID |
-| `<dim>_name` | NVARCHAR(255) | Bezeichnung; Fallback = CODE, sonst 'UNKNOWN' |
-| `dss_load_date` / `dss_record_source` | — | aus dem Vault durchreichen |
+| `<dim>_key` | BIGINT | `surrogate_key()`, getestet `unique` + `not_null` |
+| `<dim>_id` | NVARCHAR(255) | technische ID aus dem Vorsystem |
+| `<dim>_code` | NVARCHAR(255) | sprechender Schlüssel; Fallback = ID |
+| `<dim>_name` | NVARCHAR(255) | Bezeichnung; Fallback = Code, sonst `'UNKNOWN'` |
+| `dss_sec_value_key` | NVARCHAR | nur auf Dimensionen, die Zeilen filtern (Skill `dv-security`) |
+| `dss_load_date`, `dss_record_source` | | aus dem Vault durchgereicht |
 
-NULL-Behandlung: `ISNULL(code, CAST(id AS NVARCHAR(255)))`, `ISNULL(name, ISNULL(code, 'UNKNOWN'))` — BI-Tools brechen sonst bei NULL-Membern.
+`ISNULL(code, CAST(id AS NVARCHAR(255)))`, `ISNULL(name, ISNULL(code, 'UNKNOWN'))` — NULL-Member brechen BI-Tools.
 
-### Faktentabelle (`fakt_<name>`)
+### Fakt (`fakt_<inhalt>`)
 
-- Dimensions-Keys: `{{ surrogate_key('fk_spalte') }} AS <dim>_key`
-- Measures (Beträge, Mengen) mit explizitem Typ-Cast
-- Degenerate Dimensions (Belegnummern etc.) direkt in der Faktentabelle
-- `dss_load_date`, `dss_record_source`
+| Spalte | Regel |
+|--------|-------|
+| `<dim>_key` je Dimension | gleicher `surrogate_key()`-Ausdruck wie in der Dimension, Fallback `-1` |
+| `datum_key` | `JJJJMMTT` |
+| Measures | expliziter Typ (`DECIMAL(18,2)` …), Einheit im Namen, falls mehrdeutig |
+| Degenerate Dimensions | Belegnummern o. ä. direkt im Fakt |
+| `dss_load_date`, `dss_record_source` | durchgereicht |
+
+Grain im Header-Kommentar dokumentieren.
+
+## SCD1 (Standard) oder SCD2
+
+SCD1 (aktueller Stand, 1 Zeile je BK) ist Standard. SCD2 nur auf ausdrückliche fachliche Anforderung: Key = `surrogate_key(CONCAT_WS('||', <bk>, <gueltig_von>))`, Zusatzspalten `gueltig_von`, `gueltig_bis`, `ist_aktuell`; der Fakt wählt die zum Ereignisdatum gültige Version.
 
 ## Aufbau-Muster
 
 ```sql
-{{ config(materialized='table', as_columnstore=false) }}
+{#
+    Mart: dim_<entity>
+    Grain: 1 Zeile je <entity> + Unbekannt-Zeile (-1). SCD1.
+    Quellen: hub_<entity>, sat_<entity>__<quelle> (current)
+#}
+{{ config(materialized='table', as_columnstore=false, tags=['dimension']) }}
 
-WITH hub AS (
-    SELECT hk_<entity>, <bk> FROM {{ ref('hub_<entity>') }}
-),
-sat_current AS (
-    SELECT * FROM {{ ref('sat_<entity>__<source>') }}
-    WHERE dss_is_current = 'Y'
+WITH basis AS (
+    SELECT
+        {{ surrogate_key('h.<bk>') }}                           AS <dim>_key,
+        CAST(h.<bk> AS NVARCHAR(255))                           AS <dim>_id,
+        CAST(s.<code> AS NVARCHAR(255))                         AS <dim>_code_quelle,
+        CAST(s.<name> AS NVARCHAR(255))                         AS <dim>_name_quelle,
+        COALESCE(s.dss_load_date, h.dss_load_date)              AS dss_load_date,
+        COALESCE(s.dss_record_source, h.dss_record_source)      AS dss_record_source
+    FROM {{ ref('hub_<entity>') }} h
+    LEFT JOIN {{ ref('sat_<entity>__<quelle>') }} s
+        ON s.hk_<entity> = h.hk_<entity> AND s.dss_is_current = 'Y'
 )
 SELECT
-    {{ surrogate_key('h.<bk>') }}                    AS <dim>_key,
-    CAST(h.<bk> AS NVARCHAR(255))                    AS <dim>_id,
-    ISNULL(s.code, CAST(h.<bk> AS NVARCHAR(255)))    AS <dim>_code,
-    ISNULL(s.name, ISNULL(s.code, 'UNKNOWN'))        AS <dim>_name,
-    s.dss_load_date,
-    s.dss_record_source
-FROM hub h
-LEFT JOIN sat_current s ON s.hk_<entity> = h.hk_<entity>
+    <dim>_key,
+    <dim>_id,
+    ISNULL(<dim>_code_quelle, <dim>_id)                          AS <dim>_code,
+    ISNULL(<dim>_name_quelle, ISNULL(<dim>_code_quelle, 'UNKNOWN')) AS <dim>_name,
+    dss_load_date,
+    dss_record_source
+FROM basis
+UNION ALL
+SELECT CAST(-1 AS BIGINT), N'-1', N'-1', N'Unbekannt', CAST('1900-01-01' AS DATETIME2), N'SYSTEM'
 ```
 
-Fakten joinen über Links: Link liefert die FK-Hash-Keys, Hubs liefern die BKs für die Surrogate-Key-Berechnung, Link-/Transaction-Sats liefern die Measures.
+`dim_<entity>_v.sql`:
+
+```sql
+{{ config(materialized='view', tags=['dimension']) }}
+SELECT * FROM {{ ref('dim_<entity>') }}
+```
+
+Fakten joinen über Links: der Link liefert die FK-Hash-Keys, die Hubs liefern die BKs für `surrogate_key()`, Link-/Transaction-Sats liefern die Measures.
 
 ## Checkliste vor Fertigmeldung
 
-1. `dim_date` (Datums-Dimension) referenziert statt eigene Datumslogik?
-2. Jede Dimension hat einen 'UNKNOWN'-tauglichen Fallback (LEFT JOINs in Fakten dürfen keine verlorenen Zeilen erzeugen)?
-3. Schema-YAML mit Tests: `<dim>_key` not_null + unique (Dimension), FK-Keys not_null (Fakt)
-4. ER-Diagramm des Marts aktualisiert (Skill `dv-design-sync`)
-5. Grain der Faktentabelle im Header-Kommentar dokumentiert
+1. Jede Dimension: `<dim>_key` (BIGINT, `surrogate_key`), `_id`, `_code`, `_name`, `dss_load_date`, `dss_record_source`, Unbekannt-Zeile `-1`?
+2. Fakt: Keys mit identischem Ausdruck wie die Dimension, `datum_key`, Grain im Header, keine verlorenen Zeilen (COUNT Fakt vs. Quell-Link)?
+3. Je Tabelle eine publizierte `_v`-View; Naming `dim_`/`fakt_`; Tags gesetzt?
+4. Schema-YAML mit Tests: `<dim>_key` `unique` + `not_null`, FK-Keys `not_null` (+ `relationships` auf die Dimension)
+5. Mart-ER-Diagramm `design/mart/er-mart-<domain>.mmd` aktualisiert (Skill `dv-design-sync`), Changelog-Zeile (Skill `dv-docs`)
+6. Der PostToolUse-Lint meldet Verstöße gegen 1 und 3 automatisch — Befunde beheben.

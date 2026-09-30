@@ -84,7 +84,7 @@ Für `hub_kunde` (Fremdschlüssel) liest der Hub aus einer eigenen FK-Staging-Vi
           post_hook=["{{ create_hash_index('hk_auftrag') }}",
                      "{{ update_satellite_current_flag(this, 'hk_auftrag') }}"]) }}
 {{ automate_dv.sat(src_pk="hk_auftrag",
-                   src_hashdiff={"source_column": "hd_auftrag__crm", "alias": "HASHDIFF"},
+                   src_hashdiff={"source_column": "hd_auftrag__crm", "alias": "hashdiff"},
                    src_payload=["BETRAG", "STATUS"],
                    src_extra_columns=["dss_create_datetime"],
                    src_ldts="dss_load_date", src_source="dss_record_source",

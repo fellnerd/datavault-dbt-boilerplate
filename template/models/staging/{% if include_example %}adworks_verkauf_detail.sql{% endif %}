@@ -64,7 +64,7 @@ staged AS (
                 '^^',
                 ISNULL(CAST(unitpricediscount AS NVARCHAR(MAX)), '')
             )
-        ), 2) AS hd_verkauf_detail_dc,
+        ), 2) AS hd_verkauf_detail_dc__adworks,
 
         -- ===========================================
         -- PAYLOAD

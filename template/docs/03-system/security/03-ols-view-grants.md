@@ -38,7 +38,7 @@ vars:
   ols_view_grants:
     <gruppen-prefix>-finance-employees-ro: ['mart', 'mart_finance']
     <gruppen-prefix>-project-ro: ['mart', 'mart_project']
-    <gruppen-prefix>-telecom-ro: ['mart', 'mart_telecom']
+    <gruppen-prefix>-sales-ro:   ['mart', 'mart_sales']
     rls_test:                ['mart', 'mart_finance']   # Dev-Testuser
 ```
 
@@ -63,7 +63,7 @@ dim_beleg.sql       materialized='table'   ← Logik, kein Grant
 dim_beleg_v.sql     materialized='view'    ← publiziert, berechtigt
 ```
 
-> Historischer Stolperstein: `dim_beleg_v` war selbst eine **Tabelle** mit `_v`-Suffix. Unter Schema-Grants fällt so etwas nie auf; bei der Umstellung auf View-Grants wäre das Objekt schlagartig unsichtbar geworden. Am 13.09.2026 aufgeteilt.
+> Historischer Stolperstein: `dim_beleg_v` war selbst eine **Tabelle** mit `_v`-Suffix. Unter Schema-Grants fällt so etwas nie auf; bei der Umstellung auf View-Grants wäre das Objekt schlagartig unsichtbar geworden. Seither aufgeteilt in `dim_beleg` + `dim_beleg_v`.
 
 ## Namenskonvention der Gruppen
 
@@ -71,7 +71,7 @@ dim_beleg_v.sql     materialized='view'    ← publiziert, berechtigt
 <gruppen-prefix>-<bereich>-ro
 ```
 
-Die Gruppen werden im **lokalen AD** angelegt und per Entra-Connect-Sync (alle 30 Minuten) nach Azure synchronisiert — dort macht der Support seine Gruppenpflege. In der Datenbank wird der synchronisierte Name verwendet.
+Je nach Organisation werden die Gruppen direkt in Entra ID oder im **lokalen AD** angelegt und dann per Entra-Connect-Sync nach Azure synchronisiert (Sync-Intervall beachten). In der Datenbank wird der Name verwendet, unter dem die Gruppe in Entra ID erscheint.
 
 ## Das Gruppenmodell
 

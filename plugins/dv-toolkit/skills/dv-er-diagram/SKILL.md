@@ -5,7 +5,7 @@ description: Erstellt ein standardisiertes Raw-Vault-ER-Diagramm (Hubs, Links, S
 
 # Raw-Vault-ER-Diagramm (Standarddarstellung)
 
-Ziel: Für jedes Business Concept (z. B. `_common`, `telecom`, `ise`) ein Diagramm in immer gleicher Darstellung, aus dem sich Staging-Views und Raw-Vault-Objekte direkt ableiten lassen. Das Diagramm zeigt **nur Informationen mit Funktion**: Quelle, Keys, Hash-Inputs, Hashdiff-Namen, Gültigkeit. Keine Metadaten, keine reine Payload.
+Ziel: Für jedes Business Concept (z. B. `_common`, `crm`, `shop`) ein Diagramm in immer gleicher Darstellung, aus dem sich Staging-Views und Raw-Vault-Objekte direkt ableiten lassen. Das Diagramm zeigt **nur Informationen mit Funktion**: Quelle, Keys, Hash-Inputs, Hashdiff-Namen, Gültigkeit. Keine Metadaten, keine reine Payload.
 
 Abgrenzung zu `dv-design-sync`: Die Mermaid-Dateien unter `design/` bleiben die Model-First-Quelle und werden dort gepflegt. Dieser Skill erzeugt daraus bzw. aus dem dbt-Code die **präsentierbare** Darstellung (Review, Fachabstimmung, Schulung).
 
@@ -32,7 +32,7 @@ Pro Objekt aus dem `yaml_metadata`-Block des dbt-Modells:
 | Dependent-Child-Sat | `sat` mit CDK | wie Satellite + `CDK` |
 | Reference Table | `automate_dv.ref_table` | `src_pk` (Natural Key, kein Hash) |
 
-Aus der Staging-View (`models/staging/<model>.sql`, Block `hashed_columns`) die **Quellspalten jedes Hash Keys** (`hk_x: "id"`, `hk_link_x: ["a", "b"]`). Aus `derived_columns` nur abgeleitete BK-Spalten (z. B. `vertrag_id: "vertrags_nummer"`) — dargestellt als `hk_vertrag ← vertrag_id (vertrags_nummer)`.
+Aus der Staging-View (`models/staging/<model>.sql`, Block `hashed_columns`) die **Quellspalten jedes Hash Keys** (`hk_x: "id"`, `hk_link_x: ["a", "b"]`). Aus `derived_columns` nur abgeleitete BK-Spalten (z. B. `kunde_id: "kunden_nummer"`) — dargestellt als `hk_kunde ← kunde_id (kunden_nummer)`.
 
 Quelle = **voller Name der External Table** aus `source_model.staging` der Staging-View bzw. `sources.yml` (z. B. `ext_idms_service_subscription_main`), nie nur der fachliche Tabellenname. Liest ein Hub aus einer eigenen FK-Staging-View (`<staging>__<entity>`), steht diese als Quelle.
 
@@ -87,7 +87,7 @@ Hashdiff heisst im Staging `hd_<name>`, im Satellite physisch `HASHDIFF` (alias)
 
 - `im Branch` grün (`#DCFCE7` / `#166534`)
 - offen rot (`#FEE2E2` / `#991B1B`): offene Entscheidung, z. B. `Grain offen`, `Quellsystem offen`
-- info blau (`#E8EBF7` / `#2A3F8F`): z. B. `bestehend (Compax)` für Fremd-Hubs
+- info blau (`#E8EBF7` / `#2A3F8F`): z. B. `bestehend (CRM)` für Fremd-Hubs
 - Hinweiszeile rot (Sans 11 px): fehlende Objekte oder Code-Inkonsistenzen, z. B. „Noch kein Satellite für disabled"
 
 ### Schrift und Fläche

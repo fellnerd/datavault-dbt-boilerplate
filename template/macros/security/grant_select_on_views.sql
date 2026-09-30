@@ -1,13 +1,13 @@
 /*
  * Macro: grant_select_on_views
  *
- * OLS-Kern: vergibt SELECT ausschliesslich auf VIEWS der Mart-Schemas.
+ * OLS-Kern: vergibt SELECT ausschließlich auf VIEWS der Mart-Schemas.
  * Laeuft als on-run-end-Hook nach jedem dbt-Lauf (dbt_project.yml).
  *
  * Warum kein Schema-Grant?
  *   GRANT SELECT ON SCHEMA::mart_finance wuerde auch die physischen
  *   Performance-Caches (fakt_buchungen, dim_konto, ...) mit freigeben.
- *   Endnutzer sollen ausschliesslich die publizierten _v-Views sehen.
+ *   Endnutzer sollen ausschließlich die publizierten _v-Views sehen.
  *
  * Warum kein statisches Objekt-Grant-Skript?
  *   dbt erstellt Views bei jedem Run neu - objektbezogene Rechte haengen am

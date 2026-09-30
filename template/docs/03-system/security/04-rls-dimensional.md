@@ -92,7 +92,7 @@ Pro Achse: eine gefilterte Dimension, ein eigener Kontext, ein eigener Wertebere
 
 Die UND-Verknüpfung muss also nirgends programmiert werden — sie ist eine Eigenschaft des Joins. Beispiel: ein Nutzer mit Kostenstelle 2030 und Kontogruppe „5 Personalaufwand" sieht 6.356 von 915.841 Zeilen, exakt die Schnittmenge.
 
-> Dass innerhalb einer Achse **ODER** gilt, ist belegt: Ein Nutzer hat Kostenstelle 2030 *und* die Bereiche „4.1 Netz" / „4.2 Shop". KST 2030 liegt in Bereich „2 Verwaltung" — als Schnittmenge gelesen bekäme er null Kostenstellen.
+> Dass innerhalb einer Achse **ODER** gilt, ist belegt: Ein Nutzer hat Kostenstelle 2030 *und* die Bereiche „4.1 Vertrieb" / „4.2 Shop". KST 2030 liegt in Bereich „2 Verwaltung" — als Schnittmenge gelesen bekäme er null Kostenstellen.
 
 ## Ghost- und Plug-Zeilen müssen durch
 

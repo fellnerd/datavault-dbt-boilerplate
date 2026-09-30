@@ -49,7 +49,7 @@ Merksatz: gegen wiederholten Zugriff auf eine teure View hilft in SQL Server nur
 
 ### Security Policies können sehr wohl an Views binden (Doku war falsch)
 
-Unser Architekturdokument behauptete, native Security Policies könnten nicht an Views gebunden werden — daher der eingebettete `rls_filter` in den `_v`-Views. Das Datahub-Konzept (KELAG) zeigt das Gegenteil: dort binden Policies mit **`schemabinding = off`** direkt an Views (`policy_hcm` auf `datahub.hcm.dim_organisation_v`). `schemabinding = off` ist dort nötig, weil die Prüffunktion in einer anderen Datenbank liegt.
+Unser Architekturdokument behauptete, native Security Policies könnten nicht an Views gebunden werden — daher der eingebettete `rls_filter` in den `_v`-Views. Ein anderes Referenzkonzept zeigt das Gegenteil: dort binden Policies mit **`schemabinding = off`** direkt an Views (z. B. `policy_hr` auf `<datenbank>.hr.dim_organisation_v`). `schemabinding = off` ist dort nötig, weil die Prüffunktion in einer anderen Datenbank liegt.
 
 **An unserer Umsetzung ändert das nichts** — der eingebettete Filter bleibt, weil er im dbt-Code sichtbar und versioniert ist (eine Policy ist unsichtbare DDL, auffindbar nur über `sys.security_policies`) und für den Optimizer transparent bleibt. Aber die Begründung „geht technisch nicht" war falsch und ist korrigiert. **Der konkrete Nachweis auf Azure SQL steht noch aus.**
 

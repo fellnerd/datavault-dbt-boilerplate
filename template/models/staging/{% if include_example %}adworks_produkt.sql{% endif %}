@@ -41,7 +41,7 @@ staged AS (
                 {%- endfor %}
                 {%- if hashdiff_columns | length == 1 %}, ''{%- endif %}
             )
-        ), 2) AS hd_produkt,
+        ), 2) AS hd_produkt__adworks,
 
         -- ===========================================
         -- BUSINESS KEY(S)

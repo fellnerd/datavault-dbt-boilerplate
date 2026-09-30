@@ -27,7 +27,7 @@
     {% set results = [] %}
 
     {% for i in range(iterations | int) %}
-        {#- Der Reads-Zaehler in dm_exec_sessions wird erst bei Statement-Ende
+        {#- Der Reads-Wert in dm_exec_sessions wird erst bei Statement-Ende
             fortgeschrieben — im selben Batch gelesen liefert er 0. Deshalb drei
             getrennte run_query-Aufrufe; sie teilen sich dieselbe Verbindung. -#}
         {% set snapshot %}

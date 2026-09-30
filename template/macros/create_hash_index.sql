@@ -71,7 +71,7 @@
  * Mit Clustered Index werden leere Pages dealloziert bzw. wiederverwendet.
  *
  * Verwendung als post_hook:
- *   post_hook=["{{ create_clustered_index(['RECNUM']) }}"]
+ *   post_hook=["{{ create_clustered_index(['zeilen_nr']) }}"]
  */
 
 {% macro create_clustered_index(columns) %}

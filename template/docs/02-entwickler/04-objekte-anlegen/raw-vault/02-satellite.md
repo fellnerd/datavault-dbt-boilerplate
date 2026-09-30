@@ -34,8 +34,8 @@ Namenskonvention: `sat_<entity>__<quelle>` — der Quell-Suffix ist Pflicht, den
 source_model: "<staging_model>"
 src_pk: "hk_<entity>"
 src_hashdiff:
-  source_column: "hd_<entity>"
-  alias: "HASHDIFF"
+  source_column: "hd_<entity>__<quelle>"
+  alias: "hashdiff"
 src_payload:
     - "<spalte_1>"
     - "<spalte_2>"
@@ -58,13 +58,13 @@ src_source: "dss_record_source"
 
 ## Die Regeln, die man kennen muss
 
-**Payload = Hashdiff-Spalten.** Die Spalten in `src_payload` müssen exakt denen entsprechen, aus denen im Staging `hd_<entity>` gebildet wird. Weichen sie ab, erkennt der Satellite bei jedem Lauf eine Änderung und schreibt Dauer-Deltas.
+**Payload = Hashdiff-Spalten.** Die Spalten in `src_payload` müssen exakt denen entsprechen, aus denen im Staging `hd_<entity>__<quelle>` gebildet wird. Weichen sie ab, erkennt der Satellite bei jedem Lauf eine Änderung und schreibt Dauer-Deltas.
 
 **`dss_create_datetime` in `src_extra_columns`, nie im Payload.** Im Payload wäre es Teil des Hashdiff — jede Zeile sähe dann bei jedem Lauf wie eine neue Version aus.
 
 **Lineage-Spalten nie in den Payload** (`dss_source_file_name`, `dss_run_id`, `dss_stage_timestamp` …) — aus demselben Grund.
 
-**`alias: "HASHDIFF"`** ist Pflicht, nicht der `hd_*`-Name.
+**`alias: "hashdiff"`** ist Pflicht, nicht der `hd_*`-Name.
 
 **Beide Post-Hooks.** Ohne `update_satellite_current_flag` bleiben `dss_is_current` und `dss_end_date` leer, und die `_current_v`-Views liefern nichts Sinnvolles.
 
@@ -88,7 +88,7 @@ Für abweichende Grain-Anforderungen gibt es eigene Muster, die **nicht** alle `
 |---|---|
 | Jeder Lauf erzeugt neue Versionen | Payload ≠ Hashdiff-Spalten, oder Lineage-/`dss_create_datetime` im Payload |
 | `dss_is_current` überall NULL | `update_satellite_current_flag` fehlt im Post-Hook |
-| Change Detection bricht | `alias: "HASHDIFF"` fehlt |
+| Change Detection bricht | `alias: "hashdiff"` fehlt |
 
 ---
 

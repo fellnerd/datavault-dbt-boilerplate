@@ -1,15 +1,15 @@
 ---
-title: "Multi-Active Satellite: Load Date muss ein BATCH-Wert sein (2026-08-17)"
+title: "Multi-Active Satellite: Load Date muss ein BATCH-Wert sein"
 tags:
   - lessons-learned
 ---
 [Dokumentation](../README.md) › [Lessons Learned](00-lessons-learned.md)
 
-# Multi-Active Satellite: Load Date muss ein BATCH-Wert sein (2026-08-17)
+# Multi-Active Satellite: Load Date muss ein BATCH-Wert sein
 
-**Symptom:** Der i-SE-Lastgang-Satellit — damals `sat_zeitreihe_lastgang_ma__ise`, automate_dv `ma_sat`; heute als Transaction Satellite `sat_lastgang_tl__ise` neu gebaut — verdoppelte sich bei jedem Lauf — 169'248 → 338'496 → … , obwohl die Quelldaten unverändert waren. Hubs, Links und SCD2-Satelliten derselben Domäne blieben stabil.
+**Symptom:** Ein Satellit mit Sensor-Messwerten — zunächst als Multi-Active Satellite `sat_sensor_messung_ma__iot` gebaut (automate_dv `ma_sat`), später als Transaction Satellite `sat_sensor_messung_tl__iot` neu aufgesetzt — verdoppelte sich bei jedem Lauf — 169.248 → 338.496 → … , obwohl die Quelldaten unverändert waren. Hubs, Links und SCD2-Satelliten derselben Domäne blieben stabil.
 
-**Ursache:** In der Staging-View war `dss_load_date` der Export-Zeitstempel der **einzelnen Zeile** (aus dem Quelldateinamen abgeleitet). Da die Werte eines Hash Keys aus mehreren Exportdateien stammen, trug ein und derselbe `hk_zeitreihe` **9 verschiedene Load Dates**.
+**Ursache:** In der Staging-View war `dss_load_date` der Export-Zeitstempel der **einzelnen Zeile** (aus dem Quelldateinamen abgeleitet). Da die Werte eines Hash Keys aus mehreren Exportdateien stammen, trug ein und derselbe `hk_sensor` **9 verschiedene Load Dates**.
 
 `automate_dv.ma_sat` vergleicht beim Inkrementell-Lauf **Mengen** je Hash Key. Dazu bildet es
 
@@ -17,7 +17,7 @@ tags:
 latest_records = alle Sätze mit dem HÖCHSTEN dss_load_date je Hash Key
 ```
 
-Bei zeilenweise unterschiedlichen Load Dates schrumpft diese Vergleichsmenge auf die Sätze der jüngsten Datei (hier 480 statt 4'128). Alle übrigen eingehenden Sätze finden keinen Partner, gelten als neu und werden erneut eingefügt — bei jedem Lauf.
+Bei zeilenweise unterschiedlichen Load Dates schrumpft diese Vergleichsmenge auf die Sätze der jüngsten Datei (hier 480 statt 4.128). Alle übrigen eingehenden Sätze finden keinen Partner, gelten als neu und werden erneut eingefügt — bei jedem Lauf.
 
 **Regel:** In einem Multi-Active Satellite müssen **alle Sätze eines Hash Keys aus einem Ladelauf dasselbe `dss_load_date` tragen.** Das Load Date ist ein Batch-Merkmal, kein Zeilenmerkmal. Bei SCD2-Satelliten (`automate_dv.sat`) fällt das nicht auf — dort wird je Hash Key nur ein Satz verglichen.
 
@@ -40,8 +40,8 @@ FROM <ma_satellit>
 GROUP BY <hash_key> ORDER BY COUNT(DISTINCT dss_load_date) DESC;
 ```
 
-**Nachtrag (gleicher Tag): das eigentliche Problem war die Musterwahl.** Messwerte sind Fakten, keine Zustände — ein MA-Satellit war hier von vornherein falsch. Der Satellit wurde durch einen **append-only Transaction Satellite** ersetzt (`sat_lastgang_tl__ise`, Schlüssel `(hk_zeitreihe, messzeitpunkt)`); der Mengenvergleich entfällt damit komplett, und das zeilenweise Load Date ist wieder zulässig und sogar präziser. Siehe nächsten Abschnitt.
+**Nachtrag: das eigentliche Problem war die Musterwahl.** Messwerte sind Fakten, keine Zustände — ein MA-Satellit war hier von vornherein falsch. Der Satellit wurde durch einen **append-only Transaction Satellite** ersetzt (`sat_sensor_messung_tl__iot`, Schlüssel `(hk_sensor, messzeitpunkt)`); der Mengenvergleich entfällt damit komplett, und das zeilenweise Load Date ist wieder zulässig und sogar präziser. Siehe nächsten Abschnitt.
 
 ---
 
-◀ [Technische Referenz](13-technische-referenz.md) · [Übersicht](00-lessons-learned.md) · [Transaction Satellite für Messdaten: Anti-Join über den Zeitraum begrenzen (2026-08-17)](15-transaction-satellite-fuer-messdaten.md) ▶
+◀ [Technische Referenz](13-technische-referenz.md) · [Übersicht](00-lessons-learned.md) · [Transaction Satellite für Messdaten: Anti-Join über den Zeitraum begrenzen](15-transaction-satellite-fuer-messdaten.md) ▶

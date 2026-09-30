@@ -1,7 +1,7 @@
 /*
  * Cast Binary Override für SQL Server
  * 
- * Überschreibt automate_dv's cast_binary, das standardmässig BINARY(32) produziert.
+ * Überschreibt automate_dv's cast_binary, das standardmäßig BINARY(32) produziert.
  * Wir brauchen CHAR(64) für SHA-256 (hex-encoded), damit die Hash Keys
  * lesbar und mit unseren bestehenden Vault-Tabellen kompatibel sind.
  *
@@ -36,7 +36,7 @@
  * Type String Override für SQL Server
  *
  * automate_dv Default:  VARCHAR  (single-byte, kann Unicode verlieren)
- * Unser Override:       NVARCHAR (Unicode-safe für CH-Daten mit Umlauten)
+ * Unser Override:       NVARCHAR (Unicode-safe für Daten mit Umlauten)
  *
  * Wichtig: HASHBYTES('SHA2_256', NVARCHAR) ≠ HASHBYTES('SHA2_256', VARCHAR)
  * → Full-Refresh erforderlich nach Migration.
