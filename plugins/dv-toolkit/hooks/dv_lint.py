@@ -252,6 +252,18 @@ def lint_mart(path: Path, name: str, text: str) -> list[str]:
                 issues.append(f"Dimension ohne Pflichtspalte <dim>{suffix}")
         if not re.search(r"-1\b", text):
             issues.append("Dimension ohne Unbekannt-Zeile (<dim>_key = -1) fuer fehlende Bezuege" + HINT)
+        # Stern, kein Snowflake: Key einer anderen Dimension desselben Ordners
+        own = name[len("dim_"):]
+        siblings = {p.stem[len("dim_"):] for p in path.parent.glob("dim_*.sql")
+                    if not p.stem.endswith("_v")} - {own}
+        foreign = sorted({k for k in re.findall(r"\bAS\s+(\w+)_key\b", text, re.I)
+                          if k.lower() in siblings})
+        if foreign:
+            issues.append(
+                "Dimension fuehrt Key(s) anderer Dimensionen (" + ", ".join(f"{k}_key" for k in foreign)
+                + ") — Stern, kein Snowflake: Zugehoerigkeit als Attribut (<x>_code/<x>_name), "
+                "den Key in die Fakten"
+            )
     if "tags=" not in text.replace(" ", ""):
         issues.append("config() ohne tags=['dimension'] bzw. tags=['fact']" + HINT)
     if re.search(r"\{\{\s*ref\(\s*['\"](stg_|ext_)", text):

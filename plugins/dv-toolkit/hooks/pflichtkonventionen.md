@@ -27,6 +27,8 @@ Mart:
 - `dim_<name>` / `fakt_<name>` als Tabelle + publizierte View `dim_<name>_v` / `fakt_<name>_v`
 - `<dim>_key` BIGINT via `{{ surrogate_key(...) }}` (nie hk_*), Unbekannt-Zeile `<dim>_key = -1`
 - Dimension: `<dim>_id`, `<dim>_code`, `<dim>_name` mit ISNULL-Fallbacks bis 'UNKNOWN'
+- Stern, kein Snowflake: keine Keys zwischen Dimensionen — Zugehörigkeit als Attribut in der
+  Dimension (`sorte_code`/`sorte_name`), der `<dim>_key` gehört in die Fakten
 - Fakt: gleicher `surrogate_key()`-Ausdruck wie die Dimension, `datum_key` JJJJMMTT gegen `dim_date`
 - `dss_load_date`, `dss_record_source` durchreichen; `tags=['dimension']` / `['fact']`
 

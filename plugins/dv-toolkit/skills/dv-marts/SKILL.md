@@ -18,6 +18,19 @@ Marts sind die BI-Schicht über dem Raw Vault: Kimball-Star-Schema. Der Vault bl
 
 Naming: Fakten heißen **`fakt_`** (nicht `fact_`). Triviale Dimensionen ohne nennenswerte Joins dürfen direkt als `_v`-View gebaut werden.
 
+## Stern, kein Snowflake: keine Keys zwischen Dimensionen
+
+Dimensionen hängen **nur an Fakten**. Eine Dimension führt ausschließlich ihren eigenen `<dim>_key` — nie den Key einer anderen Dimension (`dim_rezept.sorte_key`, `dim_baustelle.kunde_key` o. ä.).
+
+| Fachliche Beziehung | So modellieren | Nicht so |
+|---|---|---|
+| Merkmal eines Vorgangs (Charge gehört zu Sorte, Lieferung zu Werk) | `<dim>_key` **im Fakt** — aus dem Vault abgeleitet, auch wenn er über eine andere Entität läuft (Charge → Rezept → Sorte) | Key in der Dimension, Fakt erreicht die Sorte nur über `dim_rezept` |
+| Hierarchie/Zugehörigkeit zur Anzeige (Rezept gehört zu Sorte, Anlage zu Firma) | **denormalisierte Attribute** in der Dimension: `sorte_code`, `sorte_name`, `firma_name` | `sorte_key` in `dim_rezept` |
+
+Warum: Ketten Fakt → Dimension → Dimension erzeugen in Power BI mehrdeutige Filterpfade und in Qlik synthetische Schlüssel bzw. Loops — spätestens, wenn derselbe Key (z. B. Werk) zusätzlich direkt im Fakt steht. Fakten wachsen dafür additiv um weitere Keys; der Grain bleibt gleich.
+
+Auch Vorgaben aus Bus-Matrizen oder Fach-ER-Diagrammen („Sorte 1:n Rezept“) werden so umgesetzt: die fachliche Kante wird zum Attribut in der Dimension plus Key in den Fakten.
+
 ## Surrogate Keys
 
 ```sql
@@ -106,7 +119,7 @@ Fakten joinen über Links: der Link liefert die FK-Hash-Keys, die Hubs liefern d
 
 ## Checkliste vor Fertigmeldung
 
-1. Jede Dimension: `<dim>_key` (BIGINT, `surrogate_key`), `_id`, `_code`, `_name`, `dss_load_date`, `dss_record_source`, Unbekannt-Zeile `-1`?
+1. Jede Dimension: `<dim>_key` (BIGINT, `surrogate_key`), `_id`, `_code`, `_name`, `dss_load_date`, `dss_record_source`, Unbekannt-Zeile `-1` — und **kein Key einer anderen Dimension** (Stern, kein Snowflake)?
 2. Fakt: Keys mit identischem Ausdruck wie die Dimension, `datum_key`, Grain im Header, keine verlorenen Zeilen (COUNT Fakt vs. Quell-Link)?
 3. Je Tabelle eine publizierte `_v`-View; Naming `dim_`/`fakt_`; Tags gesetzt?
 4. Schema-YAML mit Tests: `<dim>_key` `unique` + `not_null`, FK-Keys `not_null` (+ `relationships` auf die Dimension)
