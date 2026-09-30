@@ -9,7 +9,7 @@
 targetScope = 'resourceGroup'
 
 // ---- General ----
-param location string = 'switzerlandnorth'
+param location string = 'westeurope'
 param sqlServerName string
 
 // ---- AAD Admin (group-based) ----

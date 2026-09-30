@@ -101,7 +101,7 @@ include_infra:
 infra_location:
   type: str
   help: "Default Azure region for infra deployment (used as a workflow input default, overridable per-run)"
-  default: "switzerlandnorth"
+  default: "westeurope"
   when: "{{ include_infra }}"
 
 infra_sql_server_name:
