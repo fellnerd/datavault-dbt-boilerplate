@@ -47,8 +47,8 @@ Bei großen Datenmengen/häufigen Runs die External Table in eine **Persistent S
 
 Pflicht in beiden Patterns:
 
-- Metadaten: `dss_record_source`, `dss_load_date` (`COALESCE(TRY_CAST(… AS DATETIME2), GETDATE())`), `dss_create_datetime` (`GETDATE()`) — Letzteres brauchen Hubs und Satellites in `src_extra_columns`
-- `dss_business_key` für die **Haupt-Entität** des Stagings: `CONCAT_WS('||', 'default', 'default', ISNULL(LTRIM(RTRIM(CAST(<BK> AS NVARCHAR(MAX)))), '-1') …)` — dieselben BK-Spalten in derselben Reihenfolge wie in `hashed_columns`; Segment 1 = Mandant, Segment 2 = Collision-Code (bei quellübergreifenden Hubs mit Kollisionsgefahr das Quellsystem)
+- Metadaten: `dss_record_source`, `dss_load_date` (`COALESCE(TRY_CAST(… AS DATETIME2), GETDATE())`), `dss_create_datetime` (`CAST(GETDATE() AS DATETIME2)`) — Letzteres brauchen Hubs und Satellites in `src_extra_columns`
+- `dss_business_key` für die **Haupt-Entität** des Stagings: `CONCAT_WS('||', 'default', 'default', ISNULL(LTRIM(RTRIM(CAST(<BK> AS NVARCHAR(MAX)))), '-1') …)` — dieselben BK-Spalten in derselben Reihenfolge wie in `hashed_columns`; Segment 1 = Mandant, Segment 2 = Collision-Code (bei quellübergreifenden Hubs mit Kollisionsgefahr das Quellsystem — ist es Teil des Hash-Keys, steht es nur in Segment 2). `derived_columns` können einander nicht referenzieren: einen abgeleiteten BK-Ausdruck in `dss_business_key` wiederholen und beide gemeinsam pflegen
 - **FK-Staging-View** `<staging>__<entity>` für jeden weiteren Hub, den dieses Staging über einen Fremdschlüssel speist — bildet `dss_business_key` für *dessen* Entität (Vorlage: `dv-patterns` → `references/templates.md`, Abschnitt Hub). Nie eine zweite Spalte `dss_business_key_<x>` im Haupt-Staging
 - Hash Keys `hk_*` für jedes Zielobjekt (Hub, Link — Link-Hash enthält alle beteiligten BKs, bei DC-Pattern auch die DCKs)
 - Hash Diffs `hd_*` je Satellite: exakt die Payload-Spalten, nicht mehr, nicht weniger; bei Splits mehrere `hd_*`

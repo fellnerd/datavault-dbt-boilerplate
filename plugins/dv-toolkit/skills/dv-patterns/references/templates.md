@@ -121,7 +121,6 @@ src_hashdiff:
 src_payload:
   - SPALTE_1
   - SPALTE_2
-src_eff: "dss_start_date"
 src_extra_columns:
   - "dss_create_datetime"
 src_ldts: "dss_load_date"
@@ -133,7 +132,6 @@ src_source: "dss_record_source"
 {{ automate_dv.sat(src_pk=metadata_dict["src_pk"],
                    src_hashdiff=metadata_dict["src_hashdiff"],
                    src_payload=metadata_dict["src_payload"],
-                   src_eff=metadata_dict["src_eff"],
                    src_extra_columns=metadata_dict["src_extra_columns"],
                    src_ldts=metadata_dict["src_ldts"],
                    src_source=metadata_dict["src_source"],
@@ -149,7 +147,11 @@ Wie Satellite, zusätzlich Child Dependent Key und `_ma`-Naming (`sat_<entity>_m
 ```yaml
 src_cdk:
   - "<unterscheidende_spalte>"
+src_extra_columns:          # empfohlen, wie bei jedem Satellite
+  - "dss_create_datetime"
 ```
+
+Post-Hooks wie beim Standard-Satellite (`create_hash_index` + `update_satellite_current_flag`). `dss_create_datetime` ist im Standard- und Dependent-Child-Satellite Pflicht, im MA-, Effectivity- und Transaction-Satellite empfohlen.
 
 ## Link
 

@@ -25,6 +25,7 @@ WITH source_data AS (
         hk_<related_hub>,
         hk_link_<entity1>_<entity2>,
         dss_load_date AS dss_start_date,
+        dss_create_datetime,              -- empfohlen, wie in jedem Satellite
         dss_record_source
     FROM {{ ref('<concept>_<source>') }}
 ),

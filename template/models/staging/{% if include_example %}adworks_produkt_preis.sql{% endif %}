@@ -55,7 +55,7 @@ staged AS (
         -- ===========================================
         -- METADATA
         -- ===========================================
-        GETDATE() AS dss_create_datetime,
+        CAST(GETDATE() AS DATETIME2) AS dss_create_datetime,
         COALESCE(dss_record_source, 'adworks') AS dss_record_source,
         COALESCE(TRY_CAST(dss_load_date AS DATETIME2), GETDATE()) AS dss_load_date,
         dss_run_id

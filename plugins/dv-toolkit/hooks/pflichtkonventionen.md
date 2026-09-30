@@ -9,9 +9,10 @@ Staging → `dv-staging` / staging-engineer · Raw Vault → `dv-patterns` / vau
 Mart → `dv-marts` / mart-architect · Doku → `dv-docs` · Diagramme → `dv-design-sync`.
 
 Staging (automate_dv.stage):
-- derived_columns: `dss_record_source`, `dss_load_date`, `dss_create_datetime`, `dss_business_key`
+- derived_columns: `dss_record_source`, `dss_load_date`, `dss_create_datetime` (`CAST(GETDATE() AS DATETIME2)`), `dss_business_key`
   = `CONCAT_WS('||','default','default', ISNULL(LTRIM(RTRIM(CAST(<bk> AS NVARCHAR(MAX)))),'-1') …)`
-  (Segment 1 Mandant, Segment 2 Collision-Code; BK-Spalten wie in hashed_columns, gleiche Reihenfolge)
+  (Segment 1 Mandant, Segment 2 Collision-Code — projektabhängig, z. B. Quelle; BK-Spalten wie in
+  hashed_columns, gleiche Reihenfolge; derived_columns referenzieren einander nicht → Ausdruck wiederholen)
 - FK-Hub (Fremdschlüssel eines Stagings) → eigene FK-Staging-View `<staging>__<entity>`
 
 Raw Vault:

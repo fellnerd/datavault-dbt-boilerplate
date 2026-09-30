@@ -28,7 +28,7 @@ source_model:
 derived_columns:
   dss_record_source: "!jira"
   dss_load_date: "COALESCE(TRY_CAST(dss_load_date AS DATETIME2), GETDATE())"
-  dss_create_datetime: "GETDATE()"
+  dss_create_datetime: "CAST(GETDATE() AS DATETIME2)"
   dss_business_key: "CONCAT_WS('||', 'default', 'default', ISNULL(LTRIM(RTRIM(CAST(order_id AS NVARCHAR(MAX)))), '-1'))"
 
 hashed_columns:

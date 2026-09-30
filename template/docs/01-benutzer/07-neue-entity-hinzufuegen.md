@@ -47,7 +47,7 @@ source_model:
 derived_columns:
   dss_record_source: "!crm"
   dss_load_date: "GETDATE()"
-  dss_create_datetime: "GETDATE()"
+  dss_create_datetime: "CAST(GETDATE() AS DATETIME2)"
   dss_business_key: "CONCAT_WS('||', 'default', 'default', ISNULL(LTRIM(RTRIM(CAST(AUFTRAGNR AS NVARCHAR(MAX)))), '-1'))"
 hashed_columns:
   hk_auftrag: "AUFTRAGNR"

@@ -22,6 +22,8 @@ Alle fachlich oder technisch relevanten Änderungen an Modellen, Macros, Pipelin
 
 | Datum | Version | Bereich | Änderung | Ticket/Commit |
 |-------|---------|---------|----------|---------------|
+| 2026-09-30 | v1.4.1 | doku | Konventionen präzisiert: `dss_create_datetime` Pflicht im Standard- und DC-Satellite, empfohlen in MA/Eff/TL (Vorlagen ergänzt, MA-Vorlage mit Post-Hooks und `__<quelle>`-Naming); `dss_create_datetime` als `CAST(GETDATE() AS DATETIME2)`; Segment 2 von `dss_business_key` projektabhängig (Collision-Code, z. B. Quelle) inkl. Ausnahme zur Reihenfolge-Regel; Hinweis, dass `derived_columns` einander nicht referenzieren können | |
+| 2026-09-30 | v1.4.0 | pipeline | Plugin `dv-toolkit` 1.8.0: Pflichtkonventionen + Konventions-Audit beim Sitzungsstart, Lint für Staging/Raw Vault/Mart, plattformfester Hook-Start (`pyrun.sh`), Skills/Agents nach „Konvention vor Bestand“ | |
 | 2026-09-30 | | raw-vault | BREAKING: Beispiel-Satellites nach Konvention `sat_<entity>__<quelle>` umbenannt (`sat_kunde` → `sat_kunde__adworks` usw.), Hash-Diff-Spalten im Staging auf `hd_<entity>__adworks`; bestehende Beispiel-Tabellen unter altem Namen bleiben liegen und können gelöscht werden | |
 | 2026-09-30 | | doku | Beispiele vereinheitlicht und neutralisiert (Vertrieb/CRM: `hub_kunde`, `hub_bestellung`, `hub_vertrag`; Sensordaten: `hub_sensor`, `sat_sensor_messung_tl__iot`), Hashdiff-Alias einheitlich `hashdiff` | |
 | 2026-09-27 | | doku | Dokumentation neu gegliedert: Inhaltsverzeichnisse `00-*.md`, Base je Handbuch, Kapitel Namenskonventionen, `04-objekte-anlegen/` (Staging, Raw Vault, Business Vault, Mart), Transaction Link, SCD1/SCD2, Deployment Workflow, zentraler Changelog, `04-mandant-architektur/` | |

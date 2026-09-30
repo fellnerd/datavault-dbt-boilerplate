@@ -118,7 +118,7 @@ ISNULL(LTRIM(RTRIM(CAST(<spalte> AS NVARCHAR(MAX)))), '-1')
 | Segment | Inhalt |
 |---|---|
 | 1 | `'default'` — reserviert für den Mandanten |
-| 2 | `'default'` — reserviert für einen Collision-Code (Quellsystem-Kontext) |
+| 2 | Collision-Code (Quellsystem-Kontext) — `'default'`, solange keine Kollisionen möglich sind; sonst die Projektkonvention, z. B. das Quellsystem |
 | 3 … n | die Business-Key-Spalten |
 
 Beispiele: `default||default||4711` (ein Schlüssel), `default||default||4711||1||2||99` (zusammengesetzter Schlüssel).
@@ -134,9 +134,13 @@ hashed_columns:
   hk_kreditorenbeleg: "BELNR"
 ```
 
-`dss_business_key` ist die **lesbare Form** des Schlüssels — für Prüfungen und Fehlersuche. Die beiden `'default'`-Segmente fließen nicht in den Hash ein.
+`dss_business_key` ist die **lesbare Form** des Schlüssels — für Prüfungen und Fehlersuche. Segment 1 und 2 fließen nicht in den Hash ein.
 
 > Die Business-Key-Spalten in `dss_business_key` und in `hashed_columns` müssen dieselben sein, in derselben Reihenfolge. Sonst beschreibt die Klartext-Spalte einen anderen Schlüssel als der Hash.
+>
+> **Ausnahme Collision-Code:** Ist der Collision-Code selbst Teil des Hash-Keys — etwa bei quellübergreifenden Hubs mit abstrahiertem Schlüssel `hk = HASH(<x>_bk, quelle)` —, steht er in Segment 2 und nicht noch einmal am Ende: `default||<quelle>||<x>_bk`. Die Regel gilt dann für die übrigen Spalten. Das Muster je Projekt einmal festlegen und in der Projekt-`CLAUDE.md` dokumentieren.
+
+> **`derived_columns` können sich nicht gegenseitig referenzieren** — `automate_dv.stage()` berechnet sie alle aus den Quellspalten. Wird ein Business Key erst abgeleitet (z. B. `<x>_bk: "CONCAT_WS('||', a, b)"`), steht derselbe Ausdruck in `dss_business_key` noch einmal statt `<x>_bk`. Beide Stellen gemeinsam ändern (Kommentar setzen), sonst driften Hash und Klartext auseinander. Konstanten (z. B. das Quellsystem) als Literal einsetzen.
 
 #### Primär-Hub vs. FK-Hub
 

@@ -54,7 +54,7 @@ Der `__source`-Suffix gilt **nur für Satellites** — jede Quelle bekommt ihren
 | `dss_load_date` | DATETIME2(6) | Ladezeitpunkt — jedes Objekt |
 | `dss_record_source` | VARCHAR(50) | Quellsystem-Kennung — jedes Objekt |
 | `dss_business_key` | NVARCHAR | **Jeder Hub**, genau eine Spalte ohne Suffix: `CONCAT_WS('\|\|', 'default', 'default', ISNULL(LTRIM(RTRIM(CAST(<bk> AS NVARCHAR(MAX)))), '-1') …)` — Segment 1 Mandant, Segment 2 Collision-Code, danach die BK-Spalten wie in `hashed_columns` |
-| `dss_create_datetime` | DATETIME2 | **Jeder Hub und jeder Standard-/DC-Satellite** (MA/Eff/TL empfohlen) — über `src_extra_columns`, nie im Payload |
+| `dss_create_datetime` | DATETIME2 | **Jeder Hub und jeder Standard-/DC-Satellite** (MA/Eff/TL empfohlen) — über `src_extra_columns`, nie im Payload; im Staging `CAST(GETDATE() AS DATETIME2)` |
 | `dss_start_date` / `dss_end_date` / `dss_is_current` | — | Satellite-Historisierung (end_date NULL = aktuell) |
 
 Beide Zusatzspalten entstehen als `derived_columns` im Staging (Skill `dv-staging`). Speist ein Staging einen **FK-Hub** (Fremdschlüssel, z. B. Bestellungs-Staging → `hub_kunde`), liest dieser aus einer eigenen FK-Staging-View `<staging>__<entity>` — Details: [references/templates.md](references/templates.md), Abschnitt Hub.

@@ -28,7 +28,7 @@ source_model:
 derived_columns:
   dss_record_source: "!<mandant>_<quelle>"   # "!" = Konstante
   dss_load_date: "COALESCE(TRY_CAST(dss_load_date AS DATETIME2), GETDATE())"
-  dss_create_datetime: "GETDATE()"
+  dss_create_datetime: "CAST(GETDATE() AS DATETIME2)"
   dss_business_key: "CONCAT_WS('||', 'default', 'default', ISNULL(LTRIM(RTRIM(CAST(<BK> AS NVARCHAR(MAX)))), '-1'))"
   _escape:                                   # reservierte Wörter / Sonderzeichen
     source_column: ["TYPE", "timestamp_landing-zone"]
@@ -52,6 +52,8 @@ hashed_columns:
                      derived_columns=metadata_dict['derived_columns'],
                      hashed_columns=metadata_dict['hashed_columns']) }}
 ```
+
+> **`derived_columns` können sich nicht gegenseitig referenzieren** — `automate_dv.stage()` berechnet sie alle aus den Quellspalten. Wird ein Business Key erst abgeleitet (z. B. `<x>_bk: "CONCAT_WS('||', a, b)"`), steht derselbe Ausdruck in `dss_business_key` noch einmal statt `<x>_bk`. Beide Stellen gemeinsam ändern (Kommentar setzen), sonst driften Hash und Klartext auseinander. Konstanten (z. B. das Quellsystem) als Literal einsetzen.
 
 ## Was die Konfiguration bewirkt
 

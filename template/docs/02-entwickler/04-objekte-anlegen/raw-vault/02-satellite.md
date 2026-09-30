@@ -74,7 +74,7 @@ Zu jedem Satellite gehört eine View mit nur der aktuellen Version je Schlüssel
 
 ## Sondertypen
 
-Für abweichende Grain-Anforderungen gibt es eigene Muster, die **nicht** alle `dss_create_datetime` führen:
+Für abweichende Grain-Anforderungen gibt es eigene Muster. `dss_create_datetime` gilt dort genauso: **Pflicht im Dependent-Child-Satellite**, **empfohlen** (und in den Vorlagen enthalten) im Multi-Active-, Effectivity- und Transaction-Satellite — immer über `src_extra_columns` bzw. als eigene Spalte, nie im Hashdiff:
 
 | Typ | Wann | Anleitung |
 |---|---|---|

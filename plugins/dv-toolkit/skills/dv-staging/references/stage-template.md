@@ -25,7 +25,7 @@ derived_columns:
   # Pflicht-Metadaten
   dss_record_source: "!<quellsystem>"          # '!' = Literal-String
   dss_load_date: "COALESCE(TRY_CAST(dss_load_date AS DATETIME2), GETDATE())"
-  dss_create_datetime: "GETDATE()"
+  dss_create_datetime: "CAST(GETDATE() AS DATETIME2)"
 
   # BK-Normalisierung für Cross-Source-Kompatibilität:
   # HASH("44402") muss quellenübergreifend gleich sein — Typ vereinheitlichen!
@@ -37,6 +37,11 @@ derived_columns:
   # Mehrere BK-Spalten: je eine ISNULL(LTRIM(RTRIM(CAST(…))), '-1') mehr.
   # Dieselben BK-Spalten in derselben Reihenfolge wie in hashed_columns!
   dss_business_key: "CONCAT_WS('||', 'default', 'default', ISNULL(LTRIM(RTRIM(CAST(<BK> AS NVARCHAR(MAX)))), '-1'))"
+
+  # ACHTUNG: derived_columns koennen einander nicht referenzieren. Ist der BK selbst
+  # abgeleitet (<x>_bk: "CONCAT_WS(...)"), denselben Ausdruck hier wiederholen und beide
+  # Stellen gemeinsam pflegen. Segment 2 (Collision-Code) ist projektabhaengig, z. B.
+  # das Quellsystem bei quelluebergreifenden Hubs mit hk = HASH(<x>_bk, quelle).
 
   # FK-Hubs, die aus DIESEM Staging geladen werden (Fremdschluessel-Spalten): KEINE
   # zweite Business-Key-Spalte hier. Jeder Hub hat genau eine Spalte dss_business_key

@@ -29,17 +29,17 @@ source_model:
 derived_columns:
   dss_record_source: "!jira"
   dss_load_date: "COALESCE(TRY_CAST(dss_load_date AS DATETIME2), GETDATE())"
-  dss_create_datetime: "GETDATE()"
+  dss_create_datetime: "CAST(GETDATE() AS DATETIME2)"
   dss_business_key: "CONCAT_WS('||', 'default', 'default', ISNULL(LTRIM(RTRIM(CAST(employee_id AS NVARCHAR(MAX)))), '-1'))"
 
 hashed_columns:
   hk_employee: "employee_id"
-  hd_employee:
+  hd_employee__jira:
     is_hashdiff: true
     columns:
       - "is_primary"
       - "phone_number"
-  hd_employee_ma:
+  hd_employee_phone_ma__jira:
     is_hashdiff: true
     columns:
       - "is_primary"
@@ -58,10 +58,14 @@ hashed_columns:
 #### MA Satellite Model
 
 ```sql
--- sat_employee_ma.sql
+-- sat_employee_phone_ma__jira.sql
 {{ config(
     materialized='incremental',
-    as_columnstore=false
+    as_columnstore=false,
+    post_hook=[
+        "{{ create_hash_index('hk_employee') }}",
+        "{{ update_satellite_current_flag(this, 'hk_employee') }}"
+    ]
 ) }}
 
 {%- set yaml_metadata -%}
@@ -70,12 +74,14 @@ src_pk: "hk_employee"
 src_cdk:
     - "phone_type"
 src_hashdiff: 
-  source_column: "hd_employee_ma"
+  source_column: "hd_employee_phone_ma__jira"
   alias: "hashdiff"
 src_payload:
     - "phone_number"
     - "is_primary"
 src_eff: "dss_load_date"
+src_extra_columns:
+    - "dss_create_datetime"
 src_ldts: "dss_load_date"
 src_source: "dss_record_source"
 {%- endset -%}
@@ -88,6 +94,7 @@ src_source: "dss_record_source"
     src_hashdiff=metadata_dict["src_hashdiff"],
     src_payload=metadata_dict["src_payload"],
     src_eff=metadata_dict["src_eff"],
+    src_extra_columns=metadata_dict["src_extra_columns"],
     src_ldts=metadata_dict["src_ldts"],
     src_source=metadata_dict["src_source"],
     source_model=metadata_dict["source_model"]
