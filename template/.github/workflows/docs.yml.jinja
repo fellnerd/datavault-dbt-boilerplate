@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install dbt-sqlserver
+          pip install -r requirements.txt
 
       # Azure login is only needed if your target server requires it
       # (e.g. Azure CLI authentication against Azure SQL). Remove this step

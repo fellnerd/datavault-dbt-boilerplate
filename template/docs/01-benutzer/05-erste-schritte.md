@@ -33,7 +33,7 @@ source .venv/bin/activate            # Windows: .venv\Scripts\activate
 
 # dbt und SQL-Server-Adapter
 python -m pip install --upgrade pip
-pip install "dbt-core~=1.11" "dbt-sqlserver~=1.9"
+pip install -r requirements.txt          # gepinnte Versionen (dbt-core, dbt-sqlserver, pyodbc)
 
 # dbt-Pakete aus packages.yml installieren (nach dbt_packages/)
 dbt deps
