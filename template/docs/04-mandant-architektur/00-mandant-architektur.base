@@ -20,7 +20,66 @@ properties:
     displayName: "Verlinkt von"
   formula.verweist_auf:
     displayName: "Verweist auf"
+  note.konzept:
+    displayName: "Konzept"
+  note.schicht:
+    displayName: "Schicht"
+  note.schema:
+    displayName: "Schema"
+  note.quellsysteme:
+    displayName: "Quellsysteme"
+  note.dokumentation:
+    displayName: "Doku"
+  note.art:
+    displayName: "Art"
+  note.grain:
+    displayName: "Grain"
+  note.materialisierung:
+    displayName: "Materialisierung"
+  note.quellen:
+    displayName: "liest aus"
+  note.zeilen:
+    displayName: "Zeilen"
+  note.stand:
+    displayName: "Stand"
 views:
+  - type: "table"
+    name: "Konzepte"
+    filters:
+      and:
+        - "file.hasProperty(\"konzept\")"
+    groupBy:
+      property: "note.schicht"
+      direction: "ASC"
+    order:
+      - "file.name"
+      - "note.title"
+      - "note.schema"
+      - "note.quellsysteme"
+      - "note.dokumentation"
+      - "note.stand"
+    sort:
+      - property: "note.konzept"
+        direction: "ASC"
+  - type: "table"
+    name: "Mart-Objekte"
+    filters:
+      and:
+        - "file.hasTag(\"typ/objekt\")"
+    groupBy:
+      property: "note.schema"
+      direction: "ASC"
+    order:
+      - "file.name"
+      - "note.art"
+      - "note.grain"
+      - "note.materialisierung"
+      - "note.quellen"
+      - "note.zeilen"
+      - "note.stand"
+    sort:
+      - property: "file.name"
+        direction: "ASC"
   - type: "table"
     name: "Kapitel"
     order:
@@ -113,7 +172,7 @@ views:
     name: "Quellsysteme"
     filters:
       and:
-        - "file.inFolder(\"04-mandant-architektur/quellsysteme\")"
+        - "file.hasTag(\"architektur/quellsysteme\")"
     order:
       - "file.name"
       - "note.title"

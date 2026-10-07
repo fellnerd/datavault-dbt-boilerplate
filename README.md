@@ -103,7 +103,7 @@ two plugins:
 
 - [`dv-toolkit`](plugins/dv-toolkit/) — generic dbt / Data Vault 2.1 skills
   (`dv-patterns`, `dv-staging`, `dv-marts`, `dv-design-sync`, `dv-er-diagram`,
-  `dv-performance`, `dv-security`, `dv-docs`), five specialized agents (vault-architect, staging-engineer,
+  `dv-performance`, `dv-security`, `dv-docs`, `dv-concept-docs`), five specialized agents (vault-architect, staging-engineer,
   mart-architect, db-monitor, performance-optimizer) that also maintain the Obsidian docs vault and
   `docs/changelog.md`, and two hooks:
   - **SessionStart** (dbt + automate_dv projects only): loads the mandatory conventions

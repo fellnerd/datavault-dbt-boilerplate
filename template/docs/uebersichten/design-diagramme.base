@@ -4,7 +4,7 @@ filters:
         - file.inFolder("04-mandant-architektur/raw-vault")
         - file.inFolder("04-mandant-architektur/information-mart")
     - or:
-        - file.ext == "md"
+        - file.hasTag("typ/er-diagramm")
         - file.ext == "canvas"
     - '!file.name.startsWith("00-")'
 formulas:

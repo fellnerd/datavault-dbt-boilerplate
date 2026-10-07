@@ -73,6 +73,7 @@ Existing models are a template **only if they comply**. Non-compliant existing m
 - Obsidian-Vault: `docs/` (Start `docs/README.md`), Struktur und Regeln: Skill `dv-docs` (Plugin `dv-toolkit`)
 - Bei jeder Änderung an models/, macros/, seeds/, security/ oder der Pipeline: Zeile in `docs/changelog.md` (neueste oben)
 - Projektspezifisches nur in `docs/04-mandant-architektur/`; Handbücher 01–03 bleiben mandantenneutral
+- Konzeptdoku je Information Mart und Raw Vault (`04-…/information-mart/mart_<konzept>/`, `04-…/raw-vault/mart_<konzept>/`, Objektseiten unter `objekte/`): Skill `dv-concept-docs`, Prüfung mit dessen `scripts/check_concept_docs.py docs`
 - Design first (`design/`, Skill `dv-design-sync`), Diagramme per `python3 scripts/sync_design_to_vault.py` in den Vault spiegeln
 
 ## Infrastructure

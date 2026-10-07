@@ -8,7 +8,7 @@
     {
       "name": "dv-toolkit",
       "source": "./plugins/dv-toolkit",
-      "description": "dbt + Data Vault 2.1 Entwicklung: Pattern-Bibliothek, Staging- und Mart-Skills, Architektur-Agents, Doku-Pflege im Obsidian-Vault (Skill dv-docs, Changelog), Pflichtkonventionen + Audit beim Sitzungsstart, deterministischer Lint-Hook für Staging, Raw Vault und Mart (automate_dv auf SQL Server/Azure SQL)"
+      "description": "dbt + Data Vault 2.1 Entwicklung: Pattern-Bibliothek, Staging- und Mart-Skills, Architektur-Agents, Doku-Pflege im Obsidian-Vault (Skills dv-docs und dv-concept-docs, Changelog), Pflichtkonventionen + Audit beim Sitzungsstart, deterministischer Lint-Hook für Staging, Raw Vault und Mart (automate_dv auf SQL Server/Azure SQL)"
     },
     {
       "name": "masterdata-api",

@@ -8,7 +8,9 @@ Frontmatter, Breadcrumb, Quellverweis und Inhalt:
   - Quelle .md  → Inhalt übernommen (eigene H1 entfällt), relative Links auf den Vault-Ort umgerechnet
 
 Zielstruktur im Vault (einheitlich): 04-<mandant>-architektur/raw-vault/, business-vault/,
-information-mart/ — je mit Index 00-<ordner>.md.
+information-mart/ — je mit Index 00-<ordner>.md. Darunter ein Ordner je Konzept (mart_<konzept>/) mit
+Index 00-mart-<konzept>.md. Gruppen dürfen verschachtelt sein: Jede Gruppe, deren Pfad zum Ziel passt,
+erscheint im Breadcrumb (von aussen nach innen); der Tag kommt von der innersten Gruppe mit Tag.
 
 Konfiguration: design/vault-sync.json im Repo-Root, z. B.
 {
@@ -16,7 +18,8 @@ Konfiguration: design/vault-sync.json im Repo-Root, z. B.
   "breadcrumb": [["Dokumentation", "README.md"], ["Architektur & Projekt", "04-<mandant>-architektur/00-<mandant>-architektur.md"]],
   "tags": ["typ/er-diagramm"],
   "groups": {
-    "04-<mandant>-architektur/raw-vault": {"title": "Raw Vault", "tag": "architektur/raw-vault", "index": "00-raw-vault.md"}
+    "04-<mandant>-architektur/raw-vault": {"title": "Raw Vault", "tag": "architektur/raw-vault", "index": "00-raw-vault.md"},
+    "04-<mandant>-architektur/raw-vault/mart_<concept>": {"title": "<Concept>", "index": "00-mart-<concept>.md"}
   },
   "diagrams": [
     {"source": "design/raw-vault/<concept>/er-diagram.mmd",
@@ -42,12 +45,15 @@ def rel(target_dir, path):
 def render(cfg, d):
     vault = cfg["vault"]
     tdir = posixpath.dirname(d["target"])
-    group = next((g for g in sorted(cfg.get("groups", {}), key=len, reverse=True) if d["target"].startswith(g + "/")), None)
-    ginfo = cfg.get("groups", {}).get(group, {})
+    groups = cfg.get("groups", {})
+    # alle passenden Gruppen von aussen nach innen, z. B. raw-vault/ und raw-vault/mart_telecom/
+    matched = sorted((g for g in groups if d["target"].startswith(g + "/")), key=len)
     crumbs = [f"[{t}]({rel(tdir, p)})" for t, p in cfg.get("breadcrumb", [])]
-    if group:
-        crumbs.append(f"[{ginfo.get('title', group)}]({rel(tdir, group + '/' + ginfo.get('index', 'README.md'))})")
-    tags = ([ginfo["tag"]] if ginfo.get("tag") else []) + cfg.get("tags", [])
+    for g in matched:
+        gi = groups[g]
+        crumbs.append(f"[{gi.get('title', g)}]({rel(tdir, g + '/' + gi.get('index', 'README.md'))})")
+    tag = next((groups[g]["tag"] for g in reversed(matched) if groups[g].get("tag")), None)
+    tags = ([tag] if tag else []) + cfg.get("tags", [])
     src_rel = posixpath.relpath(d["source"], posixpath.join(vault, tdir)).replace(" ", "%20")
     body = open(d["source"], encoding="utf-8").read().rstrip("\n")
     out = ["---", "title: " + json.dumps(d["title"], ensure_ascii=False), "tags:"] + [f"  - {t}" for t in tags] + ["---", MARK.format(src=d["source"]), " › ".join(crumbs), "",

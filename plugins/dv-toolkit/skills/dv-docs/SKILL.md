@@ -25,8 +25,11 @@ Prüfabfragen statt Prosa. Keine Dopplungen: auf das maßgebliche Kapitel verlin
 │       ├── business-vault/      Current View, PIT (Bridges, Soft Rules)
 │       └── mart/                Dimensionale Modellierung (SCD1/2), persistierte Marts, Security
 ├── 03-system/                   allgemein/ (Übersicht … CI/CD, Macros), security/
-├── 04-<mandant>-architektur/    PROJEKTSPEZIFISCH: projektdokumentation/, quellsysteme/,
-│                                raw-vault/, business-vault/, information-mart/, meetings/, assets/
+├── 04-<mandant>-architektur/    PROJEKTSPEZIFISCH (Konzeptseiten: Skill dv-concept-docs)
+│   ├── information-mart/mart_<konzept>/   00-mart-<konzept>.md + objekte/<objekt>.md + er-mart-*.md
+│   ├── raw-vault/mart_<konzept>/          00-mart-<konzept>.md, 0N-beladung-<quelle>.md, betrieb,
+│   │                                      entscheidungen-und-befunde, offene-punkte, er-*.md
+│   ├── business-vault/, projektdokumentation/, meetings/, assets/
 ├── lessons-learned/             Entscheidungen, Fallstricke mit Messwerten
 ├── schulung/                    Handouts, Praxis-Durchstich, Use Cases
 ├── uebersichten/                Bases über den ganzen Vault
@@ -41,8 +44,10 @@ konkrete Datenmodell gehören nach `04-<mandant>-architektur/`.
 
 | Inhalt | Ablage |
 |--------|--------|
-| Neue Quelle angebunden | `04-…/quellsysteme/<quelle>.md` (Herkunft, Tabellen, Business Keys, Besonderheiten) + Diagramm in `design/` → Sync nach `04-…/raw-vault/` |
-| Neues Vault-/Mart-Objekt | Diagramm in `design/` (Skill `dv-design-sync`); nur bei neuem **Muster** ein Kapitel in `02-entwickler/04-objekte-anlegen/` |
+| Neue Quelle angebunden | `04-…/raw-vault/mart_<konzept>/0N-beladung-<quelle>.md` (Lieferung, Felder, Staging, Hash Keys) + Diagramm in `design/` → Sync; Skill `dv-concept-docs` |
+| Neues Mart-Objekt | Objektseite `04-…/information-mart/mart_<konzept>/objekte/<objekt>.md` + Zeile in der Konzeptübersicht (Skill `dv-concept-docs`); Diagramm in `design/mart/` (Skill `dv-design-sync`) |
+| Neues Vault-Objekt | Zeile im Kapitel Objekte von `04-…/raw-vault/mart_<konzept>/00-mart-<konzept>.md`; Diagramm in `design/` (Skill `dv-design-sync`); nur bei neuem **Muster** ein Kapitel in `02-entwickler/04-objekte-anlegen/` |
+| Betrieb, Beschluss, offener Punkt zu einem Konzept | `04-…/raw-vault/mart_<konzept>/NN-betrieb.md`, `NN-entscheidungen-und-befunde.md`, `NN-offene-punkte.md` |
 | Business-Vault-Regel | `04-…/business-vault/00-business-vault.md` (Tabelle ergänzen) |
 | Erkenntnis mit Messwert / Fehlschlag | `lessons-learned/NN-<thema>.md` |
 | Meeting, Abstimmung, Analyse | `04-…/meetings/JJJJ-MM-TT-<thema>.md` bzw. `04-…/projektdokumentation/` |
@@ -78,7 +83,7 @@ tags:
                                      # information-mart|projektdokumentation|quellsysteme] |
                                      # lessons-learned | schulung[/…]
   - typ/<typ>                        # optional: inhaltsverzeichnis, nachschlagen, glossar, faq,
-                                     # troubleshooting, checkliste, changelog, er-diagramm
+                                     # troubleshooting, checkliste, changelog, er-diagramm, objekt
 ---
 [Dokumentation](<rel>/README.md) › [Index Ebene 1](…) › [Index Ebene 2](…)
 
@@ -94,7 +99,10 @@ Inhalt …
 Regeln:
 - **Dateinamen:** `NN-kebab-case.md`, keine Umlaute/Leerzeichen/Unterstriche; Inhaltsverzeichnis
   `00-<ordnername>.md` (steht in Obsidian oben), Base `00-<ordnername>.base`; datierte Dokumente
-  `JJJJ-MM-TT-<thema>.md`; keine Suffixe wie `_v2`/`_final`.
+  `JJJJ-MM-TT-<thema>.md`; keine Suffixe wie `_v2`/`_final`. Ausnahmen in `04-…`: Konzeptordner
+  heissen wie das Mart-Schema (`mart_<konzept>/`), Objektseiten wie das Objekt (`objekte/dim_kunde_v.md`).
+- **Vollständigkeit:** Kapitel einer festen Struktur bleiben stehen. Gibt es etwas nicht: „nicht
+  vorhanden“; gibt es etwas, ist aber nicht beschrieben: `> [!todo] Noch nicht dokumentiert`.
 - **Links:** nur relative Markdown-Links `[Text](../pfad/datei.md)`, **keine** `[[Wikilinks]]`.
   Links auf Repo-Dateien relativ zum Vault-Ort (`../../models/…`).
 - **Hinweise als Callouts:** `> [!NOTE]`, `> [!TIP]`, `> [!WARNING]`, `> [!IMPORTANT]`.
