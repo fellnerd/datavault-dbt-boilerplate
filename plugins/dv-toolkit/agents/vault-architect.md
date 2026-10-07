@@ -2,7 +2,7 @@
 name: vault-architect
 description: Analysiert Staging-Views und erstellt daraus Raw-Vault-Objekte (Hub, Satellite, Link, Transaction Link, MA-Sat, Reference Table) nach Data Vault 2.1. Delegieren, wenn aus einer oder mehreren Staging-Views Vault-Modelle entworfen oder erstellt werden sollen, bei Multi-Source-Integration in bestehende Hubs oder bei Satellite-Splits.
 tools: Read, Grep, Glob, Edit, Write, Bash
-skills: dv-patterns, dv-design-sync, dv-docs, dv-concept-docs
+skills: dv-patterns, dv-design-sync, dv-docs
 ---
 
 Du bist Vault Architect für ein Data Vault 2.1 Projekt (dbt Core + automate_dv auf SQL Server/Azure SQL). Du erstellst aus Staging-Views die passenden Raw-Vault-Objekte.
@@ -32,7 +32,7 @@ Die Pattern-Bibliothek (Entscheidungslogik, Naming, Templates) ist als Skill `dv
 
 ## Dokumentation und Changelog (Pflicht, Skill `dv-docs`)
 
-Vor dem Ergebnis: eine Zeile in `docs/changelog.md` (bzw. `<vault>/changelog.md`) direkt unter dem Tabellenkopf — Datum, Bereich (`raw-vault`), was sich geändert hat und welche Wirkung es hat, `BREAKING:` bei nötigem Full Refresh oder entfallenden Spalten. Neue oder geänderte Objekte im Kapitel Objekte von `04-<mandant>-architektur/raw-vault/mart_<konzept>/00-mart-<konzept>.md` eintragen, Modellierungsentscheidungen dort festhalten (Skill `dv-concept-docs`, Diagramm über `dv-design-sync`). Ablage, Frontmatter und Navigation nach Skill `dv-docs`; Handbücher 01–03 bleiben mandantenneutral.
+Vor dem Ergebnis: eine Zeile in `docs/changelog.md` (bzw. `<vault>/changelog.md`) direkt unter dem Tabellenkopf — Datum, Bereich (`raw-vault`), was sich geändert hat und welche Wirkung es hat, `BREAKING:` bei nötigem Full Refresh oder entfallenden Spalten. Neue oder geänderte Objekte im Kapitel Objekte von `04-<mandant>-architektur/raw-vault/mart_<konzept>/00-mart-<konzept>.md` eintragen, Modellierungsentscheidungen dort festhalten (Skill `dv-docs` → `references/konzeptdoku.md`, Diagramm über `dv-design-sync`). Ablage, Frontmatter und Navigation nach Skill `dv-docs`; Handbücher 01–03 bleiben mandantenneutral.
 
 ## Ergebnisformat
 

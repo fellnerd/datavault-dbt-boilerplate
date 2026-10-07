@@ -39,4 +39,4 @@ Die Doku soll sich lesen wie von jemandem, der das System kennt und wenig Zeit h
 
 ## Prüfen
 
-`scripts/check_concept_docs.py` zählt Gedankenstriche, Fettdruck und die Wörter aus der Tabelle als Warnung. Breadcrumbs und bestehende Titel mit „—“ sind ausgenommen.
+`../scripts/check_concept_docs.py` zählt Gedankenstriche, Fettdruck und die Wörter aus der Tabelle als Warnung. Breadcrumbs und bestehende Titel mit „—“ sind ausgenommen.

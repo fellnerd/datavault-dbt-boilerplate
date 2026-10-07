@@ -1,13 +1,8 @@
----
-name: dv-concept-docs
-description: Dokumentiert ein fachliches Konzept (mart_<konzept>) im Obsidian-Vault unter 04-<mandant>-architektur/ nach fester Struktur — Information Mart (Übersicht mit Allgemein, Datenquelle, Objekte und Logik, Security, Datenmodell plus eine Seite je Dimension/Fakt unter objekte/) und Raw Vault (Übersicht, Beladung je Quelle, Betrieb, Entscheidungen, offene Punkte). Liest dafür dbt-Modelle, Staging, sources.yml, Security und CI, gleicht bestehende Doku gegen den Code ab und verschiebt alte Kapitel ohne Informationsverlust. Verwenden bei "Konzept dokumentieren", "Mart dokumentieren", "Objektseite anlegen", "dim_/fakt_ beschreiben", "Raw Vault dokumentieren", "Beladung dokumentieren", "Architektur-Doku umstrukturieren", "Gerüst ausfüllen", "[!todo] abarbeiten", nach dem Anlegen oder Ändern von Mart-Objekten.
----
-
 # Konzeptdokumentation: Information Mart und Raw Vault
 
-Jedes fachliche Konzept wird zweimal beschrieben: im **Information Mart** für Nutzer (was bedeutet eine Zahl, wie entsteht sie, was darf ich sehen) und im **Raw Vault** für Betrieb und Entwicklung (woher kommen die Daten, wie werden sie geladen, was ist offen). Beide Seiten haben eine feste Kapitelstruktur, die immer vollständig ist.
+Gilt für `04-<mandant>-architektur/information-mart/` und `raw-vault/`. Ablage, Notizformat, Changelog und Schreibstil regelt die [SKILL.md](../SKILL.md); hier steht, wie ein fachliches Konzept dokumentiert wird.
 
-Abgrenzung: `dv-docs` regelt den Vault insgesamt (Ordner, Notizformat, Changelog), `dv-design-sync` die ER-Diagramme in `design/` und deren Sync, `dv-er-diagram` die Canvas-Darstellung. Dieser Skill schreibt die Konzept- und Objektseiten.
+Jedes Konzept wird zweimal beschrieben: im **Information Mart** für Nutzer (was bedeutet eine Zahl, wie entsteht sie, was darf ich sehen) und im **Raw Vault** für Betrieb und Entwicklung (woher kommen die Daten, wie werden sie geladen, was ist offen). Beide Seiten haben eine feste Kapitelstruktur, die immer vollständig ist. ER-Diagramme in `design/` und ihr Sync gehören zu `dv-design-sync`, Canvas-Darstellungen zu `dv-er-diagram`.
 
 ## Zielstruktur
 
@@ -31,14 +26,14 @@ Abgrenzung: `dv-docs` regelt den Vault insgesamt (Ordner, Notizformat, Changelog
 │       ├── NN-entscheidungen-und-befunde.md
 │       ├── NN-offene-punkte.md
 │       └── er-*.md, *.canvas, *.sql       generierte Diagramme, Canvas, Prüfabfragen
-├── business-vault/, projektdokumentation/, meetings/, assets/   unverändert nach dv-docs
+├── business-vault/, projektdokumentation/, meetings/, assets/
 ```
 
-Der Konzeptname folgt dem Mart-Schema (`mart_telecom` → Ordner `mart_telecom/`, Index `00-mart-telecom.md`), auch auf der Raw-Vault-Seite. Vorlagen für alle Seitentypen: [`references/`](references/). Liegen sie im Vault unter `vorlagen/`, dieselben verwenden.
+Der Konzeptname folgt dem Mart-Schema (`mart_telecom` → Ordner `mart_telecom/`, Index `00-mart-telecom.md`), auch auf der Raw-Vault-Seite. Vorlagen: [Konzept Information Mart](vorlage-konzept-information-mart.md), [Mart-Objekt](vorlage-mart-objekt.md), [Konzept Raw Vault](vorlage-konzept-raw-vault.md), [Beladung Quelle](vorlage-beladung-quelle.md). Liegen sie im Vault unter `vorlagen/`, dieselben verwenden.
 
 ## Ablauf
 
-1. **Scope klären.** Konzept, Mart-Schema, Modellordner (`models/mart/<konzept>/`, beteiligte `models/raw_vault/**`, `models/staging/**`), Quellsysteme, Vault-Pfad (Ordner mit `.obsidian/`) und Mandantenordner. Bestehende Seiten lesen: Gerüst, alte Kapitel, verstreute Notizen (`load/`, `quellsysteme/`, Meetings, Projektdoku).
+1. **Scope klären.** Konzept, Mart-Schema, Modellordner (`models/mart/<konzept>/`, beteiligte `models/raw_vault/**`, `models/staging/**`), Quellsysteme, Vault-Pfad und Mandantenordner. Bestehende Seiten lesen: Gerüst, alte Kapitel, verstreute Notizen (`load/`, `quellsysteme/`, Meetings, Projektdoku).
 2. **Fakten aus dem Code holen**, nicht aus der Erinnerung:
 
    | Quelle | Was daraus in die Doku geht |
@@ -54,11 +49,11 @@ Der Konzeptname folgt dem Mart-Schema (`mart_telecom` → Ordner `mart_telecom/`
 
    Zeilenzahlen und Datenstände nur mit Datum und Umgebung (`Stand 6. Oktober 2026 auf <db>-dev`). Aus der bisherigen Doku übernehmen oder mit dem Agent `db-monitor` ermitteln, nie schätzen.
 3. **Code schlägt Doku.** Widerspricht eine bestehende Aussage dem Code, die Aussage korrigieren und im Changelog und in der Antwort nennen. Weicht ein ER-Entwurf in `design/` vom gebauten Stand ab, dort korrigieren oder nicht Gebautes als `NICHT GEBAUT` kommentieren, dann den Sync laufen lassen.
-4. **Seiten schreiben** nach den Kapitelregeln unten und dem [Schreibstil](references/schreibstil.md).
+4. **Seiten schreiben** nach den Kapitelregeln unten und dem [Schreibstil](schreibstil.md).
 5. **Einhängen.** Konzept in `information-mart/00-information-mart.md`, `raw-vault/00-raw-vault.md` und `00-<mandant>-architektur.md` mit Doku-Stand eintragen; Vor-/Zurück-Navigation; in `design/vault-sync.json` je Konzeptordner eine Gruppe (`{"title": "<Konzept>", "index": "00-mart-<konzept>.md"}`), damit die generierten ER-Notizen das Konzept im Breadcrumb zeigen; `python3 scripts/sync_design_to_vault.py`.
-6. **Prüfen** mit `python3 <skill>/scripts/check_concept_docs.py <vault>` (Kapitel, Properties, Links, leere Kapitel, Stilmerkmale), dann Changelog-Zeile (Bereich `doku`).
+6. **Prüfen** mit `python3 <dv-docs>/scripts/check_concept_docs.py <vault>` (Kapitel, Properties, Links, leere Kapitel, Stilmerkmale), dann Changelog-Zeile (Bereich `doku`).
 
-Bestehende Doku umbauen statt neu schreiben: [Migration](references/migration.md).
+Bestehende Doku umbauen statt neu schreiben: [Migration](migration.md).
 
 ## Information Mart
 
@@ -83,7 +78,7 @@ Bestehende Doku umbauen statt neu schreiben: [Migration](references/migration.md
 | Besonderheiten | Datenlücken, Duplikate, bekannte Abweichungen mit Zahlen, Fallstricke für Nutzer; sonst „Keine.“ |
 | Security | Grant-Weg (eigener Grant oder über den Schema-View-Grant), RLS, sensible Spalten |
 
-Ein persistiertes Objekt (Tabelle + `_v`-View) bekommt eine gemeinsame Seite unter dem Namen der View. Properties siehe Vorlage; sie speisen die Base-Ansicht „Mart-Objekte“.
+Ein persistiertes Objekt (Tabelle + `_v`-View) bekommt eine gemeinsame Seite unter dem Namen der View. Properties siehe [Obsidian](obsidian.md); sie speisen die Base-Ansicht „Mart-Objekte“.
 
 ## Raw Vault
 
@@ -112,33 +107,23 @@ Gelten für das ganze Konzept, also auch für den Mart; die Mart-Seiten verlinke
 - **Entscheidungen und Befunde:** Timeline, Beschlusstabelle *Thema / Beschluss / Datum*, Tests mit Ergebnis, Korrekturen früherer Annahmen mit Begründung und Zahlen.
 - **Offene Punkte:** Tabelle *Nr. / Punkt / abhängig von*, darunter je Punkt ein kurzer Abschnitt mit Ursache und nächstem Schritt; zum Schluss „Nicht gebaut“, falls Geplantes entfallen ist.
 
-## Vollständigkeit und Platzhalter
+## Gerüst und Doku-Stand
 
-- Jedes Kapitel bleibt stehen, auch wenn es nichts zu sagen gibt.
-- „nicht vorhanden“ heisst: gibt es nicht (keine RLS, kein Datenmodell, keine PSA).
-- `> [!todo] Noch nicht dokumentiert` heisst: gibt es, ist aber nicht beschrieben. Die Suche nach `[!todo]` zeigt alle Lücken.
-- Ein Gerüst (Konzept ohne Inhalt) bekommt oben `> [!todo] Gerüst` mit Link auf Vorlage und ein fertiges Beispielkonzept; im Kapitel Datenmodell die Objekte aus `models/mart/<konzept>/` als Liste ohne Links.
+- Ein Konzept ohne Inhalt bekommt oben `> [!todo] Gerüst` mit Link auf Vorlage und ein fertiges Beispielkonzept; im Kapitel Datenmodell die Objekte aus `models/mart/<konzept>/` als Liste ohne Links. Alle Kapitel bleiben stehen (Platzhalter-Regel in der SKILL.md).
 - Property `dokumentation: offen | teilweise | vollständig` und die Spalte „Doku“ in den Indexseiten stimmen überein.
 
-## Obsidian
+## Darstellung
 
-- Nur relative Markdown-Links, keine `[[Wikilinks]]` und keine `#Überschrift`-Anker (Obsidian und GitLab bilden sie unterschiedlich). Links auf Repo-Dateien (`models/`, `design/`) relativ zum Notizort; Obsidian zieht diese beim Verschieben **nicht** nach.
-- Dateinamen: `NN-kebab-case.md`. Ausnahmen: Konzeptordner = Schema (`mart_telecom/`), Objektseiten = Objektname (`objekte/fakt_cdr_v.md`).
-- Properties und Base-Ansichten („Konzepte“, „Mart-Objekte“): [references/obsidian.md](references/obsidian.md).
 - Callouts: `[!WARNING]` für leere oder fehlerhafte Objekte und gefährliche Schritte, `[!todo]` für Lücken, sonst sparsam.
 - Mermaid für Lineage (`flowchart LR`), Beziehungen (`erDiagram`), Zeiträume (`gantt`), Mengen (`xychart-beta`, `pie`) und Chronologien (`timeline`). Keine HTML-Entities in Labels, Zeilenumbruch mit `<br/>`.
-- Breadcrumb und Vor-/Zurück-Navigation nach `dv-docs`; die Reihenfolge der Objektseiten folgt der Liste im Kapitel Datenmodell.
-- Generierte `er-*.md` nie von Hand ändern.
-
-## Schreibstil (Kurzfassung)
-
-Konkret und knapp: kurze Hauptsätze, Zahlen mit Einheit und Stand, Objekt- und Spaltennamen in Code-Format, Gleichartiges als Tabelle. Keine Werbe- oder Wertungswörter, keine Meta-Sätze („Es ist wichtig …“), keine Zusammenfassung am Absatzende, kein „nicht nur … sondern auch“, keine Dreierlisten aus Gewohnheit, kein Fettdruck im Fliesstext, Gedankenstriche sparsam, keine Emojis. Ausführlich mit Beispielen: [references/schreibstil.md](references/schreibstil.md).
+- Keine `#Überschrift`-Anker in Links (Obsidian und GitLab bilden sie unterschiedlich). Links auf `models/` und `design/` relativ zum Notizort; Obsidian zieht diese beim Verschieben nicht nach.
+- Die Reihenfolge der Objektseiten in der Vor-/Zurück-Navigation folgt der Liste im Kapitel Datenmodell.
 
 ## Abschluss-Check
 
 1. `check_concept_docs.py` meldet keine Fehler; Warnungen zu Stil gelesen und begründet behoben oder belassen.
 2. Jede Aussage zur Logik ist im SQL nachgesehen, jede Zahl hat Stand und Umgebung.
-3. Bei einer Migration: jeder Abschnitt, jede Zahl und jeder Beschluss der alten Seiten ist auf einer neuen Seite wiederzufinden ([Migration](references/migration.md), Schritt 6).
+3. Bei einer Migration: jeder Abschnitt, jede Zahl und jeder Beschluss der alten Seiten ist auf einer neuen Seite wiederzufinden ([Migration](migration.md), Schritt 6).
 4. Indexseiten, Base-Ansichten und `vault-sync.json` sind nachgezogen, der Sync meldet `0 veraltet`.
 5. Changelog-Zeile vorhanden.
 6. In der Antwort nennen: korrigierte Aussagen, neue Befunde, offene `[!todo]`, getroffene Annahmen.

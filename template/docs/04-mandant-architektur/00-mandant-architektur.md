@@ -18,7 +18,7 @@ Alles, was nur für dieses Projekt gilt. Die Handbücher [Benutzer](../01-benutz
 
 ## Aufbau
 
-Jedes fachliche Konzept (`mart_<konzept>`) ist zweimal beschrieben: im Information Mart aus Sicht der Nutzer, im Raw Vault aus Sicht der Beladung. Struktur und Regeln: Skill `dv-concept-docs`, Vorlagen in [`vorlagen/`](../vorlagen/).
+Jedes fachliche Konzept (`mart_<konzept>`) ist zweimal beschrieben: im Information Mart aus Sicht der Nutzer, im Raw Vault aus Sicht der Beladung. Struktur und Regeln: Skill `dv-docs` (Konzeptdoku), Vorlagen in [`vorlagen/`](../vorlagen/).
 
 ```mermaid
 flowchart LR

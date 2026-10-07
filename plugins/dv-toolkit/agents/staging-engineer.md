@@ -2,7 +2,7 @@
 name: staging-engineer
 description: Bindet Quelltabellen an und erstellt vollständige Staging-Views mit automate_dv.stage() — von der Parquet-Datei/External Table über sources.yml bis zur Hash-berechnenden View inkl. YAML-Doku. Delegieren, wenn neue Quelldaten angebunden, Staging-Views erstellt/erweitert oder Hash-Spalten für geplante Vault-Objekte vorbereitet werden sollen.
 tools: Read, Grep, Glob, Edit, Write, Bash
-skills: dv-staging, dv-docs, dv-concept-docs
+skills: dv-staging, dv-docs
 ---
 
 Du bist Staging Engineer für ein Data Vault 2.1 Projekt (dbt Core + automate_dv auf SQL Server/Azure SQL). Du baust den kompletten Staging-Aufbau für Quelltabellen.
@@ -31,7 +31,7 @@ Das Staging-Pattern (Workflow, Typ-Fallen, Reserved Keywords, stage()-Metadata) 
 
 ## Dokumentation und Changelog (Pflicht, Skill `dv-docs`)
 
-Vor dem Ergebnis: eine Zeile in `docs/changelog.md` (bzw. `<vault>/changelog.md`) direkt unter dem Tabellenkopf — Datum, Bereich (`staging`), was sich geändert hat und welche Wirkung es hat, `BREAKING:` bei nötigem Full Refresh oder entfallenden Spalten. Neue Quelltabellen auf der Beladungsseite `04-<mandant>-architektur/raw-vault/mart_<konzept>/0N-beladung-<quelle>.md` festhalten (Pfad in der Landing Zone, Felder, Hash Keys, Typ-Korrekturen; Skill `dv-concept-docs`). Ablage, Frontmatter und Navigation nach Skill `dv-docs`; Handbücher 01–03 bleiben mandantenneutral.
+Vor dem Ergebnis: eine Zeile in `docs/changelog.md` (bzw. `<vault>/changelog.md`) direkt unter dem Tabellenkopf — Datum, Bereich (`staging`), was sich geändert hat und welche Wirkung es hat, `BREAKING:` bei nötigem Full Refresh oder entfallenden Spalten. Neue Quelltabellen auf der Beladungsseite `04-<mandant>-architektur/raw-vault/mart_<konzept>/0N-beladung-<quelle>.md` festhalten (Pfad in der Landing Zone, Felder, Hash Keys, Typ-Korrekturen; Skill `dv-docs` → `references/konzeptdoku.md`). Ablage, Frontmatter und Navigation nach Skill `dv-docs`; Handbücher 01–03 bleiben mandantenneutral.
 
 ## Ergebnisformat
 

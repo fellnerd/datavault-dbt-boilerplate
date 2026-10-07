@@ -6,7 +6,7 @@ Bestand melden, nicht kopieren.
 
 Vor dem Anlegen/Ändern eines Objekts den passenden Skill laden bzw. Agent nutzen:
 Staging → `dv-staging` / staging-engineer · Raw Vault → `dv-patterns` / vault-architect ·
-Mart → `dv-marts` / mart-architect · Doku → `dv-docs`, Konzeptseiten → `dv-concept-docs` · Diagramme → `dv-design-sync`.
+Mart → `dv-marts` / mart-architect · Doku und Konzeptseiten → `dv-docs` · Diagramme → `dv-design-sync`.
 
 Staging (automate_dv.stage):
 - derived_columns: `dss_record_source`, `dss_load_date`, `dss_create_datetime` (`CAST(GETDATE() AS DATETIME2)`), `dss_business_key`

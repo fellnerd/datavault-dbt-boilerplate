@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prüft die Konzeptdokumentation unter <vault>/04-<mandant>-architektur/ (Skill dv-concept-docs).
+"""Prüft die Konzeptdokumentation unter <vault>/04-<mandant>-architektur/ (Skill dv-docs, references/konzeptdoku.md).
 
 Fehler (Exit 1):
   - Pflichtkapitel (H2) fehlen oder stehen in falscher Reihenfolge
