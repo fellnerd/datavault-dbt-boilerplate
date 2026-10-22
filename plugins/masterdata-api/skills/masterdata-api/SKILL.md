@@ -88,6 +88,37 @@ on the token at all (issuing user's role at creation time). A 403 with
 issuing user isn't currently admin - a different (currently-admin) user
 needs to issue a fresh token.
 
+## Access control (what a token may actually touch)
+
+The scopes above are only the **outer limit**. Which models and entities a
+request may touch is decided **live, per request**, from the token owner's
+permissions - not from the token:
+
+- Permissions are **roles on a scope**: `viewer` (read) < `editor` (+ write
+  staged records) < `approver` (+ approve commits / deploy data) < `admin` (+
+  change the schema). The scope is **global**, one **model**, or one **entity**.
+- They come from the owner's direct roles and from the **Entra security groups**
+  mapped to roles in the app (Settings -> Permissions). Group membership is the
+  snapshot of the owner's **last sign-in** - a change in Entra reaches tokens
+  after the owner signs in again.
+- Consequences: list endpoints (`models`, `entities`, `views`, `master`,
+  `stage/records`, ...) contain **only what the owner may read**; an entity
+  outside their permissions answers `403` (not `404`); staging needs `editor`+ on
+  the entity; schema writes need `admin` on the model/entity (a model admin may
+  change entities/attributes of **their** model; **creating/deleting models**
+  needs a global admin). An owner with **no permission at all** gets `403` with
+  `"code": "no_access"` on everything.
+- An empty list can therefore mean "nothing visible", not "nothing exists".
+- **Shared entities** (flag `is_shared` on the entity, set only by a global admin
+  via `PUT /api/v1/entities/{code}`) are **readable by every user that has any
+  permission** - reference data such as units or languages that several models
+  point at. They are read-only for everyone who has no other right on them.
+- **Reference choices across models:** to fill a reference dropdown you do not need
+  (and may not have) read access to the referenced entity - see
+  `GET /api/v1/attributes/{id}/lookup` below. Writing a record whose reference
+  points into another model is validated on the server regardless of your read
+  rights.
+
 ## Endpoints
 
 All list endpoints are paginated: `?page=1&pageSize=50` (`pageSize` capped
@@ -126,6 +157,7 @@ return a clean `400` rather than a database error.
 | POST | `/api/v1/attributes` | Body: `{ entity_id, code, name, data_type?, is_required?, is_business_key?, is_unique?, reference_entity_id?, reference_display_attribute?, cascade_parent_attribute?, cascade_filter_attribute?, sort_order? }`. `data_type` one of `string`, `integer`, `decimal`, `boolean`, `date`, `datetime`, `reference`; `reference_entity_id` required when `data_type` is `reference`; the `reference_display_attribute`/`cascade_*` settings only apply to references (see "Reference attributes" below). Without `sort_order` the attribute is appended after the entity's last one. Admin token required. |
 | PUT | `/api/v1/attributes/reorder` | Body: `{ entity_id, order: [attributeId, ...] }` - every attribute id of the entity exactly once, in the desired order (positions become 10, 20, 30, ...). This is the field order of the data-entry form. Admin token required. `400` if `order` isn't exactly the entity's attribute ids; `409` if it would change the relative order of the **business-key** attributes of an entity that already has records (composite business keys are built in that order, so new keys would stop matching stored ones) - moving any other attribute, also across the key attributes, is always fine. |
 | GET | `/api/v1/attributes/{id}` | Single attribute by numeric id |
+| GET | `/api/v1/attributes/{id}/lookup` | **Choices of a `reference` attribute** as `{ data: [{ business_key, label }], total }`, sorted by label. `label` is the attribute's `reference_display_attribute` (else the business key). Query: `parent_value` (for a cascade child: the parent attribute's current value - narrows the list), `q` (contains-filter on key/label), `limit` (default 500, max 1000). Needs only read access to the attribute's **own** entity (the form being filled in), **not** to the referenced entity - so an editor of ASCEM can pick Hauptgruppen of the EPD model. Only key + label are returned, never the other columns. `400` if the attribute is not a reference. Scope `entities:read`. |
 | PUT | `/api/v1/attributes/{id}` | Partial update, same fields as POST. Admin token required. Returns the full updated attribute. **`code` is immutable**: a different `code` returns `400` (it used to be silently ignored) - to "rename", create a new attribute and delete the old one (values are not carried over). Sending the unchanged `code` is accepted. Changing `data_type`/`precision`/`scale` regenerates the entity's deployed views. |
 | DELETE | `/api/v1/attributes/{id}` | Admin token required. No dependency checks - deleting an attribute referenced elsewhere (e.g. by staged data) can orphan data, unlike Entity delete. The entity's currently-deployed views are regenerated right away so they stop selecting the dropped column (response: `views_redeployed`, plus `warnings` if one couldn't be regenerated) - previously the view returned `500 Invalid column name` until someone redeployed. |
 
@@ -403,7 +435,7 @@ field) with a matching HTTP status:
 |---|---|
 | 400 | Bad request (missing required field, invalid reference value, unknown attribute code in a filter, `attr.*` filter used without `entity_id` on `/stage/records`, invalid entity code format, invalid/negative `page`/`pageSize`, an unknown/empty `fields`/`distinct` value, an invalid reference/cascade configuration or a reference value that doesn't exist / doesn't belong to its cascade parent, `fields` together with `distinct`, `fields`/`distinct` without `entity_id` on `/stage/records`, or a query parameter name the endpoint doesn't recognize at all) |
 | 401 | Missing/empty/invalid/expired/revoked token |
-| 403 | Token valid but missing the required scope, or (Models/Entities/Attributes writes) the token owner isn't currently admin |
+| 403 | Token valid but missing the required scope; or the token owner lacks the permission (role) on that model/entity (`Forbidden: the token owner lacks the <action> permission on this model/entity`); or the owner has no permission at all (`code: "no_access"`) |
 | 404 | Record/entity/model/attribute/view not found, or entity not yet deployed to master |
 | 405 | Write attempted on a read-only endpoint (master, views) |
 | 409 | Duplicate code (Model/Entity/Attribute create), an entity code that's ambiguous across models (add `?model_code=`), a staged record whose business key is already used by another staged record of the entity, or an attribute reorder that would change the relative order of the business-key attributes of an entity with records |
